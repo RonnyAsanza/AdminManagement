@@ -1,0 +1,11 @@
+  .card-content{
+    display: flex;
+    flex-direction: column;
+    opacity: 0.5;
+  }
+
+  .card-item {
+    margin: 0.3rem;
+    width: auto;
+    border-bottom: 1px solid;
+  }

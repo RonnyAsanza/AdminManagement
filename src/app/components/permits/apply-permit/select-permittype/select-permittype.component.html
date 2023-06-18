@@ -1,0 +1,40 @@
+<div class="grid">
+    <div class="col-12 px-6">
+        <ng-container>
+            <div class="grid" >
+                <div class="col-12">
+                    <h4>Permit Type</h4>
+                </div>
+            </div>
+            <div class="grid" >
+                <div class="col-12 md:col-6 xl:col-3">
+                    <p-card
+                        class="card-content"
+                        (click)="permitTypeSelected.emit(1)"
+                    >
+                        <p>On Street Parking</p>
+                        <img src="../../../../../assets/images/permits/car.png" alt="On Street" class="permittype-image">
+                    </p-card>
+                </div>   
+                <div class="col-12 md:col-6 xl:col-3">
+                    <p-card
+                        class="card-content"
+                        (click)="permitTypeSelected.emit(2)"
+                    >
+                        <p>Parking Lot</p>
+                        <img src="../../../../../assets/images/permits/parking.png" alt="Parking Lot" class="permittype-image">
+                    </p-card>
+                </div> 
+                <div class="col-12 md:col-6 xl:col-3">
+                    <p-card
+                        class="card-content"
+                        (click)="permitTypeSelected.emit(3)"
+                    >
+                        <p>Condo Parking</p>
+                        <img src="../../../../../assets/images/permits/condo.png" alt="Condo Parking" class="permittype-image">
+                    </p-card>
+                </div>                             
+            </div>
+        </ng-container>
+    </div>
+</div>

@@ -36,4 +36,6 @@ export class AppSidebarComponent {
         this.layoutService.state.anchored = !this.layoutService.state.anchored;
     }
 
+
+
 }

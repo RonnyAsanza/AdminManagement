@@ -38,9 +38,9 @@ export class LayoutService {
         inputStyle: 'outlined',
         menuMode: 'static',
         colorScheme: 'light',
-        theme: 'indigo',
+        theme: 'teal',
         scale: 14,
-        menuTheme: 'colorScheme'
+        menuTheme: 'primaryColor'
     };
 
     state: LayoutState = {

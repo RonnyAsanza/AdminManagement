@@ -1,0 +1,41 @@
+<div class="grid">
+    <div class="col-12 px-6">
+        <p-toast></p-toast>
+        <ng-container>
+            <div class="grid" >
+                <div class="col-12 md:col-6 xl:col-3 ">
+                    <button pButton pRipple icon="pi pi-plus-circle" class="p-button-primary w-full" (click)="onClickNewPermit()">
+                        <span class="ml-2">Apply for new permit</span>
+                    </button>
+                </div>
+            </div>
+            <div class="grid" >
+                <div class="col-12 sm:col-6 lg:col-6 xl:col-4"
+                *ngFor="let permit of permits"
+                >
+                    <p-card
+                    >
+                        <div class="grid">
+                            <div class="col-12 xl:col-6 py-0">
+                                <h4>Permit #: {{permit.permitKey}}</h4>
+                            </div>
+                            <div class="col-12 xl:col-6  py-0">
+                                <span [class]="'permits-badge ' + permit?.permitStatusCode?.toLowerCase()">{{permit.permitStatus}}</span>
+                            </div>
+                        </div>
+                        <div class="card-content py-2">
+                            <label class="card-item">License Plate: {{permit.licensePlate}}</label>
+                            <label class="card-item">Type: {{permit.permitType}}</label>
+                            <label class="card-item">Adress: Ontario Street</label>
+                            <label class="card-item">Start Date: {{permit.startDateUtc | date: 'dd/MMMM/YYYY'}} </label>
+                            <label class="card-item">End date: {{permit.expirationDateUtc | date: 'dd/MMMM/YYYY'}}</label>
+                        </div>
+                        <ng-template pTemplate="footer">
+                            <button pButton pRipple label="View" icon="pi pi-arrow-right"  class="p-button-primary" (click)="onViewPermit(permit.permitGuid)"></button>
+                        </ng-template>
+                    </p-card>
+                </div>                                                            
+            </div>
+        </ng-container>
+    </div>
+</div>

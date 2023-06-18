@@ -1,0 +1,39 @@
+<div class="grid">
+    <div class="col-12 sm:px-2 md:px-6 xl:px-8">
+        <p-toast></p-toast>
+        <ng-container>
+            <div class="grid" >
+                <div class="col-12">
+                    <button pButton icon="pi pi-arrow-left" class="p-button-primary" (click)="onGoBack()">
+                        <span class="ml-2">Go back</span>
+                    </button>
+                </div>
+                <div class="mb-4 col-12">
+                    <p-tabView
+                        [(activeIndex)]="selectedIndex"
+                    >
+                        <p-tabPanel
+                        >
+                            <app-select-permittype
+                                (permitTypeSelected)="onSelectPermitType($event)"
+                            >
+                            </app-select-permittype>
+                        </p-tabPanel>
+                        <p-tabPanel>
+                            <app-select-zone
+                                (goNext)="onGoNext()"
+                            >
+                            </app-select-zone>
+                        </p-tabPanel>
+                        <p-tabPanel>
+                            <app-permit-options
+                            >
+                            </app-permit-options>
+                        </p-tabPanel>
+                    </p-tabView>
+                </div>
+
+            </div>
+        </ng-container>
+    </div>
+</div>

@@ -1,0 +1,231 @@
+<div class="grid">
+    <div class="col-12">
+        <ng-container>
+            <div class="grid" >
+                <div class="col-12">
+                    <h4>Permit Options Status: New</h4>
+                </div>
+            </div>
+            <form class="form-options" [formGroup]="form" (submit)="onSubmitPermit()">
+                <div class="p-fluid p-formgrid grid" >
+                    <div class="col-12 xl:col-6">
+                        <div class="col-12">
+                            <label htmlFor="zone">Zone:</label>
+							<input type="text" readonly pInputText name="zone" formControlName="zone"/>
+                        </div>    
+                        <div class="col-12">
+                            <label htmlFor="permitType">Type*:</label>
+                            <p-dropdown 
+                                formControlName="permitType"
+                                name="permitType" 
+                                optionLabel="name" 
+                                [options]="permitTypes" 
+                                placeholder="Select Zone" 
+                                class="w-full"
+                            >
+                                <ng-template let-option pTemplate="item">
+                                    {{option.name}}
+                                </ng-template>
+                            </p-dropdown>   
+                        </div>    
+                        <div class="col-12">
+                            <label htmlFor="tariff">Tariff*:</label>
+                            <p-dropdown 
+                                formControlName="tariff"
+                                name="tariff" 
+                                optionLabel="name" 
+                                [options]="tariffs" 
+                                placeholder="Select Tariff" 
+                                (onChange)="onTariffChange($event)"
+                                class="w-full"
+                            >
+                                <ng-template let-option pTemplate="item">
+                                    {{option.name}}
+                                </ng-template>
+                            </p-dropdown>  
+                        </div>    
+                        <div class="col-12">
+                            <label htmlFor="startDate">Start Date*:</label>
+                            <p-calendar [showIcon]="true"
+                                        [touchUI]="true" 
+                                        [showButtonBar]="true"
+                                        formControlName="startDate"
+                                        (onSelect)="onChangeStartDate()"
+                                        name="startDate">
+                            </p-calendar>
+                        </div>    
+                        <div class="col-12">
+                            <label htmlFor="endDate">End Date:</label>
+                            <div class="p-inputgroup">
+                                <input type="text" pInputText readonly formControlName="endDate" name="endDate">
+                                <span class="p-inputgroup-addon"><i class="pi pi-calendar" style="line-height: 1.25;"></i></span>
+                            </div>
+                        </div>    
+                        <div class="col-12">
+                            <label htmlFor="licensePlate">License Plate*:</label>
+							<input type="text" pInputText name="licensePlate" formControlName="licensePlate" onkeyup="this.value = this.value.toUpperCase();"/>
+                        </div>    
+                        <div class="col-12">
+                            <label htmlFor="price">Unit Price:</label>
+                            <div class="p-inputgroup">
+                                <span class="p-inputgroup-addon">CAD</span>
+                                <input type="number" min="1" pInputText name="price" formControlName="price" readonly/>
+                                <span class="p-inputgroup-addon">.00</span>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label htmlFor="quantity">Quantity*:</label>
+                            <p-inputNumber 
+                                formControlName="quantity" 
+                                [min]=1 
+                                (onInput)="onChangeQuantity()"
+                                [showButtons]="true" 
+                                inputId="quantity"> 
+                            </p-inputNumber>
+                        </div>                       
+                        <div class="col-12">
+                            <label htmlFor="startDate">Total:</label>
+                            <div class="p-inputgroup">
+                                <span class="p-inputgroup-addon">CAD</span>
+                                <input type="total" min="1" pInputText name="total" formControlName="total" readonly/>
+                                <span class="p-inputgroup-addon">.00</span>
+                            </div>
+                        </div>                      
+                        <div class="col-12">
+                            <label htmlFor="optional1">Optional Input 1:</label>
+							<input type="text" pInputText name="optional1" formControlName="optional1"/>
+                        </div>
+                        <div class="col-12">
+                            <label htmlFor="startDate">Optional Input 2:</label>
+							<input type="text" pInputText name="optional2" formControlName="optional2"/>
+                        </div>
+                    </div>   
+                    <div class="col-12 xl:col-6">
+                        <p-panel header="Documentation" class="line-height-3 m-0">
+                            <div class="p-fluid p-formgrid grid">
+                                <div class="col-12">
+                                    <span class="documentation-sub-title">
+                                        This permit requires documentation and approval before a permit can be provided.
+                                        Please provide the following
+                                    </span>
+                                </div>
+                                <div class="col-12">
+                                    <label htmlFor="driversLicense">Drivers License (Picture):</label>
+                                    <p-fileUpload name="driversLicense"
+                                        [customUpload]="true"
+                                        (uploadHandler)="uploadfun($event)"
+                                        [auto]="true">
+                                    </p-fileUpload>
+                                </div>
+                                <div class="col-12">
+                                    <label htmlFor="proffOfResidence">Proff of Residence:</label>
+                                    <p-fileUpload name="proffOfResidence"
+                                        [customUpload]="true"
+                                        skinSimple="true"
+                                        (uploadHandler)="uploadfun($event)"
+                                        [auto]="true">
+                                    </p-fileUpload>
+                                </div>
+                                <div class="col-12">
+                                    <div class="grid">
+                                        <div class="col-12 md:col-6">
+                                            <button pButton pRipple icon="pi pi-times-circle" label="Cancel" class="p-button-danger w-full">
+                                            </button>
+                                        </div>
+                                        <div class="col-12 md:col-6">
+                                            <button pButton pRipple icon="pi pi-save" class="p-button-primary w-full" label="Submit" [disabled]="!form?.valid">
+                                            </button>
+                                        </div>
+                                    </div>  
+                                </div>
+                            </div>
+                        </p-panel>
+                    </div>                     
+                </div>
+            </form>
+        </ng-container>
+    </div>
+</div>
+
+<p-dialog [(visible)]="confirmationDialog" styleClass="confirmationDialog" [resizable]="false" header="Confirmation" [modal]="true" class="p-fluid">
+    <ng-template pTemplate="content">              
+        <div class="grid mt-2 ml-2 mr-2">
+            <div class="col-12 mt-10">
+                <div class="grid">
+                    <h3>Please confirm the following information is correct: </h3>
+                    <div class="col-12 py-0">
+                        <div class="grid py-0">
+                            <div class="col-4">
+                                <span>Permit Type:</span>
+                            </div> 
+                            <div class="col-8">
+                                <span>{{permit?.permitType?.name}} </span>
+                            </div> 
+                        </div> 
+                    </div> 
+                    <div class="col-12 py-0">
+                        <div class="grid py-0">
+                            <div class="col-4">
+                                <span>Zone:</span>
+                            </div> 
+                            <div class="col-8">
+                                <span>{{permit?.zoneName}}</span>
+                            </div> 
+                        </div> 
+                    </div> 
+                    <div class="col-12 py-0">
+                        <div class="grid py-0">
+                            <div class="col-4">
+                                <span>Valid: </span>
+                            </div> 
+                            <div class="col-8">
+                                <span>{{permit?.startDateUtc | date: 'dd/MMMM/YYYY HH:mm' }} -> {{permit?.expirationDateUtc | date: 'dd/MMMM/YYYY HH:mm'}}</span>
+                            </div> 
+                        </div> 
+                    </div> 
+                    <div class="col-12 py-0">
+                        <div class="grid py-0">
+                            <div class="col-4">
+                                <span>License Plate:</span>
+                            </div> 
+                            <div class="col-8">
+                                <span>{{permit.licensePlate}}</span>
+                            </div> 
+                        </div>  
+                    </div> 
+                    <div class="col-12 py-0">
+                        <div class="grid py-0">
+                            <div class="col-4">
+                                <span>Quantity:</span>
+                            </div> 
+                            <div class="col-8">
+                                <span>{{permit?.quantity}}</span>
+                            </div> 
+                        </div> 
+                    </div> 
+                    <div class="col-12 py-0">
+                        <div class="grid py-0">
+                            <div class="col-4">
+                                <span>Total: </span>
+                            </div> 
+                            <div class="col-8">
+                                <span>CAD {{permit?.total}}</span>
+                            </div> 
+                        </div> 
+                    </div> 
+                    <div class="col-12 py-0">
+                        <p>
+                            These can have additional setting and information for validation,
+                            possibly in a scrollable area if we wanted to show document names
+                            etc.
+                        </p>
+                    </div> 
+                </div>
+            </div>
+        </div>           
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times-circle" label="Cancel" class="p-button-danger" (click)="hideDialog()"></button>
+        <button pButton pRipple icon="pi pi-save" class="p-button-primary" label="Submit" (click)="savePermit()"></button>
+    </ng-template>
+</p-dialog>     

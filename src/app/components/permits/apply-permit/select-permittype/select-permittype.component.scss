@@ -1,0 +1,26 @@
+.card-content{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .card-content:hover p{
+    font-weight: bold;
+  }
+  
+  .card-content:active{
+    transform: scale(0.98);
+    box-shadow: 2px 0px 8px 0px rgb(0 0 0 / 90%);
+  }
+  
+  .permittype-image {
+    max-width: 20%;
+    height: auto;
+    margin-top: 5%;
+  }
+
+  h4{
+    text-align: center;
+  }

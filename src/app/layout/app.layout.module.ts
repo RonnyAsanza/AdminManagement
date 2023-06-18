@@ -20,6 +20,7 @@ import { AppMenuComponent } from './app.menu.component';
 import { AppMenuitemComponent } from './app.menuitem.component';
 import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
+import { SharedModule } from '../components/shared/shared.module';
 
 @NgModule({
     declarations: [
@@ -33,6 +34,7 @@ import { ButtonModule } from 'primeng/button';
     ],
     imports: [
         BrowserModule,
+        SharedModule,
         FormsModule,
         HttpClientModule,
         BrowserAnimationsModule,

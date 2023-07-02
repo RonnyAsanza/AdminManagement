@@ -9,19 +9,20 @@
             <form>
                 <div class="p-fluid p-formgrid grid" >
                     <div class="col-12 md:col-6">
-                        <label htmlFor="zone">Select Zone:</label>
-                        <p-dropdown 
-                            [formControl]="zoneControl"
-                            name="zone" 
-                            optionLabel="name" 
-                            [options]="zones" 
-                            placeholder="Select Zone" 
-                            class="w-full"
-                        >
-                            <ng-template let-option pTemplate="item">
-                                {{option.name}}
-                            </ng-template>
-                        </p-dropdown>                
+                        <label>Select Zone:
+                            <p-dropdown 
+                                [formControl]="zoneControl"
+                                name="zone" 
+                                optionLabel="name" 
+                                [options]="zones" 
+                                placeholder="Select Zone" 
+                                class="w-full"
+                            >
+                                <ng-template let-option pTemplate="item">
+                                    {{option.name}}
+                                </ng-template>
+                            </p-dropdown>   
+                        </label>             
                     </div>         
                 </div>
                 <div class="grid" >

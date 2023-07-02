@@ -179,7 +179,7 @@ export class PermitOptionsComponent {
         {
          // this.permitService.setLocalApplyPermit(new ApplyPermit());
           this.hideDialog();
-          this.router.navigate(['/' + this.company.externalCompanyId+'/permits/' + response.data]);
+          this.router.navigate(['/' + this.company.portalAlias+'/permits/' + response.data]);
         }
       },
       error: (e) => {

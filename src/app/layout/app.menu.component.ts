@@ -23,17 +23,17 @@ export class AppMenuComponent implements OnInit {
                     {
                         label: 'Precise',
                         icon: 'pi pi-fw pi-home',
-                        routerLink: ['/'+this.company.externalCompanyId+'/']
+                        routerLink: ['/'+this.company.portalAlias+'/']
                     },
                     {
                         label: 'Activity',
                         icon: 'pi pi-fw pi-book',
-                        routerLink: ['/'+this.company.externalCompanyId+'/activity']
+                        routerLink: ['/'+this.company.portalAlias+'/activity']
                     },
                     {
                         label: 'Account',
                         icon: 'pi pi-fw pi-user',
-                        routerLink: ['/'+this.company.externalCompanyId+'/account']
+                        routerLink: ['/'+this.company.portalAlias+'/account']
                     }
                 ]
             },

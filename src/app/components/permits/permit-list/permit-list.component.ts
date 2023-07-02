@@ -28,8 +28,8 @@ export class PermitListComponent implements OnInit {
     if(this.company == null)
     {
       this.activatedRoute.params.subscribe(params => {
-        let companyGuid = params['company'];
-        this.router.navigate(['/'+companyGuid+'/auth']);
+        let companyAlias = params['company'];
+        this.router.navigate(['/'+companyAlias+'/auth']);
       });
     }
 
@@ -42,7 +42,6 @@ export class PermitListComponent implements OnInit {
         }
 			},
 			error: (e) => {
-				console.log("errorr");
 				this.messageService.add({
 					key: 'msg',
 					severity: 'error',
@@ -54,10 +53,10 @@ export class PermitListComponent implements OnInit {
   }
 
   onClickNewPermit(){
-    this.router.navigate(['/'+this.company.externalCompanyId+'/new-permit']);
+    this.router.navigate(['/'+this.company.portalAlias+'/new-permit']);
   }
   onViewPermit(permitId: any){
-    this.router.navigate(['/' + this.company.externalCompanyId+'/permits/' + permitId]);
+    this.router.navigate(['/' + this.company.portalAlias+'/permits/' + permitId]);
   }
 
 }

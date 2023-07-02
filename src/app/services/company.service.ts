@@ -17,8 +17,8 @@ export class CompanyService {
     return this.http.get<PermitsResponse<Company[]>>(urlPath);
   }
 
-  getCompanyConfigurations(externalCompanyId: string): Observable<PermitsResponse<Company>>{
-    var urlPath = environment.apiPermitsURL + 'Company/GetCompanyConfigurations/'+externalCompanyId;
+  getCompanyConfigurations(companyAlias: string): Observable<PermitsResponse<Company>>{
+    var urlPath = environment.apiPermitsURL + 'Company/GetCompanyConfigurations/'+companyAlias;
     return this.http.get<PermitsResponse<Company>>(urlPath);
   }
 

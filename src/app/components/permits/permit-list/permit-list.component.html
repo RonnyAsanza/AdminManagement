@@ -24,11 +24,11 @@
                             </div>
                         </div>
                         <div class="card-content py-2">
-                            <label class="card-item">License Plate: {{permit.licensePlate}}</label>
-                            <label class="card-item">Type: {{permit.permitType}}</label>
-                            <label class="card-item">Adress: Ontario Street</label>
-                            <label class="card-item">Start Date: {{permit.startDateUtc | date: 'dd/MMMM/YYYY'}} </label>
-                            <label class="card-item">End date: {{permit.expirationDateUtc | date: 'dd/MMMM/YYYY'}}</label>
+                            <span class="card-item">License Plate: {{permit.licensePlate}}</span>
+                            <span class="card-item">Type: {{permit.permitType}}</span>
+                            <span class="card-item">Adress: Ontario Street</span>
+                            <span class="card-item">Start Date: {{permit.startDateUtc | date: 'dd/MMMM/YYYY'}} </span>
+                            <span class="card-item">End date: {{permit.expirationDateUtc | date: 'dd/MMMM/YYYY'}}</span>
                         </div>
                         <ng-template pTemplate="footer">
                             <button pButton pRipple label="View" icon="pi pi-arrow-right"  class="p-button-primary" (click)="onViewPermit(permit.permitGuid)"></button>

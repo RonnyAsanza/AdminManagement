@@ -14,34 +14,40 @@
                         </ng-template>
                         <div class="p-fluid p-formgrid grid" >
                             <div class="col-12 md:col-6">
-                                <label htmlFor="endDate">Start Date:</label>
-                                <div class="p-inputgroup">
-                                    <input type="text" pInputText readonly name="startDateUtc" value={{startDateUtc}}>
-                                    <span class="p-inputgroup-addon"><i class="pi pi-calendar" style="line-height: 1.25;"></i></span>
-                                </div>
+                                <label>Start Date:
+                                    <div class="p-inputgroup">
+                                        <input type="text" pInputText readonly name="startDateUtc" value={{startDateUtc}}>
+                                        <span class="p-inputgroup-addon"><i class="pi pi-calendar" style="line-height: 1.25;"></i></span>
+                                    </div>
+                                </label>
                             </div>    
                             <div class="col-12 md:col-6">
-                                <label htmlFor="endDate">End Date:</label>
-                                <div class="p-inputgroup">
-                                    <input type="text" pInputText readonly name="expirationDateUtc" value={{expirationDateUtc}}>
-                                    <span class="p-inputgroup-addon"><i class="pi pi-calendar" style="line-height: 1.25;"></i></span>
-                                </div>
+                                <label>End Date:
+                                    <div class="p-inputgroup">
+                                        <input type="text" pInputText readonly name="expirationDateUtc" value={{expirationDateUtc}}>
+                                        <span class="p-inputgroup-addon"><i class="pi pi-calendar" style="line-height: 1.25;"></i></span>
+                                    </div>
+                                </label>
                             </div> 
                             <div class="col-12 md:col-6">
-                                <label htmlFor="licensePlate">License Plate:</label>
-                                <input type="text" pInputText name="licensePlate" readonly value={{permit?.licensePlate}} readonly/>
+                                <label>License Plate:
+                                 <input type="text" pInputText name="licensePlate" readonly value={{permit?.licensePlate}} readonly/>
+                                </label>
                             </div>
                             <div class="col-12 md:col-6">
-                                <label htmlFor="permitType">Permit Type:</label>
-                                <input type="text" pInputText name="permitType" readonly value={{permit?.permitType}} readonly/>
+                                <label>Permit Type:
+                                    <input type="text" pInputText name="permitType" readonly value={{permit?.permitType}} readonly/>
+                                </label>
                             </div>          
                             <div class="col-12 md:col-6">
-                                <label htmlFor="tariff">Tariff Package:</label>
-                                <input type="text" pInputText name="tariff" readonly value={{permit?.tariff}} readonly/>
+                                <label>Tariff Package:
+                                    <input type="text" pInputText name="tariff" readonly value={{permit?.tariff}} readonly/>
+                                </label>
                             </div>                        
                             <div class="col-12 md:col-6">
-                                <label htmlFor="zone">Zone:</label>
-                                <input type="text" pInputText name="zone" readonly value={{permit?.zone}} readonly/>
+                                <label>Zone:
+                                    <input type="text" pInputText name="zone" readonly value={{permit?.zone}} readonly/>
+                                </label>
                             </div>     
                         </div>
                     </p-fieldset>

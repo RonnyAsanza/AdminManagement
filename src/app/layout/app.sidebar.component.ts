@@ -1,5 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LayoutService } from './service/app.layout.service';
+import { CompanyService } from '../services/company.service';
+import { Company } from '../models/company.model';
 
 @Component({
     selector: 'app-sidebar',
@@ -7,9 +9,13 @@ import { LayoutService } from './service/app.layout.service';
 })
 export class AppSidebarComponent {
     timeout: any = null;
-
+    company!: Company;
     @ViewChild('menuContainer') menuContainer!: ElementRef;
-    constructor(public layoutService: LayoutService, public el: ElementRef) {}
+    constructor(public layoutService: LayoutService, public el: ElementRef,
+        private companyService: CompanyService,
+        ) {
+            this.company = this.companyService.getLocalCompany();
+        }
     
 
     onMouseEnter() {

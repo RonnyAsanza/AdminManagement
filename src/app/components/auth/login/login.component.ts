@@ -6,7 +6,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoginRequest } from 'src/app/models/auth/login-request.model';
 import { Company } from 'src/app/models/company.model';
 import { CompanyService } from 'src/app/services/company.service';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
 	templateUrl: './login.component.html',
@@ -37,8 +37,8 @@ export class LoginComponent implements OnInit {
 			this.router.navigate(['/'+user?.companyGuid+'/'], { relativeTo: this.activatedRoute });
 
 		this.activatedRoute.params.subscribe(params => {
-		  var companyGuid = params['company'];
-		  this.companyService.getCompanyConfigurations(companyGuid)
+		  var companyAlias = params['company'];
+		  this.companyService.getCompanyConfigurations(companyAlias)
 		  .subscribe({
 			next: (response) => {
 				if(response.succeeded ){            
@@ -70,12 +70,11 @@ export class LoginComponent implements OnInit {
 			next: (response) => {
 				if(response.succeeded ){            
 				    this.authService.setLocalUser(response.data!);
-					this.router.navigate(['/'+this.company.externalCompanyId+'/'], { relativeTo: this.activatedRoute });
+					this.router.navigate(['/'+this.company.portalAlias+'/'], { relativeTo: this.activatedRoute });
                     return;
 				}
 			},
 			error: (e) => {
-				console.log("errorr");
 				this.messageService.add({
 					key: 'msg',
 					severity: 'error',

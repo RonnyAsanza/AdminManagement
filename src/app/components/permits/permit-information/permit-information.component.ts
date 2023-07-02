@@ -65,7 +65,8 @@ export class PermitInformationComponent {
         next: (response) => {
           if(response.succeeded )
           {
-            this.router.navigate(['/'+this.company.portalAlias+'/permits']);
+            console.log(this.company.portalAlias);
+            this.router.navigate(['/'+this.company.portalAlias]);
           }
         },
         error: (e) => {

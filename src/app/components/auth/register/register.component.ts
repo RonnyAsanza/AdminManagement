@@ -7,10 +7,12 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { Router } from '@angular/router';
 import { PortalUser } from 'src/app/models/portal-user.model';
 import { environment } from 'src/environments/environment';
+import { MessageService } from 'primeng/api';
 
 @Component({
 	templateUrl: './register.component.html',
 	styleUrls: ['./register.component.scss'],
+	providers: [MessageService]
 })
 export class RegisterComponent {
 	form!: FormGroup;
@@ -21,6 +23,7 @@ export class RegisterComponent {
 	constructor(private fb: FormBuilder,
 		private router: Router,
 		private layoutService: LayoutService,
+		private messageService: MessageService,
 		private companyService: CompanyService,
 		private authService: AuthService) {
 
@@ -57,16 +60,21 @@ export class RegisterComponent {
 		portalUser.lastName = form.value.lastName;
 		portalUser.smsPhoneNumber = form.value.phoneNumber;
 		portalUser.companyKey = this.company.companyKey;
-		portalUser.confirmationURL = environment.emailConfirmationURL;
 	
 		this.authService.createPortalUser(portalUser)
 		.subscribe({
 			next: (response) => {
 				if(response.succeeded ){            
-					this.router.navigate(['/'+this.company.externalCompanyId+'/auth']);
+					this.router.navigate(['/'+this.company.portalAlias+'/auth']);
 				}
 			},
 			error: (e) => {
+				this.messageService.add({
+					key: 'msg',
+					severity: 'error',
+					summary: 'Error',
+					detail: e
+				});
 			}
 		   });	
 	  }

@@ -42,6 +42,6 @@ export class CompanyListComponent implements OnInit {
   onGoToCompany(company: Company) {
     localStorage.clear();
     this.companyService.setLocalCompany(company);
-    this.router.navigate(['/'+company.externalCompanyId+'/auth'], { relativeTo: this.activatedRoute });
+    this.router.navigate(['/'+company.portalAlias+'/auth'], { relativeTo: this.activatedRoute });
    }
 }

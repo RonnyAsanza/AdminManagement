@@ -15,8 +15,7 @@ export class AuthGuard {
         return true;
       } else {
         var company = this.companyService.getLocalCompany();
-      //  if(company?.externalCompanyId)
-        var navigateRoute = company?.externalCompanyId? `${company?.externalCompanyId}/`:"";
+        var navigateRoute = company?.portalAlias? `${company?.portalAlias}/`:"";
         this.router.navigate([`/${navigateRoute}auth/` ]);
         return false;
       }

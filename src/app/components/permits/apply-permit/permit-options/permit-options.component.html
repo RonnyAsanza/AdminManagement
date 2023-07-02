@@ -10,94 +10,105 @@
                 <div class="p-fluid p-formgrid grid" >
                     <div class="col-12 xl:col-6">
                         <div class="col-12">
-                            <label htmlFor="zone">Zone:</label>
-							<input type="text" readonly pInputText name="zone" formControlName="zone"/>
+                            <label>Zone:
+							    <input type="text" readonly pInputText name="zone" formControlName="zone"/>
+                            </label>
                         </div>    
                         <div class="col-12">
-                            <label htmlFor="permitType">Type*:</label>
-                            <p-dropdown 
-                                formControlName="permitType"
-                                name="permitType" 
-                                optionLabel="name" 
-                                [options]="permitTypes" 
-                                placeholder="Select Zone" 
-                                class="w-full"
-                            >
-                                <ng-template let-option pTemplate="item">
-                                    {{option.name}}
-                                </ng-template>
-                            </p-dropdown>   
+                            <label>Type*:
+                                <p-dropdown 
+                                    formControlName="permitType"
+                                    name="permitType" 
+                                    optionLabel="name" 
+                                    [options]="permitTypes" 
+                                    placeholder="Select Zone" 
+                                    class="w-full"
+                                >
+                                    <ng-template let-option pTemplate="item">
+                                        {{option.name}}
+                                    </ng-template>
+                                </p-dropdown>   
+                            </label>
                         </div>    
                         <div class="col-12">
-                            <label htmlFor="tariff">Tariff*:</label>
-                            <p-dropdown 
-                                formControlName="tariff"
-                                name="tariff" 
-                                optionLabel="name" 
-                                [options]="tariffs" 
-                                placeholder="Select Tariff" 
-                                (onChange)="onTariffChange($event)"
-                                class="w-full"
-                            >
-                                <ng-template let-option pTemplate="item">
-                                    {{option.name}}
-                                </ng-template>
-                            </p-dropdown>  
+                            <label>Tariff*:
+                                <p-dropdown 
+                                    formControlName="tariff"
+                                    name="tariff" 
+                                    optionLabel="name" 
+                                    [options]="tariffs" 
+                                    placeholder="Select Tariff" 
+                                    (onChange)="onTariffChange($event)"
+                                    class="w-full"
+                                >
+                                    <ng-template let-option pTemplate="item">
+                                        {{option.name}}
+                                    </ng-template>
+                                </p-dropdown>  
+                            </label>
                         </div>    
                         <div class="col-12">
-                            <label htmlFor="startDate">Start Date*:</label>
-                            <p-calendar [showIcon]="true"
-                                        [touchUI]="true" 
-                                        [showButtonBar]="true"
-                                        formControlName="startDate"
-                                        (onSelect)="onChangeStartDate()"
-                                        name="startDate">
-                            </p-calendar>
+                            <label>Start Date*:
+                                <p-calendar [showIcon]="true"
+                                            [touchUI]="true" 
+                                            [showButtonBar]="true"
+                                            formControlName="startDate"
+                                            (onSelect)="onChangeStartDate()"
+                                            name="startDate">
+                                </p-calendar>
+                            </label>
                         </div>    
                         <div class="col-12">
-                            <label htmlFor="endDate">End Date:</label>
-                            <div class="p-inputgroup">
-                                <input type="text" pInputText readonly formControlName="endDate" name="endDate">
-                                <span class="p-inputgroup-addon"><i class="pi pi-calendar" style="line-height: 1.25;"></i></span>
-                            </div>
+                            <label>End Date:
+                                <div class="p-inputgroup">
+                                    <input type="text" pInputText readonly formControlName="endDate" name="endDate">
+                                    <span class="p-inputgroup-addon"><i class="pi pi-calendar" style="line-height: 1.25;"></i></span>
+                                </div>
+                            </label>
                         </div>    
                         <div class="col-12">
-                            <label htmlFor="licensePlate">License Plate*:</label>
-							<input type="text" pInputText name="licensePlate" formControlName="licensePlate" onkeyup="this.value = this.value.toUpperCase();"/>
+                            <label>License Plate*:
+							    <input type="text" pInputText name="licensePlate" formControlName="licensePlate" onkeyup="this.value = this.value.toUpperCase();"/>
+                            </label>
                         </div>    
                         <div class="col-12">
-                            <label htmlFor="price">Unit Price:</label>
-                            <div class="p-inputgroup">
-                                <span class="p-inputgroup-addon">CAD</span>
-                                <input type="number" min="1" pInputText name="price" formControlName="price" readonly/>
-                                <span class="p-inputgroup-addon">.00</span>
-                            </div>
+                            <label>Unit Price:
+                                <div class="p-inputgroup">
+                                    <span class="p-inputgroup-addon">CAD</span>
+                                    <input type="number" min="1" pInputText name="price" formControlName="price" readonly/>
+                                    <span class="p-inputgroup-addon">.00</span>
+                                </div>
+                            </label>
                         </div>
                         <div class="col-12">
-                            <label htmlFor="quantity">Quantity*:</label>
-                            <p-inputNumber 
-                                formControlName="quantity" 
-                                [min]=1 
-                                (onInput)="onChangeQuantity()"
-                                [showButtons]="true" 
-                                inputId="quantity"> 
-                            </p-inputNumber>
+                            <label>Quantity*:
+                                <p-inputNumber 
+                                    formControlName="quantity" 
+                                    [min]=1 
+                                    (onInput)="onChangeQuantity()"
+                                    [showButtons]="true" 
+                                    inputId="quantity"> 
+                                </p-inputNumber>
+                            </label>
                         </div>                       
                         <div class="col-12">
-                            <label htmlFor="startDate">Total:</label>
-                            <div class="p-inputgroup">
-                                <span class="p-inputgroup-addon">CAD</span>
-                                <input type="total" min="1" pInputText name="total" formControlName="total" readonly/>
-                                <span class="p-inputgroup-addon">.00</span>
-                            </div>
+                            <label>Total:
+                                <div class="p-inputgroup">
+                                    <span class="p-inputgroup-addon">CAD</span>
+                                    <input type="total" min="1" pInputText name="total" formControlName="total" readonly/>
+                                    <span class="p-inputgroup-addon">.00</span>
+                                </div>
+                            </label>
                         </div>                      
                         <div class="col-12">
-                            <label htmlFor="optional1">Optional Input 1:</label>
-							<input type="text" pInputText name="optional1" formControlName="optional1"/>
+                            <label>Optional Input 1:
+                                <input type="text" pInputText name="optional1" formControlName="optional1"/>
+                            </label>
                         </div>
                         <div class="col-12">
-                            <label htmlFor="startDate">Optional Input 2:</label>
-							<input type="text" pInputText name="optional2" formControlName="optional2"/>
+                            <label htmlFor="startDate">Optional Input 2:
+                                <input type="text" pInputText name="optional2" formControlName="optional2"/>
+                            </label>
                         </div>
                     </div>   
                     <div class="col-12 xl:col-6">
@@ -110,21 +121,23 @@
                                     </span>
                                 </div>
                                 <div class="col-12">
-                                    <label htmlFor="driversLicense">Drivers License (Picture):</label>
-                                    <p-fileUpload name="driversLicense"
-                                        [customUpload]="true"
-                                        (uploadHandler)="uploadfun($event)"
-                                        [auto]="true">
-                                    </p-fileUpload>
+                                    <label htmlFor="driversLicense">Drivers License (Picture):
+                                        <p-fileUpload name="driversLicense"
+                                            [customUpload]="true"
+                                            (uploadHandler)="uploadfun($event)"
+                                            [auto]="true">
+                                        </p-fileUpload>
+                                    </label>
                                 </div>
                                 <div class="col-12">
-                                    <label htmlFor="proffOfResidence">Proff of Residence:</label>
-                                    <p-fileUpload name="proffOfResidence"
-                                        [customUpload]="true"
-                                        skinSimple="true"
-                                        (uploadHandler)="uploadfun($event)"
-                                        [auto]="true">
-                                    </p-fileUpload>
+                                    <label htmlFor="proffOfResidence">Proff of Residence:
+                                        <p-fileUpload name="proffOfResidence"
+                                            [customUpload]="true"
+                                            skinSimple="true"
+                                            (uploadHandler)="uploadfun($event)"
+                                            [auto]="true">
+                                        </p-fileUpload>
+                                    </label>
                                 </div>
                                 <div class="col-12">
                                     <div class="grid">

@@ -9,6 +9,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
 import { AppConfigModule } from 'src/app/layout/config/app.config.module';
 import { PasswordModule } from 'primeng/password';
+import { ToastModule } from 'primeng/toast';
+import { MessageModule } from 'primeng/message';
+import { MessagesModule } from 'primeng/messages';
 
 @NgModule({
     imports: [
@@ -21,6 +24,9 @@ import { PasswordModule } from 'primeng/password';
         CheckboxModule,
         ReactiveFormsModule,
         AppConfigModule,
+        MessageModule,
+        MessagesModule,
+        ToastModule,
         PasswordModule
     ],
     declarations: [RegisterComponent]

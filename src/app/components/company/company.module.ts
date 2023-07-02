@@ -7,6 +7,7 @@ import { CompanyRoutingModule } from './company-routing.moule';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -15,6 +16,7 @@ import { ToastModule } from 'primeng/toast';
 		FormsModule,
 		CompanyRoutingModule,
 		ButtonModule,
+		SharedModule,
 		TableModule,
 		ToastModule,
 		InputTextModule

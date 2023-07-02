@@ -55,7 +55,7 @@ export class AuthService {
 
   confirmEmail(companyId: string, activationCode: string): Observable<PermitsResponse<number>>{
     let body = {
-      CompanyAlias: companyId,
+      PortalAlias: companyId,
       ActivationCode: activationCode,
     };
 

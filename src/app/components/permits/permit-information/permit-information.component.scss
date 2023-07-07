@@ -1,0 +1,33 @@
+#outerDiv {
+    position: relative;
+    width: 100%;
+    padding-bottom: 75%; /* Set the aspect ratio of the frame (e.g., 4:3) */
+  }
+  
+  #monerisCheckout {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Adjust the frame width at different screen widths */
+  @media (max-width: 576px) {
+    #outerDiv {
+      padding-bottom: 100%; /* Set the aspect ratio of the frame for smaller screens */
+    }
+  }
+  
+  @media (min-width: 768px) {
+    #outerDiv {
+      padding-bottom: 76%; /* Set the aspect ratio of the frame for medium screens */
+    }
+  }
+  
+  @media (min-width: 992px) {
+    #outerDiv {
+      padding-bottom: 55%; /* Set the aspect ratio of the frame for larger screens */
+    }
+  }
+  

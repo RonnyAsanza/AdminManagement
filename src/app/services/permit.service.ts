@@ -18,8 +18,12 @@ export class PermitService {
   permit = this.permitSource.asObservable()
 
   applyPermit(applyPermit: ApplyPermit): Observable<PermitsResponse<number>>{
-    var urlPath = environment.apiPermitsURL + 'Permit/ApplyPermit';
-    return this.http.post<PermitsResponse<number>>(urlPath, applyPermit);
+    let ApplyPermitViewModel = {
+      ApplyPermitViewModel: applyPermit
+    };
+
+    var urlPath = environment.apiPermitsURL + 'Application/ApplyPermit';
+    return this.http.post<PermitsResponse<number>>(urlPath, ApplyPermitViewModel);
   }
 
   getPermitbyId(permitId: string): Observable<PermitsResponse<Permit>>{

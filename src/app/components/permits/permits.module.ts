@@ -16,6 +16,7 @@ import { PanelModule } from 'primeng/panel';
 import { TableModule } from 'primeng/table';
 import { FieldsetModule } from 'primeng/fieldset';
 import { DataViewModule } from 'primeng/dataview';
+import { ApplicationInformationComponent } from './application-information/application-information.component';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { DataViewModule } from 'primeng/dataview';
   ],
   declarations: [
     PermitListComponent,
-    PermitInformationComponent
+    PermitInformationComponent,
+    ApplicationInformationComponent
   ],
 
 })

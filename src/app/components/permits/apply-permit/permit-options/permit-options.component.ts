@@ -46,7 +46,6 @@ export class PermitOptionsComponent {
 
  uploadedFiles: any[] = [];
 
-
   ngOnInit(): void {
     this.company = this.companyService.getLocalCompany();
     var endDate = new Date();
@@ -155,10 +154,6 @@ export class PermitOptionsComponent {
 
     this.permit = { ...permit };
     this.confirmationDialog = true;
-
-    /*
-
-      */
   }
 
   onCancel(){

@@ -1,10 +1,74 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ApplicationService } from 'src/app/services/application.service';
+import { CompanyService } from 'src/app/services/company.service';
+import { Company } from 'src/app/models/company.model';
+import { Application } from 'src/app/models/application.model';
 
 @Component({
   selector: 'app-application-information',
   templateUrl: './application-information.component.html',
-  styleUrls: ['./application-information.component.scss']
+  styleUrls: ['./application-information.component.scss'],
+  providers: [DatePipe]
 })
-export class ApplicationInformationComponent {
+export class ApplicationInformationComponent implements OnInit {
+  applicationId: string = "";
+  company!: Company;
+  application!: Application;
+  startDateUtc : string = "";
+  expirationDateUtc : string = "";
+  constructor(private activatedRoute: ActivatedRoute,
+    private datePipe: DatePipe,
+    private router: Router,
+    private applicationService: ApplicationService,
+    private companyService: CompanyService) { }
 
+  ngOnInit(): void {
+    this.company = this.companyService.getLocalCompany();
+    this.activatedRoute.params.subscribe(params => {
+      this.applicationId = params['applicationId'];
+      this.applicationService.getApplicationbyId(this.applicationId)
+        .subscribe((response)=>{
+          if(response.succeeded )
+          {
+            this.application = response.data!;
+            this.startDateUtc = this.datePipe.transform(this.application.startDateUtc, 'dd/MMMM/YYYY HH:mm')!;
+            this.expirationDateUtc = this.datePipe.transform(this.application.expirationDateUtc, 'dd/MMMM/YYYY HH:mm')!;
+          }
+          else
+          {
+            this.router.navigate(['/'+this.company.portalAlias+'/']);
+          }
+        });
+    });
+  }
+
+  onClickSubmit(){
+    this.applicationService.submitApplication(this.applicationId)
+    .subscribe({
+      next: (response) => {
+        if(response.succeeded )
+        {
+          this.router.navigate(['/'+this.company.portalAlias]);
+        }
+      },
+      error: (e) => {
+      }
+    });
+  }
+
+  onClickCancelApplication(){
+    this.applicationService.cancelApplication(this.applicationId)
+    .subscribe({
+      next: (response) => {
+        if(response.succeeded )
+        {
+          this.router.navigate(['/'+this.company.portalAlias]);
+        }
+      },
+      error: (e) => {
+      }
+    });
+  }
 }

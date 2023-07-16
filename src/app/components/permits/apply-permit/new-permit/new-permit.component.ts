@@ -32,7 +32,7 @@ export class NewPermitComponent  {
     this.selectedIndex++;
   }
 
-  onSelectPermitType(value: any) {
+  onSelectPermitType() {
     this.selectedIndex = 1;
   }
 }

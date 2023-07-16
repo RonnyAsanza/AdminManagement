@@ -1,11 +1,13 @@
+import { PermitTypeViewModel } from "./permit-type.model";
 import { PermitType } from "./permit-type.models";
 
 export class ApplyPermit {
   companyKey?: number;
   zoneName?: string;
   zoneKey?: number;
-  permitType?: PermitType;
+  permitTypeKey?: number;
   name?: string;
+  permitTypeModel?: PermitTypeViewModel;
   zoneTypeKey?: number;
   zoneType?: string;
   tariffKey?: number;

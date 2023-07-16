@@ -42,17 +42,16 @@ export class SelectZoneComponent {
     onClickNext(){
       var zone: any = this.zoneControl.value;
       if(zone && zone.name)
-    {
-        var permit = new ApplyPermit();
-        permit.zoneName = zone.name;
-        permit.zoneKey = zone.zoneKey;
-        permit.zoneType = zone.zoneType;
-        permit.zoneTypeKey = zone.zoneTypeKey;
-        permit.companyKey  = this.localCompany.companyKey;
+      {
+        var permit = this.permitService.getLocalApplyPermit();
+          permit.zoneName = zone.name;
+          permit.zoneKey = zone.zoneKey;
+          permit.zoneType = zone.zoneType;
+          permit.zoneTypeKey = zone.zoneTypeKey;
   
-        this.permitService.setLocalApplyPermit(permit);
-        this.goNext.emit();
-      }
+          this.permitService.setLocalApplyPermit(permit);
+          this.goNext.emit();
+        }
     }
 
 }

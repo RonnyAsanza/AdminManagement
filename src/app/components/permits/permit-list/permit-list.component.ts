@@ -5,6 +5,8 @@ import { Permit } from 'src/app/models/permit.model';
 import { CompanyService } from 'src/app/services/company.service';
 import { PermitService } from 'src/app/services/permit.service';
 import { MessageService } from 'primeng/api';
+import { Application } from 'src/app/models/application.model';
+import { ApplicationService } from 'src/app/services/application.service';
 
 @Component({
   selector: 'app-permit-list',
@@ -15,10 +17,12 @@ import { MessageService } from 'primeng/api';
 export class PermitListComponent implements OnInit {
   company!: Company;
   permits!: Permit[];
+  applications!: Application[];
 
   constructor(private companyService: CompanyService,
               private router: Router,
               private permitService: PermitService,
+              private applicationService: ApplicationService,
               private messageService: MessageService,
               private activatedRoute: ActivatedRoute) { }
 
@@ -50,6 +54,24 @@ export class PermitListComponent implements OnInit {
 				});
 			}
     });
+
+    this.applicationService.getApplicationsByUser()
+    .subscribe({
+			next: (response) => {
+        if(response.succeeded )
+        {
+          this.applications = response.data!;
+        }
+			},
+			error: (e) => {
+				this.messageService.add({
+					key: 'msg',
+					severity: 'error',
+					summary: 'Error',
+					detail: e	
+				});
+			}
+    });
   }
 
   onClickNewPermit(){
@@ -58,5 +80,7 @@ export class PermitListComponent implements OnInit {
   onViewPermit(permitId: any){
     this.router.navigate(['/' + this.company.portalAlias+'/permits/' + permitId]);
   }
-
+  onViewApplication(applicationId: any){
+    this.router.navigate(['/' + this.company.portalAlias+'/application/' + applicationId]);
+  }
 }

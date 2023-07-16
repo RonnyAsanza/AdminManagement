@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Company } from 'src/app/models/company.model';
 import { CreditCard } from 'src/app/models/credit-card.models';
@@ -22,7 +22,7 @@ declare var monerisCheckout: any;
   styleUrls: ['./permit-information.component.scss'],
   providers: [DatePipe]
 })
-export class PermitInformationComponent {
+export class PermitInformationComponent implements OnInit {
   permitId: string = "";
   permit!: Permit;
   company!: Company;

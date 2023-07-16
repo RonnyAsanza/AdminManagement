@@ -1,1 +1,78 @@
-<p>application-information works!</p>
+<div class="grid">
+    <div class="col-12">
+        <ng-container>
+            <div class="grid" >
+                <div class="col-12">
+                    <h4>Application Information</h4>
+                </div>
+            </div>
+            <div class="col-12">
+                <p-fieldset class="line-height-3 m-0 bg-color py-0">
+                    <ng-template pTemplate="header">
+                        <span [class]="'permits-badge ' + application?.applicationStatusKey">{{application?.applicationStatus}}</span>
+                    </ng-template>
+                    <div class="p-fluid p-formgrid grid" >
+                        <div class="col-12 md:col-6">
+                            <label>Start Date:
+                                <div class="p-inputgroup">
+                                    <input type="text" pInputText readonly name="startDateUtc" value={{startDateUtc}}>
+                                    <span class="p-inputgroup-addon"><i class="pi pi-calendar" style="line-height: 1.25;"></i></span>
+                                </div>
+                            </label>
+                        </div>    
+                        <div class="col-12 md:col-6">
+                            <label>End Date:
+                                <div class="p-inputgroup">
+                                    <input type="text" pInputText readonly name="expirationDateUtc" value={{expirationDateUtc}}>
+                                    <span class="p-inputgroup-addon"><i class="pi pi-calendar" style="line-height: 1.25;"></i></span>
+                                </div>
+                            </label>
+                        </div> 
+                        <div class="col-12 md:col-6">
+                            <label>License Plate:
+                                <input type="text" pInputText name="licensePlate" readonly value={{application?.licensePlate}} readonly/>
+                            </label>
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <label>Permit Type:
+                                <input type="text" pInputText name="permitType" readonly value={{application?.permitType}} readonly/>
+                            </label>
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <label>Tariff Package:
+                                <input type="text" pInputText name="tariff" readonly value={{application?.tariff}} readonly/>
+                            </label>
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <label>Price:
+                                <input type="text" pInputText name="tariff" readonly value={{application?.costToClient}} readonly/>
+                            </label>
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <label>Zone:
+                                <input type="text" pInputText name="zone" readonly value={{application?.zone}} readonly/>
+                            </label>
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <label>Status:
+                                <input type="text" pInputText name="zone" readonly value={{application?.applicationStatus}} readonly/>
+                            </label>
+                        </div>  
+                        <div class="col-12">
+                            <div class="grid">
+                                <div class="col-12 md:col-6">
+                                    <button pButton pRipple icon="pi pi-times-circle" label="Cancel" class="p-button-danger w-full" (click)="onClickSubmit()">
+                                    </button>
+                                </div>
+                                <div class="col-12 md:col-6" *ngIf="application?.applicationStatusKey === 1">
+                                    <button pButton pRipple icon="pi pi-save" class="p-button-primary w-full" label="Submit" (click)="onClickSubmit()">
+                                    </button>
+                                </div>
+                            </div>  
+                        </div> 
+                    </div>
+                </p-fieldset>
+            </div>
+        </ng-container>
+    </div>
+</div>

@@ -7,15 +7,18 @@
                 </div>
             </div>
             <div class="grid" >
-                <div class="col-12 md:col-6 xl:col-3">
+                <div class="col-12 md:col-6 xl:col-3"
+                *ngFor="let permitType of permitTypes"
+                >
                     <p-card
                         class="card-content"
-                        (click)="permitTypeSelected.emit(1)"
+                        (click)="onSlectPermitType(permitType)"
                     >
-                        <p>On Street Parking</p>
-                        <img src="../../../../../assets/images/permits/car.png" alt="On Street" class="permittype-image">
+                        <p>{{permitType.name}}</p>
+                        <img src="../../../../../assets/images/permits/parking.png" alt="{{permitType.name}}" class="permittype-image">
                     </p-card>
                 </div>   
+                <!--
                 <div class="col-12 md:col-6 xl:col-3">
                     <p-card
                         class="card-content"
@@ -33,7 +36,8 @@
                         <p>Condo Parking</p>
                         <img src="../../../../../assets/images/permits/condo.png" alt="Condo Parking" class="permittype-image">
                     </p-card>
-                </div>                             
+                </div> 
+                 -->                            
             </div>
         </ng-container>
     </div>

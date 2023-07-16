@@ -66,6 +66,7 @@ export class PermitOptionsComponent {
         optional1: [''],
         optional2: [''],
       });
+      this.permit = permit;
     });
   }
 
@@ -140,7 +141,6 @@ export class PermitOptionsComponent {
 
   onSubmitPermit(): void {
     var permit = this.permitService.getLocalApplyPermit();
-    permit.permitType = this.form?.value.permitType;
     permit.tariffKey = this.form?.value.tariff.tariffId;
     permit.startDateUtc = this.form?.value.startDate;
     permit.expirationDateUtc = this.form?.value.endDate;
@@ -151,7 +151,6 @@ export class PermitOptionsComponent {
     permit.additionalInput1 = this.form?.value.optional1;
     permit.additionalInput2 = this.form?.value.optional2;
     this.permitService.setLocalApplyPermit(permit);
-
     this.permit = { ...permit };
     this.confirmationDialog = true;
   }
@@ -167,14 +166,15 @@ export class PermitOptionsComponent {
   }
 
   savePermit(){
-    this.permitService.applyPermit(this.permit)
+    var permit = this.permitService.getLocalApplyPermit();
+    this.permitService.applyPermit(permit)
     .subscribe({
       next: (response) => {
         if(response.succeeded )
         {
-         // this.permitService.setLocalApplyPermit(new ApplyPermit());
           this.hideDialog();
-          this.router.navigate(['/' + this.company.portalAlias+'/permits/' + response.data]);
+          var path = (permit.permitTypeModel?.requireAccessControl === true)? 'application':'permits';
+          this.router.navigate(['/' + this.company.portalAlias+'/'+path+'/' + response.data]);
         }
       },
       error: (e) => {

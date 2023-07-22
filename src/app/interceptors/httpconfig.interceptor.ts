@@ -31,8 +31,17 @@ export class HttpConfigInterceptor implements HttpInterceptor {
       this.totalRequests++;
       this.loader.show();
       request = this.addAuthToken(request);
-      request = request.clone({ headers: request.headers.set('Content-Type', 'application/json') });
-      //request = request.clone({ headers: request.headers.set('Content-Type', 'multipart/form-data') });
+      if (request.method === 'POST' || request.method === 'PUT') {
+
+        if (this.hasFileInRequestBody(request.body)) {
+          request = request.clone({ headers: request.headers.set('accept', '*/*') });
+          request = request.clone({ headers: request.headers.set('Content-Type', 'multipart/form-data; boundary=pplPermits') });
+        }
+        else
+        {
+          request = request.clone({ headers: request.headers.set('Content-Type', 'application/json') });
+        }
+      }
       request = request.clone({ headers: request.headers.set('Cache-Control', 'no-cache') });
       request = request.clone({ headers: request.headers.set('Access-Control-Allow-Origin', '*') });
 
@@ -70,4 +79,8 @@ export class HttpConfigInterceptor implements HttpInterceptor {
           },
         });
       }
+      private hasFileInRequestBody(body: any): boolean {
+        return body instanceof FormData;
+      }
+
 }

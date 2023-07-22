@@ -56,9 +56,14 @@ export class PermitService {
       formData.append('proofReisdence', applyPermit.proofReisdence, applyPermit.proofReisdence.name);
     }
 
+    const formData2: FormData = new FormData();
+    formData2.append('proofReisdence', applyPermit.proofReisdence!);
+
+
+    console.log("licensePlate",formData.get("licensePlate"));
     console.log("formData",formData);
     var urlPath = environment.apiPermitsURL + 'Application/ApplyPermit';
-    return this.http.post<PermitsResponse<number>>(urlPath, formData);
+    return this.http.post<PermitsResponse<number>>(urlPath, formData2);
   }
 
   getPermitbyId(permitId: string): Observable<PermitsResponse<Permit>>{

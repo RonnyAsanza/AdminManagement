@@ -207,7 +207,7 @@ export class PermitOptionsComponent {
     };
    }
    */
-   console.log(permit);
+
     this.permitService.applyPermit(permit)
     .subscribe({
       next: (response) => {

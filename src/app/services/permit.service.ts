@@ -22,8 +22,43 @@ export class PermitService {
       ApplyPermitViewModel: applyPermit
     };
 
+    const formData: FormData = new FormData();
+    formData.append('companyKey', applyPermit.companyKey?.toString() || '');
+    formData.append('zoneName', applyPermit.zoneName || '');
+    formData.append('zoneKey', applyPermit.zoneKey?.toString() || '');
+    formData.append('permitTypeKey', applyPermit.permitTypeKey?.toString() || '');
+    // Append other properties to formData as needed
+
+    formData.append('name', applyPermit.name || '');
+    formData.append('zoneTypeKey', applyPermit.zoneTypeKey?.toString() || '');
+    formData.append('zoneType', applyPermit.zoneType || '');
+    formData.append('tariffKey', applyPermit.tariffKey?.toString() || '');
+    // Append other properties to formData as needed
+
+    formData.append('startDateUtc', applyPermit.startDateUtc?.toString() || '');
+    formData.append('expirationDateUtc', applyPermit.expirationDateUtc || '');
+    formData.append('licensePlate', applyPermit.licensePlate || '');
+    formData.append('quantity', applyPermit.quantity?.toString() || '');
+    // Append other properties to formData as needed
+
+    formData.append('price', applyPermit.price?.toString() || '');
+    formData.append('total', applyPermit.total?.toString() || '');
+    formData.append('additionalInput1', applyPermit.additionalInput1 || '');
+    formData.append('additionalInput2', applyPermit.additionalInput2 || '');
+
+    // Append the licenseDriver file to formData
+    if (applyPermit.licenseDriver) {
+      formData.append('licenseDriver', applyPermit.licenseDriver, applyPermit.licenseDriver.name);
+    }
+
+    // Append the proofReisdence file to formData
+    if (applyPermit.proofReisdence) {
+      formData.append('proofReisdence', applyPermit.proofReisdence, applyPermit.proofReisdence.name);
+    }
+
+    console.log("formData",formData);
     var urlPath = environment.apiPermitsURL + 'Application/ApplyPermit';
-    return this.http.post<PermitsResponse<number>>(urlPath, ApplyPermitViewModel);
+    return this.http.post<PermitsResponse<number>>(urlPath, formData);
   }
 
   getPermitbyId(permitId: string): Observable<PermitsResponse<Permit>>{

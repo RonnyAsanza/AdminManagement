@@ -116,28 +116,128 @@
     font-size: 12px;
     letter-spacing: .3px;
 
-    &.active  {
-        background: #C8E6C9;
-        color: #256029;
-    }
-
-    &.payment-accepted  {
-        background: #C8E6C9;
-        color: #256029;
-    }
-
-    &.payment-failed {
-        background: #FFCDD2;
-        color: #C63737;
-    }
-
+    /* Payment Pending - Orange */
     &.payment-pending {
-        background: #FEEDAF;
-        color: #8A5340;
+        color: #ff7f00;
+        background-color: #ffdbac; /* Light orange background color */
     }
 
-    &.suspended {
-        background: #ECCFFF;
-        color: #694382;
+    /* Payment Failed - Red */
+    &.payment-failed {
+        color: #ff0000;
+        background-color: #ffc0cb; /* Pink background color */
     }
+
+    /* Issued - Green */
+    &.issued {
+        color: #00cc00;
+        background-color: #98fb98; /* Pale green background color */
+    }
+
+    /* Active - Dark Green */
+    &.active {
+        color: #008000;
+        background-color: #9acd32; /* Yellow-green background color */
+    }
+
+    /* Expired - Gray */
+    &.expired {
+        color: #808080;
+        background-color: #d3d3d3; /* Light gray background color */
+    }
+
+    /* Cancelled - Dark Red */
+    &.cancelled {
+        color: #8b0000;
+        background-color: #b22222; /* Firebrick background color */
+    }
+
+    /* Suspended - Purple */
+    &.suspended {
+        color: #800080;
+        background-color: #ba55d3; /* Medium purple background color */
+    }
+
+    /* Archived - Brown */
+    .archived {
+        color: #a52a2a;
+        background-color: #d2691e; /* Chocolate background color */
+    }
+
+    /* Payment Accepted - Dark Blue */
+    .payment-accepted {
+        color: #00008b;
+        background-color: #add8e6; /* Light blue background color */
+    }
+
+}
+
+.applications-badge {
+    border-radius: var(--border-radius);
+    padding: .25em .5rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .3px;
+
+    /* New - Blue */
+    &.new {
+        color: #007bff;
+        background-color: #cce5ff; /* Light blue background color */
+    }
+
+    /* Request Ready - Green */
+    &.request-ready {
+        color: #008000;
+        background-color: #ccffcc; /* Light green background color */
+    }
+
+    /* Incomplete - Yellow */
+    &.incomplete {
+        color: #ffff00;
+        background-color: #fffae6; /* Light yellow background color */
+    }
+
+    /* Cancelled - Dark Red */
+    &.cancelled {
+        color: #8b0000;
+        background-color: #ffd6cc; /* Light red background color */
+    }
+
+    /* Suspended - Purple */
+    &.suspended {
+        color: #800080;
+        background-color: #e6ccff; /* Light purple background color */
+    }
+
+    /* Denied - Red */
+    &.denied {
+        color: #ff0000;
+        background-color: #ffb3b3; /* Pale red background color */
+    }
+
+    /* Approved - Green */
+    &.approved {
+        color: #008000;
+        background-color: #dfffdf; /* Pale green background color */
+    }
+
+    /* Archived - Brown */
+    &.archived {
+        color: #a52a2a;
+        background-color: #ffdab3; /* Pale brown background color */
+    }
+
+    /* Resubmission - Orange */
+    &.resubmission {
+        color: #ff7f00;
+        background-color: #ffe0b3; /* Pale orange background color */
+    }
+
+    /* Deleted - Gray */
+    &.deleted {
+        color: #808080;
+        background-color: #f2f2f2; /* Light gray background color */
+    }
+
 }

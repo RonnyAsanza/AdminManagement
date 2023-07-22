@@ -32,6 +32,7 @@ export class HttpConfigInterceptor implements HttpInterceptor {
       this.loader.show();
       request = this.addAuthToken(request);
       request = request.clone({ headers: request.headers.set('Content-Type', 'application/json') });
+      //request = request.clone({ headers: request.headers.set('Content-Type', 'multipart/form-data') });
       request = request.clone({ headers: request.headers.set('Cache-Control', 'no-cache') });
       request = request.clone({ headers: request.headers.set('Access-Control-Allow-Origin', '*') });
 

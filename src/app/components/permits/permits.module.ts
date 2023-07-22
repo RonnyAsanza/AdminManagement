@@ -17,7 +17,10 @@ import { TableModule } from 'primeng/table';
 import { FieldsetModule } from 'primeng/fieldset';
 import { DataViewModule } from 'primeng/dataview';
 import { ApplicationInformationComponent } from './application-information/application-information.component';
-
+import { ApplicationListComponent } from './application-list/application-list.component';
+import { ActivityListComponent } from './activity-list/activity-list.component';
+import { PermitHomeComponent } from './permit-home/permit-home.component';
+import { TabMenuModule } from 'primeng/tabmenu';
 
 @NgModule({
   imports: [
@@ -37,12 +40,16 @@ import { ApplicationInformationComponent } from './application-information/appli
     TableModule,
     FieldsetModule,
     DataViewModule,
-    PermitssRoutingModule
+    PermitssRoutingModule,
+    TabMenuModule
   ],
   declarations: [
     PermitListComponent,
     PermitInformationComponent,
-    ApplicationInformationComponent
+    ApplicationInformationComponent,
+    ApplicationListComponent,
+    ActivityListComponent,
+    PermitHomeComponent
   ],
 
 })

@@ -1,0 +1,32 @@
+<div class="grid">
+    <div class="col-12 px-6">
+        <p-toast></p-toast>
+        <ng-container>
+            <div class="grid" >
+                <div class="col-12 xl:col-6">
+                    <p-tabMenu [model]="items" [activeItem]="activeItem"></p-tabMenu>
+                </div>  
+                <div class="col-12 xl:col-6">
+                    <button pButton pRipple icon="pi pi-plus-circle" class="p-button-primary w-full" (click)="onClickNewPermit()">
+                        <span class="ml-2">Apply for new permit</span>
+                    </button>
+                </div>    
+                <div class="col-12" *ngIf="tabIndex === 0">
+                    <app-activity-list
+                    >
+                    </app-activity-list>
+                </div> 
+                <div class="col-12" *ngIf="tabIndex === 1">
+                    <app-application-list
+                    >
+                    </app-application-list>
+                </div>   
+                <div class="col-12" *ngIf="tabIndex === 2">
+                    <app-permit-list
+                    >
+                    </app-permit-list>
+                </div>                          
+            </div>
+        </ng-container>
+    </div>
+</div>

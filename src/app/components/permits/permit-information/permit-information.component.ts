@@ -29,6 +29,7 @@ export class PermitInformationComponent implements OnInit {
   ticket: string = "";
   startDateUtc : string = "";
   expirationDateUtc : string = "";
+  paymentTC: boolean = false;
   creditCards: CreditCard[] =
   [
     new CreditCard(1, 'Mario Asanza', 'American Express', '3730****2324', '01/29'),
@@ -37,7 +38,8 @@ export class PermitInformationComponent implements OnInit {
   ];
   paymentTypes: PaymentType[] =
   [
-    new PaymentType(1, 'Credit Card')
+    new PaymentType(1, 'Credit Card'),
+    new PaymentType(2, 'Cash')
   ];
   paymentType!: PaymentType;
   constructor(private activatedRoute: ActivatedRoute,
@@ -60,7 +62,6 @@ export class PermitInformationComponent implements OnInit {
               this.permit = response.data!;
               this.startDateUtc = this.datePipe.transform(this.permit.startDateUtc, 'dd/MMMM/YYYY HH:mm')!;
               this.expirationDateUtc = this.datePipe.transform(this.permit.expirationDateUtc, 'dd/MMMM/YYYY HH:mm')!;
-              this.MonerisPreloadRequest();
             }
             else
             {
@@ -68,7 +69,18 @@ export class PermitInformationComponent implements OnInit {
             }
           });
       });
+    }
 
+    OnSelectPaymentType(paymentType: PaymentType){
+      if(paymentType.paymentTypeKey === 1)
+      {
+        this.paymentTC = true;
+        this.MonerisPreloadRequest();
+      }
+      else
+      {
+        this.paymentTC = false;
+      }
     }
 
     onClickPayment(){

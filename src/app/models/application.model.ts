@@ -13,5 +13,6 @@ export class Application {
     expirationDateUtc? : Date;
     applicationStatusKey?: number;
     applicationStatus?: string;
+    applicationStatusCode?: string;
     sostToClient? : number;
   }

@@ -1,5 +1,5 @@
+import { FileModel } from "./file.model";
 import { PermitTypeViewModel } from "./permit-type.model";
-import { PermitType } from "./permit-type.models";
 
 export class ApplyPermit {
   companyKey?: number;
@@ -19,4 +19,8 @@ export class ApplyPermit {
   total?: number;
   additionalInput1?: string;
   additionalInput2?: string;
+  licenseDriver?: File;
+  proofReisdence?: File;
+ // licenseDriver?: FileModel;
+  //proofReisdence?: FileModel;
 }

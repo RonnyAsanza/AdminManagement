@@ -9,7 +9,7 @@
             <div class="col-12">
                 <p-fieldset class="line-height-3 m-0 bg-color py-0">
                     <ng-template pTemplate="header">
-                        <span [class]="'permits-badge ' + application?.applicationStatusKey">{{application?.applicationStatus}}</span>
+                        <span [class]="'applications-badge ' + application?.applicationStatusCode?.toLowerCase()">{{application.applicationStatus}}</span>
                     </ng-template>
                     <div class="p-fluid p-formgrid grid" >
                         <div class="col-12 md:col-6">

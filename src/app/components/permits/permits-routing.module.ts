@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from "@angular/router";
-import { PermitListComponent } from './permit-list/permit-list.component';
 import { PermitInformationComponent } from './permit-information/permit-information.component';
 import { ApplicationInformationComponent } from './application-information/application-information.component';
+import { PermitHomeComponent } from './permit-home/permit-home.component';
 
 const routes: Routes = [
   {
     path: "",
     children: [
       { 
-        path: '', component: PermitListComponent,
-        data: { breadcrumb: 'Permit List' }, 
+        path: '', component: PermitHomeComponent,
+        data: { breadcrumb: 'Home' }, 
       },
     ]
   },

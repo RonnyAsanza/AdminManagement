@@ -52,7 +52,10 @@
                                 <p-calendar [showIcon]="true"
                                             [touchUI]="true" 
                                             [showButtonBar]="true"
+                                            [minDate]="minDate"
                                             formControlName="startDate"
+                                            dateFormat="dd/MM/yy"
+                                            [showTime]="true"
                                             (onSelect)="onChangeStartDate()"
                                             name="startDate">
                                 </p-calendar>
@@ -121,23 +124,30 @@
                                     </span>
                                 </div>
                                 <div class="col-12">
-                                    <label htmlFor="driversLicense">Drivers License (Picture):
-                                        <p-fileUpload name="driversLicense"
-                                            [customUpload]="true"
-                                            (uploadHandler)="uploadfun($event)"
-                                            [auto]="true">
-                                        </p-fileUpload>
-                                    </label>
+                                    <label htmlFor="driversLicense">Drivers License (Picture):</label>
+                                    <p-fileUpload 
+                                        #fileUpload 
+                                        name="driversLicense"
+                                        skinSimple="true"
+                                        [multiple]="false"
+                                        [customUpload]="true"
+                                        (uploadHandler)="onUploadLicenseDriver($event)"
+                                        [auto]="true"
+                                    >
+                                </p-fileUpload>
                                 </div>
                                 <div class="col-12">
-                                    <label htmlFor="proffOfResidence">Proff of Residence:
-                                        <p-fileUpload name="proffOfResidence"
-                                            [customUpload]="true"
-                                            skinSimple="true"
-                                            (uploadHandler)="uploadfun($event)"
-                                            [auto]="true">
-                                        </p-fileUpload>
-                                    </label>
+                                    <label htmlFor="proffOfResidence">Proff of Residence:</label>
+                                    <p-fileUpload 
+                                        #fileUpload 
+                                        name="proffOfResidence"
+                                        skinSimple="true"
+                                        [multiple]="false"
+                                        [customUpload]="true"
+                                        (uploadHandler)="onUploadProofResidence($event)"
+                                        [auto]="true"
+                                        >
+                                    </p-fileUpload>
                                 </div>
                                 <div class="col-12">
                                     <div class="grid">

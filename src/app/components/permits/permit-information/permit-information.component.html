@@ -52,7 +52,41 @@
                 </p-fieldset>
             </div>
             <div class="col-12" *ngIf="permit?.permitStatusCode === 'payment-pending'">
-                <p-panel header="Select Payment Method" class="line-height-3 m-0">
+
+                <p-table *ngIf="paymentTC === false" #dt [value]="paymentTypes" responsiveLayout="scroll" [rows]="10" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowHover]="true" dataKey="id">
+                    <ng-template pTemplate="caption">
+                        <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                            <h5 class="m-0">Select Payment Methods</h5>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-paymentType>
+                        <tr>
+                            <td style="width:30%; min-width:10rem;">
+                                <span class="p-column-title">Code</span>
+                                {{paymentType.paymentTypeKey}}
+                            </td>
+                            <td style="width:14%; min-width:10rem;">
+                                <span class="p-column-title">Name</span>
+                                {{paymentType.name}}
+                            </td>
+                            <td>
+                                <div class="flex">
+                                    <button pButton pRipple icon="pi pi-arrow-right" class="p-button-rounded p-button-primary" (click)="OnSelectPaymentType(paymentType)"></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+
+
+                <p-panel header="Credit Card Payment" class="line-height-3 m-0" *ngIf="paymentTC === true">
                     <div class="grid">
                         <div class="col-12">
                             <div id="outerDiv" >

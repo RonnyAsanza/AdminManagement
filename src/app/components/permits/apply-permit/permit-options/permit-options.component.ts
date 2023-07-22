@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -8,20 +8,32 @@ import { PermitType } from 'src/app/models/permit-type.models';
 import { Tariff } from 'src/app/models/tariff.models';
 import { CompanyService } from 'src/app/services/company.service';
 import { PermitService } from 'src/app/services/permit.service';
+import { DatePipe } from '@angular/common';
+import { FileService } from 'src/app/services/file.service';
+import { FileModel } from 'src/app/models/file.model';
 
 @Component({
   selector: 'app-permit-options',
   templateUrl: './permit-options.component.html',
   styleUrls: ['./permit-options.component.scss'],
-  providers: [MessageService]
+  providers: [MessageService, DatePipe],
+  
 })
 export class PermitOptionsComponent {
+
+  @ViewChildren('buttonEl') buttonEl!: QueryList<ElementRef>;
   permitOptions = new FormControl();
   form!: FormGroup;
   minDate = new Date();
   company!: Company;
   confirmationDialog: boolean = false;
   permit!: ApplyPermit;
+  endHour: number = 22;
+  startHour: number = 6;
+  
+  licenseDriver!: File;
+  proofReisdence!: File;
+
   permitTypes: PermitType[] =
   [
     new PermitType(1, 'Visitor'),
@@ -39,24 +51,28 @@ export class PermitOptionsComponent {
     new Tariff(5, 'Relative Month')
   ];
   constructor(private companyService: CompanyService,
+    private datePipe: DatePipe,
     private router: Router,
     private fb: FormBuilder,
-    private permitService: PermitService){
+    private permitService: PermitService,
+    private fileService: FileService){
  }
 
- uploadedFiles: any[] = [];
-
+//this.datePipe.transform(this.minDate.setHours(this.endHour), 'dd/MMMM/YYYY HH:mm')
   ngOnInit(): void {
     this.company = this.companyService.getLocalCompany();
-    var endDate = new Date();
-    endDate.setDate(this.minDate.getDate() + 1);
     this.permitService.permit.subscribe(permit =>{
+      var endDate = new Date();
+      endDate.setHours(this.endHour);
+      endDate.setMinutes(0);
+      this.minDate.setHours(this.startHour);
+      this.minDate.setMinutes(0);
       this.form = this.fb.group({
         zone: [permit.zoneName, [Validators.required]],
         permitType: [this.permitTypes[1], [Validators.required]],
         tariff: [this.tariffs[0], [Validators.required]],
         startDate: [this.minDate, [Validators.required]],
-        endDate: [endDate.toLocaleDateString("en-US"), [Validators.required]],
+        endDate: [this.datePipe.transform(endDate, 'dd/MMMM/YYYY HH:mm'), [Validators.required]],
         licensePlate: [permit.licensePlate, [Validators.required, Validators.minLength(3)]],
         price: [10],
         quantity: [1, [Validators.required]],
@@ -69,12 +85,16 @@ export class PermitOptionsComponent {
       this.permit = permit;
     });
   }
-
-  uploadfun(event: any) {
-    for (const file of event.files) {
-        this.uploadedFiles.push(file);
+  async onUploadLicenseDriver(event: any) {
+    for (let file of event.files) {
+      this.licenseDriver = file;
     }
+  }
 
+  onUploadProofResidence(event: any) {
+    for (let file of event.files) {
+      this.proofReisdence = file;
+    }
   }
 
   onChangeStartDate(){
@@ -165,8 +185,29 @@ export class PermitOptionsComponent {
     this.permit = { };
   }
 
-  savePermit(){
+  async savePermit(){
     var permit = this.permitService.getLocalApplyPermit();
+    permit.licenseDriver = this.licenseDriver;
+/*
+    if(this.licenseDriver){
+      const fileBytes = await this.fileService.fileToBytes(this.licenseDriver);
+      permit.licenseDriver = {
+        fileName: this.licenseDriver?.name,
+        fileType: this.licenseDriver?.type,
+        fileData: fileBytes
+      };
+   }
+   console.log(this.proofReisdence);
+   if(this.proofReisdence){
+    const fileBytes = await this.fileService.fileToBytes(this.proofReisdence);
+    permit.proofReisdence = {
+      fileName: this.proofReisdence?.name,
+      fileType: this.proofReisdence?.type,
+      fileData: fileBytes
+    };
+   }
+   */
+   console.log(permit);
     this.permitService.applyPermit(permit)
     .subscribe({
       next: (response) => {
@@ -181,4 +222,5 @@ export class PermitOptionsComponent {
       }
   });
   }
+
 }

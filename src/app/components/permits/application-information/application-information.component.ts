@@ -26,7 +26,7 @@ export class ApplicationInformationComponent implements OnInit {
   imageUrlLicenseDriver: SafeUrl | undefined;  // Cambio de tipo a SafeUrl
   imageUrlProofResidence: SafeUrl | undefined;  // Cambio de tipo a SafeUrl
   updateFiles: boolean = true;
-  
+
   constructor(private activatedRoute: ActivatedRoute,
     private datePipe: DatePipe,
     private router: Router,
@@ -52,10 +52,10 @@ export class ApplicationInformationComponent implements OnInit {
           if (this.application.documents && this.application.documents.length > 0) {
             let licenseDriverDocument = this.application.documents.find(doc => doc.documentType === 'LicenseDriver');
             let proofOfResidenceDocument = this.application.documents.find(doc => doc.documentType === 'ProofOfResidence');
-            
+
             if (licenseDriverDocument) {
               this.imageUrlLicenseDriver = `data:${licenseDriverDocument.contentType};base64,${licenseDriverDocument.fileData}`;
-            }           
+            }
             if (proofOfResidenceDocument) {
               this.imageUrlProofResidence = `data:${proofOfResidenceDocument.contentType};base64,${proofOfResidenceDocument.fileData}`;
             }
@@ -66,6 +66,14 @@ export class ApplicationInformationComponent implements OnInit {
   }
 
   onClickSubmit() {
+    if (this.application.applicationStatusKey === 1) {
+      this.submitApplication();
+    } else if (this.application.applicationStatusKey === 3 || this.application.applicationStatusKey === 6) {
+      this.resubmitApplication();
+    }
+  }
+  
+  submitApplication() {
     this.applicationService.submitApplication(this.applicationId)
       .subscribe({
         next: (response) => {
@@ -77,7 +85,11 @@ export class ApplicationInformationComponent implements OnInit {
         }
       });
   }
-
+  
+  resubmitApplication() {
+    // Llamar a la lógica para reenviar la solicitud
+  }
+  
   onClickCancelApplication() {
     this.applicationService.cancelApplication(this.applicationId)
       .subscribe({
@@ -97,20 +109,20 @@ export class ApplicationInformationComponent implements OnInit {
       this.imageUrlLicenseDriver = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
     }
   }
-  
+
   async onUploadProofResidence(event: any) {
     for (let file of event.files) {
       this.proofResidence = file;
       this.imageUrlProofResidence = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
     }
   }
-  
+
   onRemoveLicenseDriver(event: any) {
     this.imageUrlLicenseDriver = undefined;
   }
-  
+
   onRemoveProofResidence(event: any) {
     this.imageUrlProofResidence = undefined;
   }
-  
+
 }

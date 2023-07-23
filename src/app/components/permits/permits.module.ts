@@ -21,6 +21,8 @@ import { ApplicationListComponent } from './application-list/application-list.co
 import { ActivityListComponent } from './activity-list/activity-list.component';
 import { PermitHomeComponent } from './permit-home/permit-home.component';
 import { TabMenuModule } from 'primeng/tabmenu';
+import { FileUploadModule } from 'primeng/fileupload';
+import { ImageModule } from 'primeng/image';
 
 @NgModule({
   imports: [
@@ -41,7 +43,9 @@ import { TabMenuModule } from 'primeng/tabmenu';
     FieldsetModule,
     DataViewModule,
     PermitssRoutingModule,
-    TabMenuModule
+    TabMenuModule,
+    FileUploadModule,
+    ImageModule
   ],
   declarations: [
     PermitListComponent,

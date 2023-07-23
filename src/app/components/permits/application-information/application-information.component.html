@@ -9,7 +9,7 @@
             <div class="col-12">
                 <p-fieldset class="line-height-3 m-0 bg-color py-0">
                     <ng-template pTemplate="header">
-                        <span [class]="'applications-badge ' + application?.applicationStatusCode?.toLowerCase()">{{application.applicationStatus}}</span>
+                        <span [class]="'applications-badge ' + application?.applicationStatusCode?.toLowerCase()">{{application?.applicationStatus}}</span>
                     </ng-template>
                     <div class="p-fluid p-formgrid grid" >
                         <div class="col-12 md:col-6">
@@ -57,17 +57,75 @@
                             <label>Status:
                                 <input type="text" pInputText name="zone" readonly value={{application?.applicationStatus}} readonly/>
                             </label>
-                        </div>  
+                        </div>
+                        
+                        <ng-container *ngIf="(application?.applicationStatusKey === 3 || application?.applicationStatusKey === 6) && updateFiles === true">
+                            <p-panel header="Uploaded documentation" class="line-height-3 w-full m-3">
+                                <div class="p-fluid p-formgrid grid">
+                                    <div class="col-12">
+                                        <div style="display: flex; align-items: center;">
+                                            <div class="col-6">
+                                                <p htmlFor="driversLicense">Drivers License:</p>
+                                                <p *ngIf="!imageUrlLicenseDriver || imageUrlLicenseDriver === ''">You have not uploaded any files</p>
+                                                <ng-container *ngIf="imageUrlLicenseDriver && imageUrlLicenseDriver !== ''">
+                                                    <p-image [src]="imageUrlLicenseDriver" alt=" Image License Driver" width="250" [preview]="true"></p-image>
+                                                </ng-container>
+                                            </div>
+                                            <div class="col-6">
+                                                <p-fileUpload 
+                                                #fileUpload 
+                                                name="driversLicense"
+                                                skinSimple="true"
+                                                [multiple]="false"
+                                                [customUpload]="true"
+                                                (uploadHandler)="onUploadLicenseDriver($event)"
+                                                (onRemove)="onRemoveLicenseDriver($event)"
+                                                [auto]="true"
+                                                >
+                                                </p-fileUpload>        
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div style="display: flex; align-items: center;">
+                                            <div class="col-6">
+                                                <p htmlFor="proffOfResidence">Proof of Residence:</p>
+                                                <p *ngIf="!imageUrlProofResidence || imageUrlProofResidence === ''">You have not uploaded any files</p>
+                                                <ng-container *ngIf="imageUrlProofResidence && imageUrlProofResidence !== ''">
+                                                    <p-image [src]="imageUrlProofResidence" alt=" Image Proof Residence" width="250" [preview]="true"></p-image>
+                                                </ng-container>
+                                            </div>
+                                            <div class="col-6">
+                                                <p-fileUpload 
+                                                    #fileUpload 
+                                                    name="proofOfResidence"
+                                                    skinSimple="true"
+                                                    [multiple]="false"
+                                                    [customUpload]="true"
+                                                    (uploadHandler)="onUploadProofResidence($event)"
+                                                    (onRemove)="onRemoveProofResidence($event)"
+                                                    [auto]="true"
+                                                >
+                                                </p-fileUpload>
+                                            </div>
+                                        </div>
+                                    </div>                             
+                                </div>
+                            </p-panel>    
+                        </ng-container>
+                                              
                         <div class="col-12">
                             <div class="grid">
                                 <div class="col-12 md:col-6">
                                     <button pButton pRipple icon="pi pi-times-circle" label="Cancel" class="p-button-danger w-full" (click)="onClickSubmit()">
                                     </button>
                                 </div>
-                                <div class="col-12 md:col-6" *ngIf="application?.applicationStatusKey === 1">
-                                    <button pButton pRipple icon="pi pi-save" class="p-button-primary w-full" label="Submit" (click)="onClickSubmit()">
+                                <div class="col-12 md:col-6" *ngIf="application?.applicationStatusKey === 1 || application?.applicationStatusKey === 3 || application?.applicationStatusKey === 6">
+                                    <button pButton pRipple icon="pi pi-save" class="p-button-primary w-full" 
+                                        [label]="application?.applicationStatusKey === 1 ? 'Submit' : 'Re-submit'" 
+                                        (click)="onClickSubmit()">
                                     </button>
-                                </div>
+                                </div>                                                                  
                             </div>  
                         </div> 
                     </div>

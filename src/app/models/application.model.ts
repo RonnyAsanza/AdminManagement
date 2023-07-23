@@ -15,4 +15,16 @@ export class Application {
     applicationStatus?: string;
     applicationStatusCode?: string;
     sostToClient? : number;
+    documents?: Document[];
   }
+
+  export interface Document {
+    applicationKey: number;
+    applicationRequiredDocumentationKey: string;
+    companyKey: number;
+    contentType: string;
+    dateCreatedUtc: string;
+    documentType: string;
+    fileData: string;
+  }
+  

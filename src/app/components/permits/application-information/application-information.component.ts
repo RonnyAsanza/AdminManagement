@@ -50,14 +50,14 @@ export class ApplicationInformationComponent implements OnInit {
           }
 
           if (this.application.documents && this.application.documents.length > 0) {
-            const documentLicenseDriver = this.application.documents[0];
-            const documentProofReisdence = this.application.documents[1];
-
-            if (documentLicenseDriver && documentLicenseDriver.fileData) {
-              this.imageUrlLicenseDriver = `data:${documentLicenseDriver.contentType};base64,${documentLicenseDriver.fileData}`;
-            }
-            if (documentProofReisdence && documentProofReisdence.fileData) {
-              this.imageUrlProofResidence = 'data:' + documentProofReisdence.contentType + ';base64,' + documentProofReisdence.fileData;
+            let licenseDriverDocument = this.application.documents.find(doc => doc.documentType === 'LicenseDriver');
+            let proofOfResidenceDocument = this.application.documents.find(doc => doc.documentType === 'ProofOfResidence');
+            
+            if (licenseDriverDocument) {
+              this.imageUrlLicenseDriver = `data:${licenseDriverDocument.contentType};base64,${licenseDriverDocument.fileData}`;
+            }           
+            if (proofOfResidenceDocument) {
+              this.imageUrlProofResidence = `data:${proofOfResidenceDocument.contentType};base64,${proofOfResidenceDocument.fileData}`;
             }
           }
 

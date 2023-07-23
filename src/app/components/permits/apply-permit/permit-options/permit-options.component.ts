@@ -81,6 +81,9 @@ export class PermitOptionsComponent {
         proffOfResidence: [''],
         optional1: [''],
         optional2: [''],
+        optional3: [''],
+        optional4: [''],
+        optional5: ['']
       });
       this.permit = permit;
     });
@@ -188,25 +191,7 @@ export class PermitOptionsComponent {
   async savePermit(){
     var permit = this.permitService.getLocalApplyPermit();
     permit.licenseDriver = this.licenseDriver;
-/*
-    if(this.licenseDriver){
-      const fileBytes = await this.fileService.fileToBytes(this.licenseDriver);
-      permit.licenseDriver = {
-        fileName: this.licenseDriver?.name,
-        fileType: this.licenseDriver?.type,
-        fileData: fileBytes
-      };
-   }
-   console.log(this.proofReisdence);
-   if(this.proofReisdence){
-    const fileBytes = await this.fileService.fileToBytes(this.proofReisdence);
-    permit.proofReisdence = {
-      fileName: this.proofReisdence?.name,
-      fileType: this.proofReisdence?.type,
-      fileData: fileBytes
-    };
-   }
-   */
+    permit.proofReisdence = this.proofReisdence;
 
     this.permitService.applyPermit(permit)
     .subscribe({

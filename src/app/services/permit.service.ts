@@ -45,6 +45,9 @@ export class PermitService {
     formData.append('total', applyPermit.total?.toString() || '');
     formData.append('additionalInput1', applyPermit.additionalInput1 || '');
     formData.append('additionalInput2', applyPermit.additionalInput2 || '');
+    formData.append('additionalInput3', applyPermit.additionalInput2 || '');
+    formData.append('additionalInput4', applyPermit.additionalInput2 || '');
+    formData.append('additionalInput5', applyPermit.additionalInput2 || '');
 
     // Append the licenseDriver file to formData
     if (applyPermit.licenseDriver) {
@@ -56,14 +59,8 @@ export class PermitService {
       formData.append('proofReisdence', applyPermit.proofReisdence, applyPermit.proofReisdence.name);
     }
 
-    const formData2: FormData = new FormData();
-    formData2.append('proofReisdence', applyPermit.proofReisdence!);
-
-
-    console.log("licensePlate",formData.get("licensePlate"));
-    console.log("formData",formData);
     var urlPath = environment.apiPermitsURL + 'Application/ApplyPermit';
-    return this.http.post<PermitsResponse<number>>(urlPath, formData2);
+    return this.http.post<PermitsResponse<number>>(urlPath, formData);
   }
 
   getPermitbyId(permitId: string): Observable<PermitsResponse<Permit>>{

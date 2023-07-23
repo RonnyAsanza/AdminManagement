@@ -19,8 +19,9 @@ export class ApplyPermit {
   total?: number;
   additionalInput1?: string;
   additionalInput2?: string;
+  additionalInput3?: string;
+  additionalInput4?: string;
+  additionalInput5?: string;
   licenseDriver?: File;
   proofReisdence?: File;
- // licenseDriver?: FileModel;
-  //proofReisdence?: FileModel;
 }

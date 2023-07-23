@@ -104,15 +104,36 @@
                             </label>
                         </div>                      
                         <div class="col-12">
-                            <label>Optional Input 1:
+                            <label htmlFor="optional1">Optional Input 1:
                                 <input type="text" pInputText name="optional1" formControlName="optional1"/>
                             </label>
                         </div>
                         <div class="col-12">
-                            <label htmlFor="startDate">Optional Input 2:
+                            <label htmlFor="optional2">Optional Input 2:
                                 <input type="text" pInputText name="optional2" formControlName="optional2"/>
                             </label>
                         </div>
+                        <ng-container *ngIf="permit?.permitTypeModel?.requireAdditionalInput3">
+                            <div class="col-12">
+                                <label htmlFor="optional3">Optional Input 3:
+                                    <input type="text" pInputText name="optional3" formControlName="optional3"/>
+                                </label>
+                            </div> 
+                        </ng-container>
+                        <ng-container *ngIf="permit?.permitTypeModel?.requireAdditionalInput4">
+                            <div class="col-12">
+                                <label htmlFor="optional4">Optional Input 4:
+                                    <input type="text" pInputText name="optional4" formControlName="optional4"/>
+                                </label>
+                            </div> 
+                        </ng-container>
+                        <ng-container *ngIf="permit?.permitTypeModel?.requireAdditionalInput5">
+                            <div class="col-12">
+                                <label htmlFor="optional5">Optional Input 5:
+                                    <input type="text" pInputText name="optional5" formControlName="optional5"/>
+                                </label>
+                            </div>
+                        </ng-container>
                     </div>   
                     <div class="col-12 xl:col-6">
                         <p-panel header="Documentation" class="line-height-3 m-0">

@@ -45,9 +45,9 @@ export class PermitService {
     formData.append('total', applyPermit.total?.toString() || '');
     formData.append('additionalInput1', applyPermit.additionalInput1 || '');
     formData.append('additionalInput2', applyPermit.additionalInput2 || '');
-    formData.append('additionalInput3', applyPermit.additionalInput2 || '');
-    formData.append('additionalInput4', applyPermit.additionalInput2 || '');
-    formData.append('additionalInput5', applyPermit.additionalInput2 || '');
+    formData.append('additionalInput3', applyPermit.additionalInput3 || '');
+    formData.append('additionalInput4', applyPermit.additionalInput4 || '');
+    formData.append('additionalInput5', applyPermit.additionalInput5 || '');
 
     // Append the licenseDriver file to formData
     if (applyPermit.licenseDriver) {

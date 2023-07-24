@@ -6,6 +6,7 @@ import { CompanyService } from 'src/app/services/company.service';
 import { Company } from 'src/app/models/company.model';
 import { Application } from 'src/app/models/application.model';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
+import { ReSubmitApplication } from 'src/app/models/resubmit-application.model';
 
 
 @Component({
@@ -87,7 +88,26 @@ export class ApplicationInformationComponent implements OnInit {
   }
   
   resubmitApplication() {
-    // Llamar a la lógica para reenviar la solicitud
+   var resubmit = new ReSubmitApplication();
+   resubmit.applicationKey = this.application.applicationKey;
+   resubmit.startDateUtc = this.application.startDateUtc;
+   resubmit.expirationDateUtc = this.application.expirationDateUtc;
+   resubmit.tariffKey = this.application.tariffKey;
+   resubmit.licensePlate = this.application.licensePlate;
+   resubmit.additionalInput1 = this.application.additionalInput1;
+   resubmit.additionalInput2 = this.application.additionalInput2;
+   resubmit.licenseDriver = this.licenseDriver;
+   resubmit.proofReisdence = this.proofResidence;
+   this.applicationService.reSubmitApplication(resubmit)
+   .subscribe({
+     next: (response) => {
+       if (response.succeeded) {
+         this.router.navigate(['/' + this.company.portalAlias]);
+       }
+     },
+     error: (e) => {
+     }
+   });
   }
   
   onClickCancelApplication() {

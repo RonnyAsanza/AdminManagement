@@ -63,15 +63,16 @@
                             <p-panel header="Uploaded documentation" class="line-height-3 w-full m-3">
                                 <div class="p-fluid p-formgrid grid">
                                     <div class="col-12">
-                                        <div style="display: flex; align-items: center;">
-                                            <div class="col-6">
+                                        <div class="grid">
+                                            <div class="col-12 md:col-6">
                                                 <p htmlFor="driversLicense">Drivers License:</p>
                                                 <p *ngIf="!imageUrlLicenseDriver || imageUrlLicenseDriver === ''">You have not uploaded any files</p>
                                                 <ng-container *ngIf="imageUrlLicenseDriver && imageUrlLicenseDriver !== ''">
-                                                    <p-image [src]="imageUrlLicenseDriver" alt=" Image License Driver" width="250" [preview]="true"></p-image>
+                                                    <p-image name="imageUrlLicenseDriver" [src]="imageUrlLicenseDriver" alt=" Image License Driver" width="250" [preview]="true"></p-image>
                                                 </ng-container>
                                             </div>
-                                            <div class="col-6">
+                                            <div class="col-12 md:col-6">
+                                                <p htmlFor="driversLicense">Upload New Drivers License:</p>
                                                 <p-fileUpload 
                                                 #fileUpload 
                                                 name="driversLicense"
@@ -87,15 +88,16 @@
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        <div style="display: flex; align-items: center;">
-                                            <div class="col-6">
-                                                <p htmlFor="proffOfResidence">Proof of Residence:</p>
+                                        <div class="grid">
+                                            <div class="col-12 md:col-6">
+                                                <p htmlFor="imageUrlProofResidence">Proof of Residence:</p>
                                                 <p *ngIf="!imageUrlProofResidence || imageUrlProofResidence === ''">You have not uploaded any files</p>
                                                 <ng-container *ngIf="imageUrlProofResidence && imageUrlProofResidence !== ''">
-                                                    <p-image [src]="imageUrlProofResidence" alt=" Image Proof Residence" width="250" [preview]="true"></p-image>
+                                                    <p-image name="imageUrlProofResidence" [src]="imageUrlProofResidence" alt=" Image Proof Residence" width="250" [preview]="true"></p-image>
                                                 </ng-container>
                                             </div>
-                                            <div class="col-6">
+                                            <div class="col-12 md:col-6">
+                                                <p htmlFor="proffOfResidence">Upload New Proof of Residence:</p>
                                                 <p-fileUpload 
                                                     #fileUpload 
                                                     name="proofOfResidence"

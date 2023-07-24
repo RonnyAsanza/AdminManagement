@@ -14,6 +14,8 @@ export class Application {
     applicationStatusKey?: number;
     applicationStatus?: string;
     applicationStatusCode?: string;
+    additionalInput1?: string;
+    additionalInput2?: string;
     sostToClient? : number;
     documents?: Document[];
   }

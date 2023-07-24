@@ -1,4 +1,3 @@
-import { FileModel } from "./file.model";
 import { PermitTypeViewModel } from "./permit-type.model";
 
 export class ApplyPermit {

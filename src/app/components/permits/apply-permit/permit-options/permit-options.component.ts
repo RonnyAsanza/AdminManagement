@@ -118,7 +118,7 @@ export class PermitOptionsComponent {
     var price = 10;
     if(tariff.tariffId == 1)
     {
-      endDate.setDate(startDate.getDate() + quantity);
+      endDate.setDate(startDate.getDate());
     }
     else if(tariff.tariffId == 2)
     {
@@ -132,9 +132,12 @@ export class PermitOptionsComponent {
     }
     price = price * quantity;
 
+    endDate.setHours(this.endHour);
+    endDate.setMinutes(0);
+
     this.form?.patchValue({
       total: price,
-      endDate: endDate.toLocaleDateString("en-US")
+      endDate: this.datePipe.transform(endDate, 'dd/MMMM/YYYY HH:mm')
     });
 
   }

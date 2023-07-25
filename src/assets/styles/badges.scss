@@ -186,6 +186,11 @@
         background-color: #cce5ff; /* Light blue background color */
     }
 
+    &.complete {
+        color: #008000;
+        background-color: #d6ffdf; /* Pale green background color */
+    }
+
     /* Request Ready - Green */
     &.request-ready {
         color: #008000;

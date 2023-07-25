@@ -8,7 +8,6 @@ import { Application } from 'src/app/models/application.model';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { ReSubmitApplication } from 'src/app/models/resubmit-application.model';
 
-
 @Component({
   selector: 'app-application-information',
   templateUrl: './application-information.component.html',

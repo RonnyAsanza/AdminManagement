@@ -62,11 +62,17 @@
                             </label>
                         </div>    
                         <div class="col-12">
-                            <label>End Date:
-                                <div class="p-inputgroup">
-                                    <input type="text" pInputText readonly formControlName="endDate" name="endDate">
-                                    <span class="p-inputgroup-addon"><i class="pi pi-calendar" style="line-height: 1.25;"></i></span>
-                                </div>
+                            <label>End Date*:
+                                <p-calendar [showIcon]="true"
+                                            [touchUI]="true" 
+                                            [showButtonBar]="true"
+                                            [minDate]="minDate"
+                                            formControlName="endDate"
+                                            dateFormat="dd/MM/yy"
+                                            [showTime]="true"
+                                            (onSelect)="onChangeEndDate()"
+                                            name="endDate">
+                                </p-calendar>
                             </label>
                         </div>    
                         <div class="col-12">

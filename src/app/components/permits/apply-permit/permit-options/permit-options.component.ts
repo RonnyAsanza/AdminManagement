@@ -9,15 +9,15 @@ import { Tariff } from 'src/app/models/tariff.models';
 import { CompanyService } from 'src/app/services/company.service';
 import { PermitService } from 'src/app/services/permit.service';
 import { DatePipe } from '@angular/common';
-import { FileService } from 'src/app/services/file.service';
-import { FileModel } from 'src/app/models/file.model';
+import { RateEngineService } from 'src/app/services/rate-engine.service';
+import { RateEngineByEndDateBasedRequest, RateEngineByEndDateBasedRResponse } from '../../../../models/external-tariff'
 
 @Component({
   selector: 'app-permit-options',
   templateUrl: './permit-options.component.html',
   styleUrls: ['./permit-options.component.scss'],
   providers: [MessageService, DatePipe],
-  
+
 })
 export class PermitOptionsComponent {
 
@@ -30,38 +30,40 @@ export class PermitOptionsComponent {
   permit!: ApplyPermit;
   endHour: number = 22;
   startHour: number = 6;
-  
+  rateEngineRequest: RateEngineByEndDateBasedRequest = new RateEngineByEndDateBasedRequest();
+  rateEngineResponse: RateEngineByEndDateBasedRResponse = new RateEngineByEndDateBasedRResponse();
+  totalCharge: number = 0;
+
   licenseDriver!: File;
   proofReisdence!: File;
 
   permitTypes: PermitType[] =
-  [
-    new PermitType(1, 'Visitor'),
-    new PermitType(2, 'Standard'),
-    new PermitType(3, 'Bulk'),
-    new PermitType(4, 'Banked')
-  ];
+    [
+      new PermitType(1, 'Visitor'),
+      new PermitType(2, 'Standard'),
+      new PermitType(3, 'Bulk'),
+      new PermitType(4, 'Banked')
+    ];
 
   tariffs: Tariff[] =
-  [
-    new Tariff(1, 'Standard Day'),
-    new Tariff(2, 'Standard Week'),
-    new Tariff(3, 'Standard Month'),
-    new Tariff(4, 'Absolute Month'),
-    new Tariff(5, 'Relative Month')
-  ];
+    [
+      new Tariff(1, 'Standard Day'),
+      new Tariff(2, 'Standard Week'),
+      new Tariff(3, 'Standard Month'),
+      new Tariff(4, 'Absolute Month'),
+      new Tariff(5, 'Relative Month')
+    ];
   constructor(private companyService: CompanyService,
     private datePipe: DatePipe,
     private router: Router,
     private fb: FormBuilder,
     private permitService: PermitService,
-    private fileService: FileService){
- }
+    private rateEngineService: RateEngineService) {
+  }
 
-//this.datePipe.transform(this.minDate.setHours(this.endHour), 'dd/MMMM/YYYY HH:mm')
   ngOnInit(): void {
     this.company = this.companyService.getLocalCompany();
-    this.permitService.permit.subscribe(permit =>{
+    this.permitService.permit.subscribe(permit => {
       var endDate = new Date();
       endDate.setHours(this.endHour);
       endDate.setMinutes(0);
@@ -72,7 +74,7 @@ export class PermitOptionsComponent {
         permitType: [this.permitTypes[1], [Validators.required]],
         tariff: [this.tariffs[0], [Validators.required]],
         startDate: [this.minDate, [Validators.required]],
-        endDate: [this.datePipe.transform(endDate, 'dd/MMMM/YYYY HH:mm'), [Validators.required]],
+        endDate: [endDate, [Validators.required]],
         licensePlate: [permit.licensePlate, [Validators.required, Validators.minLength(3)]],
         price: [10],
         quantity: [1, [Validators.required]],
@@ -86,8 +88,31 @@ export class PermitOptionsComponent {
         optional5: ['']
       });
       this.permit = permit;
+      this.rateEngineRequest = {
+        TariffID: this.form?.value.tariff.tariffId,
+        StartTime: this.datePipe.transform(this.form?.value.startDate, 'dd/MMMM/YYYY HH:mm') ?? '',
+        EndTime: this.datePipe.transform(this.form?.value.endDate, 'dd/MMMM/YYYY HH:mm') ?? '',
+        TCP_Calculate_Add: true
+      }
+      this.getPriceRangeEngine();
+      // this.rateEngineService.getRateEngineByEndDateBased(this.rateEngineRequest)
+      //   .subscribe({
+      //     next: (response) => {
+      //       if (response.succeeded) {
+      //         this.rateEngineResponse = response.data!;
+      //         this.totalCharge = parseFloat(this.rateEngineResponse.totalCharge.replace("$", "").trim());
+      //         this.form?.patchValue({
+      //           price: this.totalCharge,
+      //           total: this.totalCharge * this.form?.value.quantity
+      //         });
+      //       }
+      //     },
+      //     error: (e) => {
+      //     }
+      //   });
     });
   }
+
   async onUploadLicenseDriver(event: any) {
     for (let file of event.files) {
       this.licenseDriver = file;
@@ -100,67 +125,105 @@ export class PermitOptionsComponent {
     }
   }
 
+  // onChangeStartDate() {
+  //   var startDate = this.form?.value.startDate;
+  //   var tariff = this.form?.value.tariff;
+  //   this.setEndDate(startDate, tariff);
+  // }
+
+  onChangeEndDate() {
+    this.onChangeDate(false);
+
+  }
+
   onChangeStartDate(){
-    var startDate = this.form?.value.startDate;
-    var tariff = this.form?.value.tariff;
-    this.setEndDate(startDate, tariff);
+    this.onChangeDate(true);
+
   }
 
-  onTariffChange(tariff: any)
-  {
-    var startDate = this.form?.value.startDate;
-    this.setEndDate(startDate, tariff.value);
+  onTariffChange(tariff: any) {
+    // var startDate = this.form?.value.tariff;
+    // this.setEndDate(startDate, tariff.value);
+    this.rateEngineRequest.TariffID = this.form?.value.tariff.tariffId;
+    this.getPriceRangeEngine()
   }
 
-  setEndDate(startDate: Date, tariff: Tariff){
-    var endDate = new Date();
+  getPriceRangeEngine() {
+    this.rateEngineService.getRateEngineByEndDateBased(this.rateEngineRequest)
+      .subscribe({
+        next: (response) => {
+          if (response.succeeded) {
+            this.rateEngineResponse = response.data!;
+            this.totalCharge = parseFloat(this.rateEngineResponse.totalCharge.replace("$", "").trim());
+
+            var quantity = this.form?.value.quantity;
+            let price = this.totalCharge;
+
+            this.form?.patchValue({
+              price: price,
+              total: price * quantity,
+            });
+          }
+        },
+        error: (e) => {
+        }
+      });
+  }
+
+  // setEndDate(startDate: Date, tariff: Tariff) {
+
+  //   this.rateEngineService.getRateEngineByEndDateBased(this.rateEngineRequest)
+  //     .subscribe({
+  //       next: (response) => {
+  //         if (response.succeeded) {
+  //           this.rateEngineResponse = response.data!;
+  //           this.totalCharge = parseFloat(this.rateEngineResponse.totalCharge.replace("$", "").trim());
+
+  //           var endDate = new Date();
+  //           var quantity = this.form?.value.quantity;
+  //           let price = this.totalCharge;  // Aquí usamos totalCharge
+  //           if (tariff.tariffId == 1) {
+  //             endDate.setDate(startDate.getDate());
+  //           }
+  //           else if (tariff.tariffId == 2) {
+  //             endDate.setDate(startDate.getDate() + (7 * quantity));
+  //           }
+  //           else {
+  //             endDate.setMonth(startDate.getMonth() + quantity);
+  //           }
+  //           price = price * quantity;
+
+  //           endDate.setHours(this.endHour);
+  //           endDate.setMinutes(0);
+
+  //           this.form?.patchValue({
+  //             price: price,
+  //             total: price * quantity,
+  //             endDate: this.datePipe.transform(endDate, 'dd/MMMM/YYYY HH:mm')
+  //           });
+  //         }
+  //       },
+  //       error: (e) => {
+  //       }
+  //     });
+  // }
+
+  onChangeQuantity() {
+    // var tariff = this.form?.value.tariff;
     var quantity = this.form?.value.quantity;
-    var price = 10;
-    if(tariff.tariffId == 1)
-    {
-      endDate.setDate(startDate.getDate());
-    }
-    else if(tariff.tariffId == 2)
-    {
-      price = 50;
-      endDate.setDate(startDate.getDate() + (7 * quantity));
-    }
-    else
-    {
-      price = 150;
-      endDate.setMonth(startDate.getMonth() + quantity);
-    }
-    price = price * quantity;
-
-    endDate.setHours(this.endHour);
-    endDate.setMinutes(0);
+    var priceTotal = this.totalCharge * quantity;
+    // if (tariff.tariffId == 1) {
+    //   priceTotal = this.totalCharge * quantity;
+    // }
+    // else if (tariff.tariffId == 2) {
+    //   priceTotal = this.totalCharge * quantity;
+    // }
+    // else {
+    //   priceTotal = this.totalCharge * quantity;
+    // }
 
     this.form?.patchValue({
-      total: price,
-      endDate: this.datePipe.transform(endDate, 'dd/MMMM/YYYY HH:mm')
-    });
-
-  }
-
-  onChangeQuantity(){
-    var tariff = this.form?.value.tariff;
-    var quantity = this.form?.value.quantity;
-    var price = 10;
-    if(tariff.tariffId == 1)
-    {
-      price = 10 * quantity;
-    }
-    else if(tariff.tariffId == 2)
-    {
-      price = 50 * quantity;
-    }
-    else
-    {
-      price = 150 * quantity;
-    }
-
-    this.form?.patchValue({
-      total: price
+      total: priceTotal
     });
 
   }
@@ -181,34 +244,53 @@ export class PermitOptionsComponent {
     this.confirmationDialog = true;
   }
 
-  onCancel(){
+  onCancel() {
     console.log('cancel');
   }
 
-
   hideDialog() {
     this.confirmationDialog = false;
-    this.permit = { };
+    this.permit = {};
   }
 
-  async savePermit(){
+  async savePermit() {
     var permit = this.permitService.getLocalApplyPermit();
     permit.licenseDriver = this.licenseDriver;
     permit.proofReisdence = this.proofReisdence;
 
     this.permitService.applyPermit(permit)
-    .subscribe({
-      next: (response) => {
-        if(response.succeeded )
-        {
-          this.hideDialog();
-          var path = (permit.permitTypeModel?.requireAccessControl === true)? 'application':'permits';
-          this.router.navigate(['/' + this.company.portalAlias+'/'+path+'/' + response.data]);
+      .subscribe({
+        next: (response) => {
+          if (response.succeeded) {
+            this.hideDialog();
+            var path = (permit.permitTypeModel?.requireAccessControl === true) ? 'application' : 'permits';
+            this.router.navigate(['/' + this.company.portalAlias + '/' + path + '/' + response.data]);
+          }
+        },
+        error: (e) => {
         }
-      },
-      error: (e) => {
-      }
-  });
+      });
   }
 
+  onChangeDate(isStartDate: boolean) {
+    this.rateEngineRequest.StartTime = this.datePipe.transform(this.form?.value.startDate, 'dd/MMMM/YYYY HH:mm') ?? '';
+    this.rateEngineRequest.EndTime = this.datePipe.transform(this.form?.value.endDate, 'dd/MMMM/YYYY HH:mm') ?? '';
+    let startDate = new Date(this.form?.value.startDate);
+    let endDate = new Date(this.form?.value.endDate);
+
+    if (startDate > endDate) {
+      let input = isStartDate ? 'endDate' : 'startDate';
+      let data = isStartDate ? startDate : endDate;
+
+      let newDate = new Date();
+      newDate.setDate(data.getDate());
+      newDate.setMonth(data.getMonth());
+      isStartDate ? this.rateEngineRequest.EndTime = this.rateEngineRequest.StartTime : this.rateEngineRequest.StartTime = this.rateEngineRequest.EndTime;
+      this.form?.patchValue({
+        [input]: this.datePipe.transform(newDate, 'dd/MMMM/YYYY HH:mm')
+      });
+    }
+
+    this.getPriceRangeEngine();
+  }
 }

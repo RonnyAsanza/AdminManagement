@@ -20,8 +20,8 @@ export class RateEngineService {
 
     let params = new HttpParams()
       .set('TariffID', rateEngineRequest.TariffID)
-      .set('StartTime', rateEngineRequest.StartTime.toString())
-      .set('EndTime', rateEngineRequest.EndTime.toString())
+      .set('StartTime', rateEngineRequest.StartTime?.toString()!)
+      .set('EndTime', rateEngineRequest.EndTime?.toString()!)
       .set('TCP_Calculate_Add', rateEngineRequest.TCP_Calculate_Add);
   
     var urlPath = environment.apiPermitsURL + 'ExternalTariff/GetRateEngineByEndDateBased';

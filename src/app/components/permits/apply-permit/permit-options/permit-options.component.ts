@@ -47,11 +47,10 @@ export class PermitOptionsComponent {
 
   tariffs: Tariff[] =
     [
-      new Tariff(1, 'Standard Day'),
-      new Tariff(2, 'Standard Week'),
-      new Tariff(3, 'Standard Month'),
-      new Tariff(4, 'Absolute Month'),
-      new Tariff(5, 'Relative Month')
+      new Tariff(6, 'Standard Hour'),
+      new Tariff(2014, 'Standard Day'),
+      new Tariff(74, 'Standard Month'),
+      new Tariff(2541, 'Standard year')
     ];
   constructor(private companyService: CompanyService,
     private datePipe: DatePipe,
@@ -59,26 +58,22 @@ export class PermitOptionsComponent {
     private fb: FormBuilder,
     private permitService: PermitService,
     private rateEngineService: RateEngineService) {
-  }
-
-  ngOnInit(): void {
-    this.company = this.companyService.getLocalCompany();
-    this.permitService.permit.subscribe(permit => {
       var endDate = new Date();
       endDate.setHours(this.endHour);
       endDate.setMinutes(0);
       this.minDate.setHours(this.startHour);
       this.minDate.setMinutes(0);
+
       this.form = this.fb.group({
-        zone: [permit.zoneName, [Validators.required]],
+        zone: ['', [Validators.required]],
         permitType: [this.permitTypes[1], [Validators.required]],
         tariff: [this.tariffs[0], [Validators.required]],
         startDate: [this.minDate, [Validators.required]],
         endDate: [endDate, [Validators.required]],
-        licensePlate: [permit.licensePlate, [Validators.required, Validators.minLength(3)]],
-        price: [10],
+        licensePlate: [null, [Validators.required, Validators.minLength(3)]],
+        price: [0, [Validators.required], Validators.min(1)],
         quantity: [1, [Validators.required]],
-        total: [10],
+        total: [0],
         driversLicense: [''],
         proffOfResidence: [''],
         optional1: [''],
@@ -87,30 +82,38 @@ export class PermitOptionsComponent {
         optional4: [''],
         optional5: ['']
       });
+  }
+
+  ngOnInit(): void {
+    this.company = this.companyService.getLocalCompany();
+    var endDate = new Date();
+    endDate.setHours(this.endHour);
+    endDate.setMinutes(0);
+    this.minDate.setHours(this.startHour);
+    this.minDate.setMinutes(0);
+
+    this.permitService.permit.subscribe(permit => {
+      this.form?.patchValue({
+        zone: permit.zoneName,
+        licensePlate: permit.licensePlate,
+        driversLicense: '',
+        proffOfResidence: '',
+        optional1: '',
+        optional2: '',
+        optional3: '',
+        optional4: '',
+        optional5: ''
+      });
       this.permit = permit;
-      this.rateEngineRequest = {
-        TariffID: this.form?.value.tariff.tariffId,
-        StartTime: this.datePipe.transform(this.form?.value.startDate, 'dd/MMMM/YYYY HH:mm') ?? '',
-        EndTime: this.datePipe.transform(this.form?.value.endDate, 'dd/MMMM/YYYY HH:mm') ?? '',
-        TCP_Calculate_Add: true
-      }
-      this.getPriceRangeEngine();
-      // this.rateEngineService.getRateEngineByEndDateBased(this.rateEngineRequest)
-      //   .subscribe({
-      //     next: (response) => {
-      //       if (response.succeeded) {
-      //         this.rateEngineResponse = response.data!;
-      //         this.totalCharge = parseFloat(this.rateEngineResponse.totalCharge.replace("$", "").trim());
-      //         this.form?.patchValue({
-      //           price: this.totalCharge,
-      //           total: this.totalCharge * this.form?.value.quantity
-      //         });
-      //       }
-      //     },
-      //     error: (e) => {
-      //     }
-      //   });
     });
+
+    this.rateEngineRequest = {
+      TariffID: this.form?.value.tariff.tariffId,
+      StartTime: this.datePipe.transform(this.form?.value.startDate, 'dd/MMMM/YYYY HH:mm') ?? '',
+      EndTime: this.datePipe.transform(this.form?.value.endDate, 'dd/MMMM/YYYY HH:mm') ?? '',
+      TCP_Calculate_Add: true
+    }
+    this.getPriceRangeEngine();
   }
 
   async onUploadLicenseDriver(event: any) {

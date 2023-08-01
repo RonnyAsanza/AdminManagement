@@ -59,21 +59,22 @@
                             </label>
                         </div>
                         
-                        <ng-container *ngIf="(application?.applicationStatusKey === 3 || application?.applicationStatusKey === 6) && updateFiles === true">
+                        <ng-container *ngIf="(application?.applicationStatusKey === 3 || application?.applicationStatusKey === 6) && updateFiles">
                             <p-panel header="Uploaded documentation" class="line-height-3 w-full m-3">
-                                <div class="p-fluid p-formgrid grid">
+                                <div class="p-fluid p-formgrid grid">                                                                     
                                     <div class="col-12">
                                         <div class="grid">
                                             <div class="col-12 md:col-6">
-                                                <p htmlFor="driversLicense">Drivers License:</p>
-                                                <p *ngIf="!imageUrlLicenseDriver || imageUrlLicenseDriver === ''">You have not uploaded any files</p>
-                                                <ng-container *ngIf="imageUrlLicenseDriver && imageUrlLicenseDriver !== ''">
-                                                    <p-image name="imageUrlLicenseDriver" [src]="imageUrlLicenseDriver" alt=" Image License Driver" width="250" [preview]="true"></p-image>
-                                                </ng-container>
+                                              <p htmlFor="imageUrlLicenseDriver">Drivers License:</p>
+                                              <p *ngIf="!imageUrlLicenseDriver || imageUrlLicenseDriver === ''">You have not uploaded any files</p>
+                                              <ng-container *ngIf="imageUrlLicenseDriver && imageUrlLicenseDriver !== ''">
+                                                <embed *ngIf="isPdf(licenseDriver)" [src]="imageUrlLicenseDriver" type="application/pdf" width="250" height="200"/>
+                                                <p-image *ngIf="!isPdf(licenseDriver)" name="imageUrlLicenseDriver" [src]="imageUrlLicenseDriver" alt=" Image License Driver" width="250" [preview]="true"></p-image>
+                                              </ng-container>
                                             </div>
                                             <div class="col-12 md:col-6">
-                                                <p htmlFor="driversLicense">Upload New Drivers License:</p>
-                                                <p-fileUpload 
+                                              <p htmlFor="driversLicense">Upload New Drivers License:</p>
+                                              <p-fileUpload 
                                                 #fileUpload 
                                                 name="driversLicense"
                                                 skinSimple="true"
@@ -82,10 +83,14 @@
                                                 (uploadHandler)="onUploadLicenseDriver($event)"
                                                 (onRemove)="onRemoveLicenseDriver($event)"
                                                 [auto]="true"
-                                                >
-                                                </p-fileUpload>        
+                                                accept="image/*,.pdf"
+                                                invalidFileTypeMessageSummary="Invalid file type: "
+                                                invalidFileTypeMessageDetail="Only image and PDF document files are allowed."
+                                              >
+                                              </p-fileUpload>        
                                             </div>
-                                        </div>
+                                          </div>
+                                          
                                     </div>
                                     <div class="col-12">
                                         <div class="grid">
@@ -93,7 +98,8 @@
                                                 <p htmlFor="imageUrlProofResidence">Proof of Residence:</p>
                                                 <p *ngIf="!imageUrlProofResidence || imageUrlProofResidence === ''">You have not uploaded any files</p>
                                                 <ng-container *ngIf="imageUrlProofResidence && imageUrlProofResidence !== ''">
-                                                    <p-image name="imageUrlProofResidence" [src]="imageUrlProofResidence" alt=" Image Proof Residence" width="250" [preview]="true"></p-image>
+                                                    <embed *ngIf="isPdf(proofResidence)" [src]="imageUrlProofResidence" type="application/pdf" width="250" height="200"/>
+                                                    <p-image *ngIf="!isPdf(proofResidence)" name="imageUrlProofResidence" [src]="imageUrlProofResidence" alt=" Image Proof Residence" width="250" [preview]="true"></p-image>
                                                 </ng-container>
                                             </div>
                                             <div class="col-12 md:col-6">
@@ -107,7 +113,10 @@
                                                     (uploadHandler)="onUploadProofResidence($event)"
                                                     (onRemove)="onRemoveProofResidence($event)"
                                                     [auto]="true"
-                                                >
+                                                    accept="image/*,.pdf"
+                                                    invalidFileTypeMessageSummary="Invalid file type: "
+                                                    invalidFileTypeMessageDetail="Only image and PDF document files are allowed."
+                                                    >
                                                 </p-fileUpload>
                                             </div>
                                         </div>

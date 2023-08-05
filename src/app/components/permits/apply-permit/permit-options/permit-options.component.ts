@@ -71,7 +71,7 @@ export class PermitOptionsComponent {
         startDate: [this.minDate, [Validators.required]],
         endDate: [endDate, [Validators.required]],
         licensePlate: [null, [Validators.required, Validators.minLength(3)]],
-        price: [0, [Validators.required], Validators.min(1)],
+        price: [0, [Validators.required]],
         quantity: [1, [Validators.required]],
         total: [0],
         driversLicense: [''],

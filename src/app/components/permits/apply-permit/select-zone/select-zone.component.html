@@ -15,7 +15,7 @@
                                 name="zone" 
                                 optionLabel="name" 
                                 [options]="zones" 
-                                placeholder="Select Zone" 
+                                [placeholder]="'ClientPermit.SelectZone' | translate"
                                 class="w-full"
                             >
                                 <ng-template let-option pTemplate="item">
@@ -27,7 +27,7 @@
                 </div>
                 <div class="grid" >
                     <div class="col-12 md:col-6 xl:col-3 ">
-                        <button pButton pRipple icon="pi pi-arrow-right" label="Next Step" class="p-button-primary w-full" (click)="onClickNext()">
+                        <button pButton pRipple icon="pi pi-arrow-right" [label]="'ClientPermit.NextStep' | translate" class="p-button-primary w-full" (click)="onClickNext()">
                         </button>
                     </div>
                 </div>

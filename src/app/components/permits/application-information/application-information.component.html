@@ -13,7 +13,7 @@
                     </ng-template>
                     <div class="p-fluid p-formgrid grid" >
                         <div class="col-12 md:col-6">
-                            <label>Start Date:
+                            <label>{{"ClientPermit.StartDate" | translate}}:
                                 <div class="p-inputgroup">
                                     <input type="text" pInputText readonly name="startDateUtc" value={{startDateUtc}}>
                                     <span class="p-inputgroup-addon"><i class="pi pi-calendar" style="line-height: 1.25;"></i></span>
@@ -21,7 +21,7 @@
                             </label>
                         </div>    
                         <div class="col-12 md:col-6">
-                            <label>End Date:
+                            <label>{{"ClientPermit.EndDate" | translate}}::
                                 <div class="p-inputgroup">
                                     <input type="text" pInputText readonly name="expirationDateUtc" value={{expirationDateUtc}}>
                                     <span class="p-inputgroup-addon"><i class="pi pi-calendar" style="line-height: 1.25;"></i></span>
@@ -29,17 +29,17 @@
                             </label>
                         </div> 
                         <div class="col-12 md:col-6">
-                            <label>License Plate:
+                            <label>{{"ClientPermit.LicensePlate" | translate}}:
                                 <input type="text" pInputText name="licensePlate" readonly value={{application?.licensePlate}} readonly/>
                             </label>
                         </div>
                         <div class="col-12 md:col-6">
-                            <label>Permit Type:
+                            <label>{{"ClientPermit.PermitType" | translate}}:
                                 <input type="text" pInputText name="permitType" readonly value={{application?.permitType}} readonly/>
                             </label>
                         </div>
                         <div class="col-12 md:col-6">
-                            <label>Tariff Package:
+                            <label>{{"ClientPermit.TariffPackage" | translate}}:
                                 <input type="text" pInputText name="tariff" readonly value={{application?.tariff}} readonly/>
                             </label>
                         </div>
@@ -49,7 +49,7 @@
                             </label>
                         </div>
                         <div class="col-12 md:col-6">
-                            <label>Zone:
+                            <label>{{"ClientPermit.Zone" | translate}}
                                 <input type="text" pInputText name="zone" readonly value={{application?.zone}} readonly/>
                             </label>
                         </div>

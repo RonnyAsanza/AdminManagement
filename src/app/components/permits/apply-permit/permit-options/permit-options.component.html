@@ -21,7 +21,7 @@
                                     name="permitType" 
                                     optionLabel="name" 
                                     [options]="permitTypes" 
-                                    placeholder="Select Zone" 
+                                    [placeholder]="'ClientPermit.SelectZone' | translate"
                                     class="w-full"
                                 >
                                     <ng-template let-option pTemplate="item">
@@ -76,12 +76,12 @@
                             </label>
                         </div>    
                         <div class="col-12">
-                            <label>License Plate*:
+                            <label>{{"ClientPermit.LicensePlate" | translate}}*:
 							    <input type="text" pInputText name="licensePlate" formControlName="licensePlate" onkeyup="this.value = this.value.toUpperCase();"/>
                             </label>
                         </div>    
                         <div class="col-12">
-                            <label>Unit Price:
+                            <label>{{"ClientPermit.UnitPrice" | translate}}:
                                 <div class="p-inputgroup">
                                     <span class="p-inputgroup-addon">CAD</span>
                                     <input type="number" min="1" pInputText name="price" formControlName="price" readonly/>
@@ -90,7 +90,7 @@
                             </label>
                         </div>
                         <div class="col-12">
-                            <label>Quantity*:
+                            <label>{{"ClientPermit.Quantity" | translate}}*:
                                 <p-inputNumber 
                                     formControlName="quantity" 
                                     [min]=1 
@@ -101,7 +101,7 @@
                             </label>
                         </div>                       
                         <div class="col-12">
-                            <label>Total:
+                            <label>{{"ClientPermit.Total" | translate}}:
                                 <div class="p-inputgroup">
                                     <span class="p-inputgroup-addon">CAD</span>
                                     <input type="total" min="1" pInputText name="total" formControlName="total" readonly/>
@@ -110,48 +110,47 @@
                             </label>
                         </div>                      
                         <div class="col-12">
-                            <label htmlFor="optional1">Optional Input 1:
+                            <label htmlFor="optional1">{{"ClientPermit.OptionalInput" | translate}} 1:
                                 <input type="text" pInputText name="optional1" formControlName="optional1"/>
                             </label>
                         </div>
                         <div class="col-12">
-                            <label htmlFor="optional2">Optional Input 2:
+                            <label htmlFor="optional2">{{"ClientPermit.OptionalInput" | translate}} 2:
                                 <input type="text" pInputText name="optional2" formControlName="optional2"/>
                             </label>
                         </div>
                         <ng-container *ngIf="permit?.permitTypeModel?.requireAdditionalInput3">
                             <div class="col-12">
-                                <label htmlFor="optional3">Optional Input 3:
+                                <label htmlFor="optional3">{{"ClientPermit.OptionalInput" | translate}} 3:
                                     <input type="text" pInputText name="optional3" formControlName="optional3"/>
                                 </label>
                             </div> 
                         </ng-container>
                         <ng-container *ngIf="permit?.permitTypeModel?.requireAdditionalInput4">
                             <div class="col-12">
-                                <label htmlFor="optional4">Optional Input 4:
+                                <label htmlFor="optional4">{{"ClientPermit.OptionalInput" | translate}} 4:
                                     <input type="text" pInputText name="optional4" formControlName="optional4"/>
                                 </label>
                             </div> 
                         </ng-container>
                         <ng-container *ngIf="permit?.permitTypeModel?.requireAdditionalInput5">
                             <div class="col-12">
-                                <label htmlFor="optional5">Optional Input 5:
+                                <label htmlFor="optional5">{{"ClientPermit.OptionalInput" | translate}} 5:
                                     <input type="text" pInputText name="optional5" formControlName="optional5"/>
                                 </label>
                             </div>
                         </ng-container>
                     </div>   
                     <div class="col-12 xl:col-6">
-                        <p-panel header="Documentation" class="line-height-3 m-0">
+                        <p-panel [header]="'ClientPermit.Documentation' | translate"  class="line-height-3 m-0">
                             <div class="p-fluid p-formgrid grid">
                                 <div class="col-12">
                                     <span class="documentation-sub-title">
-                                        This permit requires documentation and approval before a permit can be provided.
-                                        Please provide the following
+                                        {{"ClientPermit.DocumentationApproval" | translate}}
                                     </span>
                                 </div>
                                 <div class="col-12">
-                                    <label htmlFor="driversLicense">Drivers License (Picture):</label>
+                                    <label htmlFor="driversLicense">{{"ClientPermit.DriversLicense" | translate}}:</label>
                                     <p-fileUpload 
                                         #fileUpload 
                                         name="driversLicense"
@@ -164,7 +163,7 @@
                                 </p-fileUpload>
                                 </div>
                                 <div class="col-12">
-                                    <label htmlFor="proffOfResidence">Proff of Residence:</label>
+                                    <label htmlFor="proffOfResidence">{{"ClientPermit.ProffOfResidence" | translate}}:</label>
                                     <p-fileUpload 
                                         #fileUpload 
                                         name="proffOfResidence"
@@ -179,11 +178,11 @@
                                 <div class="col-12">
                                     <div class="grid">
                                         <div class="col-12 md:col-6">
-                                            <button pButton pRipple icon="pi pi-times-circle" label="Cancel" class="p-button-danger w-full">
+                                            <button pButton pRipple icon="pi pi-times-circle" [label]="'ClientPermit.Cancel' | translate"  class="p-button-danger w-full">
                                             </button>
                                         </div>
                                         <div class="col-12 md:col-6">
-                                            <button pButton pRipple icon="pi pi-save" class="p-button-primary w-full" label="Submit" [disabled]="!form?.valid">
+                                            <button pButton pRipple icon="pi pi-save" class="p-button-primary w-full" [label]="'ClientPermit.Submit' | translate"  [disabled]="!form?.valid">
                                             </button>
                                         </div>
                                     </div>  
@@ -206,7 +205,7 @@
                     <div class="col-12 py-0">
                         <div class="grid py-0">
                             <div class="col-4">
-                                <span>Permit Type:</span>
+                                <span>{{"ClientPermit.PermitType" | translate}}:</span>
                             </div> 
                             <div class="col-8">
                                 <span>{{permit?.permitTypeModel?.name}} </span>
@@ -216,7 +215,7 @@
                     <div class="col-12 py-0">
                         <div class="grid py-0">
                             <div class="col-4">
-                                <span>Zone:</span>
+                                <span>{{"ClientPermit.Zone" | translate}}:</span>
                             </div> 
                             <div class="col-8">
                                 <span>{{permit?.zoneName}}</span>
@@ -236,7 +235,7 @@
                     <div class="col-12 py-0">
                         <div class="grid py-0">
                             <div class="col-4">
-                                <span>License Plate:</span>
+                                <span>{{"ClientPermit.LicensePlate" | translate}}:</span>
                             </div> 
                             <div class="col-8">
                                 <span>{{permit.licensePlate}}</span>

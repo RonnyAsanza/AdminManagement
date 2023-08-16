@@ -17,11 +17,11 @@
                             </div>
                         </div>
                         <div class="card-content py-2">
-                            <span class="card-item">License Plate: {{application.licensePlate}}</span>
+                            <span class="card-item">{{"ClientPermit.LicensePlate" | translate}}: {{application.licensePlate}}</span>
                             <span class="card-item">Type: {{application.permitType}}</span>
                             <span class="card-item">Adress: Ontario Street</span>
-                            <span class="card-item">Start Date: {{application.startDateUtc | date: 'dd/MMMM/YYYY'}} </span>
-                            <span class="card-item">End date: {{application.expirationDateUtc | date: 'dd/MMMM/YYYY'}}</span>
+                            <span class="card-item">{{"ClientPermit.StartDate" | translate}}: {{application.startDateUtc | date: 'dd/MMMM/YYYY'}} </span>
+                            <span class="card-item">{{"ClientPermit.EndDate" | translate}}:: {{application.expirationDateUtc | date: 'dd/MMMM/YYYY'}}</span>
                         </div>
                         <ng-template pTemplate="footer">
                             <button pButton pRipple label="View" icon="pi pi-arrow-right"  class="p-button-primary" (click)="onViewApplication(application.applicationGuid)"></button>

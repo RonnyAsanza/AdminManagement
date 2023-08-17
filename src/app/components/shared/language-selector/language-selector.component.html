@@ -1,0 +1,42 @@
+<div class="topbar-profile">
+    <button
+      *ngFor="let language of languages; index as i"
+      type="button" 
+      class="p-link"
+      (click)="onLanguageChanged(language)"
+    >
+      <img 
+            src='{{ "assets/images/flag/" + language.nameEN?.toLowerCase() + ".png" }}' 
+            [alt]="language.nameEN" 
+            [title]="language.twoLetterCode" 
+            class="flag-image"
+        />
+
+    </button>
+</div>
+<!--
+          <span> {{ language.languageCode }} </span>
+<div>
+    <button pButton pRipple label="Submit" label="Language" icon="pi pi-language" (click)="opLanguage.toggle($event)" iconPos="right"></button>
+    <p-overlayPanel #opLanguage [showCloseIcon]="true" [style]="{width: '450px'}">
+        <ng-template pTemplate>
+            <p-autoComplete 
+                [(ngModel)]="selectedLanguage" 
+                [dropdown]="true" 
+                [suggestions]="filteredLanguages" 
+                (completeMethod)="filterLanguage($event)" 
+                field="name"
+                [forceSelection]="true"
+                [autoHighlight]="true"
+                (ngModelChange)="onLanguageChanged($event)"
+                >
+                <ng-template let-language pTemplate="item">
+                    <div class="flex align-items-center gap-2">
+                        <div><strong>{{ language.Name}}</strong> - {{ language.LanguageCode}}</div>
+                    </div>
+                </ng-template>
+            </p-autoComplete>
+        </ng-template>
+    </p-overlayPanel>
+</div>
+-->

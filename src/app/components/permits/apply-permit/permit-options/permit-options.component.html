@@ -3,19 +3,19 @@
         <ng-container>
             <div class="grid" >
                 <div class="col-12">
-                    <h4>Permit Options Status: New</h4>
+                    <h4>{{"ClientPermit.PermitOptionsStatus" | translate}}: {{"ClientPermit.New" | translate}}</h4>
                 </div>
             </div>
             <form class="form-options" [formGroup]="form" (submit)="onSubmitPermit()">
                 <div class="p-fluid p-formgrid grid" >
                     <div class="col-12 xl:col-6">
                         <div class="col-12">
-                            <label>Zone:
+                            <label>{{"ClientPermit.Zone" | translate}}*:
 							    <input type="text" readonly pInputText name="zone" formControlName="zone"/>
                             </label>
                         </div>    
                         <div class="col-12">
-                            <label>Type*:
+                            <label>{{"ClientPermit.Type" | translate}}*:
                                 <p-dropdown 
                                     formControlName="permitType"
                                     name="permitType" 
@@ -31,7 +31,7 @@
                             </label>
                         </div>    
                         <div class="col-12">
-                            <label>Tariff*:
+                            <label>{{"ClientPermit.Tariff" | translate}}*:
                                 <p-dropdown 
                                     formControlName="tariff"
                                     name="tariff" 
@@ -48,7 +48,7 @@
                             </label>
                         </div>    
                         <div class="col-12">
-                            <label>Start Date*:
+                            <label>{{"ClientPermit.StartDate" | translate}}*:
                                 <p-calendar [showIcon]="true"
                                             [touchUI]="true" 
                                             [showButtonBar]="true"
@@ -62,7 +62,7 @@
                             </label>
                         </div>    
                         <div class="col-12">
-                            <label>End Date*:
+                            <label>{{"ClientPermit.EndDate" | translate}}*:
                                 <p-calendar [showIcon]="true"
                                             [touchUI]="true" 
                                             [showButtonBar]="true"

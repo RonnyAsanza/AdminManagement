@@ -21,6 +21,7 @@ import { PanelModule } from 'primeng/panel';
 import { InputNumberModule } from "primeng/inputnumber";
 import { FileUploadModule } from 'primeng/fileupload';
 import { DialogModule } from 'primeng/dialog';
+import { TranslationsModule } from '../../shared/translations.module';
 
 @NgModule({
   imports: [
@@ -42,7 +43,8 @@ import { DialogModule } from 'primeng/dialog';
     PanelModule,
     FileUploadModule,
     DialogModule,
-    ApplyPermitRoutingModule
+    ApplyPermitRoutingModule,
+    TranslationsModule
     
   ],
   declarations: [

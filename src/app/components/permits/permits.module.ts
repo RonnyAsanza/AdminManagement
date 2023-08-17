@@ -23,6 +23,7 @@ import { PermitHomeComponent } from './permit-home/permit-home.component';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ImageModule } from 'primeng/image';
+import { TranslationsModule } from '../shared/translations.module';
 
 @NgModule({
   imports: [
@@ -45,7 +46,8 @@ import { ImageModule } from 'primeng/image';
     PermitssRoutingModule,
     TabMenuModule,
     FileUploadModule,
-    ImageModule
+    ImageModule,
+    TranslationsModule
   ],
   declarations: [
     PermitListComponent,

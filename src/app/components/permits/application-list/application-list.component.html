@@ -10,7 +10,7 @@
                     >
                         <div class="grid">
                             <div class="col-12 xl:col-7 py-0">
-                                <h4>Application #: {{application.applicationKey}}</h4>
+                                <h4>{{"ClientPermit.Application" | translate}} #: {{application.applicationKey}}</h4>
                             </div>
                             <div class="col-12 xl:col-5 py-0">
                                 <span [class]="'applications-badge ' + application?.applicationStatusCode?.toLowerCase()">{{application.applicationStatus}}</span>
@@ -18,13 +18,13 @@
                         </div>
                         <div class="card-content py-2">
                             <span class="card-item">{{"ClientPermit.LicensePlate" | translate}}: {{application.licensePlate}}</span>
-                            <span class="card-item">Type: {{application.permitType}}</span>
-                            <span class="card-item">Adress: Ontario Street</span>
+                            <span class="card-item">{{"ClientPermit.Type" | translate}}: {{application.permitType}}</span>
+                            <span class="card-item">{{"ClientPermit.Adress" | translate}}: Ontario Street</span>
                             <span class="card-item">{{"ClientPermit.StartDate" | translate}}: {{application.startDateUtc | date: 'dd/MMMM/YYYY'}} </span>
                             <span class="card-item">{{"ClientPermit.EndDate" | translate}}:: {{application.expirationDateUtc | date: 'dd/MMMM/YYYY'}}</span>
                         </div>
                         <ng-template pTemplate="footer">
-                            <button pButton pRipple label="View" icon="pi pi-arrow-right"  class="p-button-primary" (click)="onViewApplication(application.applicationGuid)"></button>
+                            <button pButton pRipple [label]="'View' | translate" icon="pi pi-arrow-right"  class="p-button-primary" (click)="onViewApplication(application.applicationGuid)"></button>
                         </ng-template>
                     </p-card>
                 </div>                                                      

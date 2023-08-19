@@ -2,14 +2,17 @@ import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
 import { CompanyService } from '../services/company.service';
 import { Company } from '../models/company.model';
+import { TranslatePipe } from '../components/shared/pipes/translate.pipe';
 
 @Component({
     selector: 'app-menu',
-    templateUrl: './app.menu.component.html'
+    templateUrl: './app.menu.component.html',
+    providers: [ TranslatePipe ]
 })
 export class AppMenuComponent implements OnInit {
 
-    constructor(private companyService: CompanyService) { }
+    constructor(private companyService: CompanyService,
+        private translate: TranslatePipe) { }
     company!: Company;
     model: any[] = [];
 
@@ -17,32 +20,32 @@ export class AppMenuComponent implements OnInit {
         this.company = this.companyService.getLocalCompany();
         this.model = [
             {
-                label: 'Home',
+                label: this.translate.transform('ClientPermit.Home'),
                 icon: 'pi pi-home',
                 items: [
                     {
-                        label: 'Precise',
+                        label: this.translate.transform('ClientPermit.Precise'),
                         icon: 'pi pi-fw pi-home',
                         routerLink: ['/'+this.company.portalAlias+'/']
                     },
                     {
-                        label: 'Activity',
+                        label: this.translate.transform('ClientPermit.Activity'),
                         icon: 'pi pi-fw pi-book',
                         routerLink: ['/'+this.company.portalAlias+'/activity']
                     },
                     {
-                        label: 'Account',
+                        label: this.translate.transform('ClientPermit.Account'),
                         icon: 'pi pi-fw pi-user',
                         routerLink: ['/'+this.company.portalAlias+'/account']
                     }
                 ]
             },
             {
-                label: 'Resources',
+                label: this.translate.transform('ClientPermit.Resources'),
                 icon: 'pi pi-fw pi-briefcase',
                 items: [
                     {
-                        label: 'About',
+                        label: this.translate.transform('ClientPermit.About'),
                         icon: 'pi pi-fw pi-globe',
                         routerLink: ['/about']
                     },

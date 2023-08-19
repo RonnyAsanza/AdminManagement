@@ -3,7 +3,7 @@
         <ng-container>
             <div class="grid" >
                 <div class="col-12">
-                    <h4>Application Information</h4>
+                    <h4>{{"ClientPermit.ApplicationInformation" | translate}}</h4>
                 </div>
             </div>
             <div class="col-12">
@@ -44,7 +44,7 @@
                             </label>
                         </div>
                         <div class="col-12 md:col-6">
-                            <label>Price:
+                            <label>{{"ClientPermit.Price" | translate}}:
                                 <input type="text" pInputText name="tariff" readonly value={{application?.costToClient}} readonly/>
                             </label>
                         </div>
@@ -54,7 +54,7 @@
                             </label>
                         </div>
                         <div class="col-12 md:col-6">
-                            <label>Status:
+                            <label>{{"ClientPermit.Status" | translate}}: 
                                 <input type="text" pInputText name="zone" readonly value={{application?.applicationStatus}} readonly/>
                             </label>
                         </div>
@@ -65,15 +65,15 @@
                                     <div class="col-12">
                                         <div class="grid">
                                             <div class="col-12 md:col-6">
-                                              <p htmlFor="imageUrlLicenseDriver">Drivers License:</p>
-                                              <p *ngIf="!imageUrlLicenseDriver || imageUrlLicenseDriver === ''">You have not uploaded any files</p>
+                                              <p htmlFor="imageUrlLicenseDriver">{{"ClientPermit.DriversLicense" | translate}}:</p>
+                                              <p *ngIf="!imageUrlLicenseDriver || imageUrlLicenseDriver === ''">{{"ClientPermit.NotUploadedFiles" | translate}}</p>
                                               <ng-container *ngIf="imageUrlLicenseDriver && imageUrlLicenseDriver !== ''">
                                                 <embed *ngIf="isPdf(licenseDriver)" [src]="imageUrlLicenseDriver" type="application/pdf" width="250" height="200"/>
                                                 <p-image *ngIf="!isPdf(licenseDriver)" name="imageUrlLicenseDriver" [src]="imageUrlLicenseDriver" alt=" Image License Driver" width="250" [preview]="true"></p-image>
                                               </ng-container>
                                             </div>
                                             <div class="col-12 md:col-6">
-                                              <p htmlFor="driversLicense">Upload New Drivers License:</p>
+                                              <p htmlFor="driversLicense">{{"ClientPermit.UploadNewDriversLicense" | translate}}:</p>
                                               <p-fileUpload 
                                                 #fileUpload 
                                                 name="driversLicense"
@@ -95,15 +95,15 @@
                                     <div class="col-12">
                                         <div class="grid">
                                             <div class="col-12 md:col-6">
-                                                <p htmlFor="imageUrlProofResidence">Proof of Residence:</p>
-                                                <p *ngIf="!imageUrlProofResidence || imageUrlProofResidence === ''">You have not uploaded any files</p>
+                                                <p htmlFor="imageUrlProofResidence">{{"ClientPermit.ClientPermit.ProffOfResidence" | translate}}</p>
+                                                <p *ngIf="!imageUrlProofResidence || imageUrlProofResidence === ''">{{"ClientPermit.NotUploadedFiles" | translate}}</p>
                                                 <ng-container *ngIf="imageUrlProofResidence && imageUrlProofResidence !== ''">
                                                     <embed *ngIf="isPdf(proofResidence)" [src]="imageUrlProofResidence" type="application/pdf" width="250" height="200"/>
                                                     <p-image *ngIf="!isPdf(proofResidence)" name="imageUrlProofResidence" [src]="imageUrlProofResidence" alt=" Image Proof Residence" width="250" [preview]="true"></p-image>
                                                 </ng-container>
                                             </div>
                                             <div class="col-12 md:col-6">
-                                                <p htmlFor="proffOfResidence">Upload New Proof of Residence:</p>
+                                                <p htmlFor="proffOfResidence">{{"ClientPermit.UploadNewProofOfResidence" | translate}}:</p>
                                                 <p-fileUpload 
                                                     #fileUpload 
                                                     name="proofOfResidence"
@@ -128,15 +128,21 @@
                         <div class="col-12">
                             <div class="grid">
                                 <div class="col-12 md:col-6">
-                                    <button pButton pRipple icon="pi pi-times-circle" label="Cancel" class="p-button-danger w-full" (click)="onClickSubmit()">
+                                    <button pButton pRipple icon="pi pi-times-circle" [label]="'ClientPermit.Cancel' | translate" class="p-button-danger w-full" (click)="onClickSubmit()">
                                     </button>
                                 </div>
-                                <div class="col-12 md:col-6" *ngIf="application?.applicationStatusKey === 1 || application?.applicationStatusKey === 3 || application?.applicationStatusKey === 6">
+                                <div class="col-12 md:col-6" *ngIf="application?.applicationStatusKey === 1">
                                     <button pButton pRipple icon="pi pi-save" class="p-button-primary w-full" 
-                                        [label]="application?.applicationStatusKey === 1 ? 'Submit' : 'Re-submit'" 
+                                        [label]="'ClientPermit.Submit' | translate" 
                                         (click)="onClickSubmit()">
                                     </button>
-                                </div>                                                                  
+                                </div>
+                                <div class="col-12 md:col-6" *ngIf="application?.applicationStatusKey === 3 || application?.applicationStatusKey === 6">
+                                    <button pButton pRipple icon="pi pi-save" class="p-button-primary w-full" 
+                                        [label]="'ClientPermit.Resubmit' | translate" 
+                                        (click)="onClickSubmit()">
+                                    </button>
+                                </div>                                                              
                             </div>  
                         </div> 
                     </div>

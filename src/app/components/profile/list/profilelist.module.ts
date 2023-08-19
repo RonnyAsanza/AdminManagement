@@ -7,6 +7,7 @@ import { TableModule } from 'primeng/table';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProfileListComponent } from './profilelist.component';
 import { ProfileListRoutingModule } from './profilelist-routing.module';
+import { TranslationsModule } from '../../shared/translations.module';
 
 @NgModule({
 	imports: [
@@ -16,7 +17,8 @@ import { ProfileListRoutingModule } from './profilelist-routing.module';
 		ButtonModule,
 		InputTextModule,
 		TableModule,
-		ProgressBarModule
+		ProgressBarModule,
+		TranslationsModule
 	],
 	declarations: [ProfileListComponent]
 })

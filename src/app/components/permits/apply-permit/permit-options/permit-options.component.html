@@ -196,12 +196,12 @@
     </div>
 </div>
 
-<p-dialog [(visible)]="confirmationDialog" styleClass="confirmationDialog" [resizable]="false" header="Confirmation" [modal]="true" class="p-fluid">
+<p-dialog [(visible)]="confirmationDialog" styleClass="confirmationDialog" [resizable]="false" [header]="'ClientPermit.Confirmation' | translate" [modal]="true" class="p-fluid">
     <ng-template pTemplate="content">              
         <div class="grid mt-2 ml-2 mr-2">
             <div class="col-12 mt-10">
                 <div class="grid">
-                    <h3>Please confirm the following information is correct: </h3>
+                    <h3>{{"ClientPermit.ConfirmationInformation" | translate}}: </h3>
                     <div class="col-12 py-0">
                         <div class="grid py-0">
                             <div class="col-4">
@@ -225,7 +225,7 @@
                     <div class="col-12 py-0">
                         <div class="grid py-0">
                             <div class="col-4">
-                                <span>Valid: </span>
+                                <span>{{"ClientPermit.Valid" | translate}}: </span>
                             </div> 
                             <div class="col-8">
                                 <span>{{permit?.startDateUtc | date: 'dd/MMMM/YYYY HH:mm' }} -> {{permit?.expirationDateUtc | date: 'dd/MMMM/YYYY HH:mm'}}</span>
@@ -245,7 +245,7 @@
                     <div class="col-12 py-0">
                         <div class="grid py-0">
                             <div class="col-4">
-                                <span>Quantity:</span>
+                                <span>{{"ClientPermit.Quantity" | translate}}:</span>
                             </div> 
                             <div class="col-8">
                                 <span>{{permit?.quantity}}</span>
@@ -255,7 +255,7 @@
                     <div class="col-12 py-0">
                         <div class="grid py-0">
                             <div class="col-4">
-                                <span>Total: </span>
+                                <span>{{"ClientPermit.Total" | translate}}: </span>
                             </div> 
                             <div class="col-8">
                                 <span>CAD {{permit?.total}}</span>
@@ -264,9 +264,7 @@
                     </div> 
                     <div class="col-12 py-0">
                         <p>
-                            These can have additional setting and information for validation,
-                            possibly in a scrollable area if we wanted to show document names
-                            etc.
+                            {{"ClientPermit.AdditionalSetting" | translate}}.
                         </p>
                     </div> 
                 </div>
@@ -274,7 +272,7 @@
         </div>           
     </ng-template>
     <ng-template pTemplate="footer">
-        <button pButton pRipple icon="pi pi-times-circle" label="Cancel" class="p-button-danger" (click)="hideDialog()"></button>
-        <button pButton pRipple icon="pi pi-save" class="p-button-primary" label="Submit" (click)="savePermit()"></button>
+        <button pButton pRipple icon="pi pi-times-circle" [label]="'ClientPermit.Cancel' | translate" class="p-button-danger" (click)="hideDialog()"></button>
+        <button pButton pRipple icon="pi pi-save" class="p-button-primary" [label]="'ClientPermit.Submit' | translate" (click)="savePermit()"></button>
     </ng-template>
 </p-dialog>     

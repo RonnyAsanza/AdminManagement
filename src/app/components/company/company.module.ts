@@ -8,6 +8,7 @@ import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
 import { SharedModule } from '../shared/shared.module';
+import { TranslationsModule } from '../shared/translations.module';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { SharedModule } from '../shared/shared.module';
 		SharedModule,
 		TableModule,
 		ToastModule,
-		InputTextModule
+		InputTextModule,
+		TranslationsModule
 	],
   declarations: [CompanyListComponent]
 })

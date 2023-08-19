@@ -3,7 +3,7 @@
         <ng-container>
             <div class="grid" >
                 <div class="col-12">
-                    <h4>Permit Information</h4>
+                    <h4>{{"ClientPermit.PermitInformation" | translate}}</h4>
                 </div>
             </div>
             <div class="col-12">
@@ -69,11 +69,11 @@
                     <ng-template pTemplate="body" let-paymentType>
                         <tr>
                             <td style="width:30%; min-width:10rem;">
-                                <span class="p-column-title">Code</span>
+                                <span class="p-column-title">{{"ClientPermit.Code" | translate}}</span>
                                 {{paymentType.paymentTypeKey}}
                             </td>
                             <td style="width:14%; min-width:10rem;">
-                                <span class="p-column-title">Name</span>
+                                <span class="p-column-title">{{"ClientPermit.Name" | translate}}</span>
                                 {{paymentType.name}}
                             </td>
                             <td>
@@ -86,7 +86,7 @@
                 </p-table>
 
 
-                <p-panel header="Credit Card Payment" class="line-height-3 m-0" *ngIf="paymentTC === true">
+                <p-panel [header]="'ClientPermit.CreditCardPayment' |translate" class="line-height-3 m-0" *ngIf="paymentTC === true">
                     <div class="grid">
                         <div class="col-12">
                             <div id="outerDiv" >

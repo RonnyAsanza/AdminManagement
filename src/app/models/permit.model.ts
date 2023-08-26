@@ -13,5 +13,9 @@ export class Permit {
     permitStatusKey?: number;
     permitStatusCode?: string;
     permitStatus? : string;
+    companyKey?: number;
+    price?: number;
+    quantity?: number;
+    description?: string;
   }
   

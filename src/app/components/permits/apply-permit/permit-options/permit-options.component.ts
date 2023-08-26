@@ -258,6 +258,8 @@ export class PermitOptionsComponent {
 
   async savePermit() {
     var permit = this.permitService.getLocalApplyPermit();
+    this.hideDialog();
+
     permit.licenseDriver = this.licenseDriver;
     permit.proofReisdence = this.proofReisdence;
 

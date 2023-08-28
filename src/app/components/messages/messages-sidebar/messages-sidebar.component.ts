@@ -2,7 +2,9 @@ import { Component } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { filter, Subscription } from 'rxjs';
+import { Company } from 'src/app/models/company.model';
 import { PermitMessageViewModel } from 'src/app/models/permit-messages.model';
+import { CompanyService } from 'src/app/services/company.service';
 import { PermitMessagesService } from 'src/app/services/permit-messages.service';
 
 @Component({
@@ -15,9 +17,12 @@ export class MessagesSidebarComponent {
   badgeValues: any;
   mailSubscription: Subscription;
   routeSubscription: Subscription;
+  company!: Company;
 
   url: string = '';
-  constructor(private router: Router, private mailService: PermitMessagesService) {
+  constructor(private router: Router, 
+    private companyService: CompanyService,
+    private mailService: PermitMessagesService) {
     this.mailSubscription = this.mailService.mails$.subscribe(data => this.getBadgeValues(data));
 
     this.routeSubscription = this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((params: any) => {
@@ -74,12 +79,13 @@ export class MessagesSidebarComponent {
   }
 
   updateSidebar() {
+    this.company = this.companyService.getLocalCompany();
       this.items = [
-          { label: 'Inbox', icon: 'pi pi-inbox', badge: this.badgeValues.inbox, routerLink: '/apps/mail/inbox' },
-          { label: 'Starred', icon: 'pi pi-star', badge: this.badgeValues.starred, routerLink: '/apps/mail/starred' },
-          { label: 'Sent', icon: 'pi pi-send', badge: this.badgeValues.sent, routerLink: '/apps/mail/sent' },
-          { label: 'Archived', icon: 'pi pi-book', badge: this.badgeValues.archived, routerLink: '/apps/mail/archived' },
-          { label: 'Trash', icon: 'pi pi-trash', badge: this.badgeValues.trash, routerLink: '/apps/mail/trash' }
+          { label: 'Inbox', icon: 'pi pi-inbox', badge: this.badgeValues.inbox, routerLink: this.company.portalAlias+'/messages/inbox' },
+          { label: 'Starred', icon: 'pi pi-star', badge: this.badgeValues.starred, routerLink: this.company.portalAlias+'/messages/starred' },
+          { label: 'Sent', icon: 'pi pi-send', badge: this.badgeValues.sent, routerLink: this.company.portalAlias+'/messages/sent' },
+          { label: 'Archived', icon: 'pi pi-book', badge: this.badgeValues.archived, routerLink: this.company.portalAlias+'/messages/archived' },
+          { label: 'Trash', icon: 'pi pi-trash', badge: this.badgeValues.trash, routerLink: this.company.portalAlias+'/messages/trash' },
       ];
   }
 

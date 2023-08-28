@@ -16,7 +16,6 @@ export class PermitMessagesService {
   mails$ = this.mails.asObservable();
 
   constructor(private http: HttpClient) { }
-
   
   GetUnreadMessages(portalUserKey: number): Observable<PermitsResponse<UnreadMessageViewModel[]>>{
     var urlPath = environment.apiPermitsURL + 'PermitMessages/GetUnreadMessages/'+ portalUserKey;
@@ -31,7 +30,7 @@ export class PermitMessagesService {
   updateMails(data: PermitMessageViewModel[]) {
     this._mails = data;
     this.mails.next(data);
-}
+  }
 
   onStar(id: string) {
     //someloginc
@@ -50,6 +49,8 @@ export class PermitMessagesService {
   onTrash(id: string) {
         //someloginc
  }
+
+
 
 
   onDeleteMultiple(mails: PermitMessageViewModel[]) {

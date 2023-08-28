@@ -42,40 +42,23 @@
 
     <div class="flex flex-column mt-5 mx-auto md:mx-0">
         <span class="mb-2 font-semibold">Notifications</span>
-        <span class="text-color-secondary font-medium mb-5">You have 1 notification</span>
-
-        <ul class="list-none m-0 p-0">
-            <li>
-                <a class="cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150">
-                    <span>
-                        <i class="pi pi-comment text-xl text-primary"></i>
-                    </span>
-                    <div class="ml-3">
-                        <span class="mb-2 font-semibold">The permit for the company Precise was accepted!</span>
-                        <p class="text-color-secondary m-0">5 min ago</p>
-                    </div>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <div class="flex flex-column mt-5 mx-auto md:mx-0">
-        <span class="mb-2 font-semibold">Messages</span>
-        <span class="text-color-secondary font-medium mb-5">You have new messages</span>
-
-        <ul class="list-none m-0 p-0">
-            <li>
-                <a class="cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150">
-                    <span>
-                        <img src="assets/images/avatar/circle/avatar-m-8.png" alt="Avatar" class="w-2rem h-2rem" />
-                    </span>
-                    <div class="ml-3">
-                        <span class="mb-2 font-semibold">System</span>
-                        <p class="text-color-secondary m-0">The permit for the company Precise was accepted!</p>
-                    </div>
-                    <p-badge value="3" class="ml-auto"></p-badge>
-                </a>
-            </li>
-        </ul>
+        <span class="text-color-secondary font-medium mb-5">You have {{ messages.length }} {{ messages.length > 1 ? 'notifications' : 'notification' }}</span>
+        <div *ngFor="let message of messages"
+        >
+            <ul class="list-none m-0 p-0">
+                <li>
+                    <a class="cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150">
+                        <span>
+                            <i [ngClass]="getIconClass(message.messageType!)" class="text-xl"></i>
+                        </span>
+                        <div class="ml-3">
+                            <span class="mb-2 font-semibold">{{message.message}}</span>
+                            <p class="text-color-secondary m-0">{{message.messageSent}}</p>
+                        </div>
+                        <p-badge value="1" class="ml-auto"></p-badge>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 </p-sidebar>

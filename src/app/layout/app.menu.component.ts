@@ -34,6 +34,11 @@ export class AppMenuComponent implements OnInit {
                         routerLink: ['/'+this.company.portalAlias+'/activity']
                     },
                     {
+                        label: 'Messages',
+                        icon: 'pi pi-fw pi-user',
+                        routerLink: ['/'+this.company.portalAlias+'/messages']
+                    },
+                    {
                         label: this.translate.transform('ClientPermit.Account'),
                         icon: 'pi pi-fw pi-user',
                         routerLink: ['/'+this.company.portalAlias+'/account']

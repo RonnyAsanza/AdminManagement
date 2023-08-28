@@ -13,6 +13,7 @@ const routes: Routes = [
         path: ':company', component: AppLayoutComponent,
         children: [
             { path: '', loadChildren: () => import('./components/permits/permits.module').then(m => m.PermitsModule) },
+            { path: 'messages', data: { breadcrumb: 'Messages' }, loadChildren: () => import('./components/messages/messages.module').then(m => m.MessagesModule) },
             { path: 'pages', data: { breadcrumb: 'Pages' }, loadChildren: () => import('./components/pages/pages.module').then(m => m.PagesModule) },
             { path: 'profile', data: { breadcrumb: 'User Management' }, loadChildren: () => import('./components/profile/profile.module').then(m => m.ProfileModule) },
         ],

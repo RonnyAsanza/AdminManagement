@@ -12,10 +12,10 @@ export class MessageArchivedComponent {
   mails: PermitMessageViewModel[] = [];
   subscription: Subscription;
 
-  constructor( private mailService: PermitMessagesService) {
-      this.subscription = this.mailService.mails$.subscribe(data => {
-        this.mails = data.filter(d => d.isArchived);
-      });
+  constructor(private mailService: PermitMessagesService) {
+    this.subscription = this.mailService.mails$.subscribe(data => {
+      this.mails = data.filter(d => d.isArchived);
+    });
   }
 
   ngOnDestroy() {

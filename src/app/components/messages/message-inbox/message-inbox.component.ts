@@ -18,7 +18,7 @@ export class MessageInboxComponent {
     private userService: AuthService, 
     private mailService: PermitMessagesService,) {
       this.subscription = this.mailService.mails$.subscribe(data => {
-        this.mails = data.filter(d => !d.isArchived && !d.isDeleted && !d.hasOwnProperty('sent'));
+        this.mails = data.filter(d => !d.isArchived && !d.isDeleted && !d.isStarred && !d.hasOwnProperty('sent') && d.senderType != "PortalUser");
     });
   }
 

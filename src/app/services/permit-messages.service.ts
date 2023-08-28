@@ -16,14 +16,22 @@ export class PermitMessagesService {
   mails$ = this.mails.asObservable();
 
   constructor(private http: HttpClient) { }
-  
-  GetUnreadMessages(portalUserKey: number): Observable<PermitsResponse<UnreadMessageViewModel[]>>{
-    var urlPath = environment.apiPermitsURL + 'PermitMessages/GetUnreadMessages/'+ portalUserKey;
+
+  replayMessage(permitMessage: PermitMessageViewModel, messageId: string): Observable<PermitsResponse<boolean>> {
+    let email = this._mails.find(x => x.permitMessageKey === messageId);
+    permitMessage.applicationKey = email?.applicationKey;
+    permitMessage.senderType = "2";
+    var urlPath = environment.apiPermitsURL + 'PermitMessages';
+    return this.http.post<PermitsResponse<boolean>>(urlPath, permitMessage);
+  }
+
+  GetUnreadMessages(portalUserKey: number): Observable<PermitsResponse<UnreadMessageViewModel[]>> {
+    var urlPath = environment.apiPermitsURL + 'PermitMessages/GetUnreadMessages/' + portalUserKey;
     return this.http.get<PermitsResponse<UnreadMessageViewModel[]>>(urlPath);
   }
 
-  getAllMessages(portalUserKey: number): Observable<PermitsResponse<PermitMessageViewModel[]>>{
-    var urlPath = environment.apiPermitsURL + 'PermitMessages/GetMessagesByUserkey/'+ portalUserKey;
+  getAllMessages(portalUserKey: number): Observable<PermitsResponse<PermitMessageViewModel[]>> {
+    var urlPath = environment.apiPermitsURL + 'PermitMessages/GetMessagesByUserkey/' + portalUserKey;
     return this.http.get<PermitsResponse<PermitMessageViewModel[]>>(urlPath);
   }
 
@@ -32,35 +40,64 @@ export class PermitMessagesService {
     this.mails.next(data);
   }
 
+  addReplayEmail(data: PermitMessageViewModel) {
+    this._mails.push(data);
+    this.mails.next(this._mails);
+  }
+
+  updateEmail(updatedEmail: PermitMessageViewModel) {
+    const index = this._mails.findIndex(mail => mail.permitMessageKey === updatedEmail.permitMessageKey);
+
+    if (index !== -1) {
+      this._mails[index] = updatedEmail;
+      this.mails.next(this._mails);
+    }
+  }
+
+  onRead(id: string) {
+    return this.updateMessages([id], MessageAction.Readed);
+  }
+
   onStar(id: string) {
-    //someloginc
+    return this.updateMessages([id], MessageAction.IsStarred);
   }
 
   onArchive(id: string) {
-     //someloginc
-
+    return this.updateMessages([id], MessageAction.IsArchived);
   }
 
   onDelete(id: string) {
-        //someloginc
-
+    return this.updateMessages([id], MessageAction.IsDeleted);
   }
 
   onTrash(id: string) {
-        //someloginc
- }
-
-
-
+    return this.updateMessages([id], MessageAction.IsDeleted);
+  }
 
   onDeleteMultiple(mails: PermitMessageViewModel[]) {
-
+    const ids = mails.map(mail => mail.permitMessageKey).filter(Boolean) as string[];
+    return this.updateMessages(ids, MessageAction.IsDeleted);
   }
 
   onArchiveMultiple(mails: PermitMessageViewModel[]) {
-
+    const ids = mails.map(mail => mail.permitMessageKey).filter(Boolean) as string[];
+    return this.updateMessages(ids, MessageAction.IsArchived);
   }
 
+  updateMessages(ids: string[], action: MessageAction): Observable<PermitsResponse<boolean>> {
+    let updatePermitMessageViewModels = ids.map(id => ({
+      PermitMessageKey: id,
+      Action: action
+    }));
 
-  
+    var urlPath = environment.apiPermitsURL + 'PermitMessages/UpdateMessages';
+    return this.http.post<PermitsResponse<boolean>>(urlPath, updatePermitMessageViewModels);
+  }
+}
+
+export enum MessageAction {
+  Readed = 101,
+  IsStarred,
+  IsArchived,
+  IsDeleted,
 }

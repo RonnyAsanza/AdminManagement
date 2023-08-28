@@ -2,6 +2,7 @@ export class PermitMessageViewModel {
     permitMessageKey?: string;
     permitKey?: string;
     applicationKey?: string;
+    portalUserKey?: number;
     applicationGuid?: string;
     message?: string;
     messageType?: string;
@@ -12,4 +13,6 @@ export class PermitMessageViewModel {
     isArchived?: boolean; 
     isDeleted?: boolean; 
     dateCreatedUtc?: Date; 
+    companyKey?: number; 
+    userKey?: number
 }

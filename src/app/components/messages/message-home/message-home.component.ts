@@ -17,17 +17,17 @@ export class MessageHomeComponent {
   user!: PortalUserViewModel;
 
   constructor(
-    private userService: AuthService, 
+    private userService: AuthService,
     private mailService: PermitMessagesService) {
-        this.user = this.userService.getLocalUser();
-        this.mailService.getAllMessages(this.user.portalUserKey!)
-        .subscribe({
-            next: (response) => {
-              this.mails = response.data!;
-              this.mailService.updateMails(this.mails);
-            },
-            error: (e) => {
-            }
-        });
-}
+    this.user = this.userService.getLocalUser();
+    this.mailService.getAllMessages(this.user.portalUserKey!)
+      .subscribe({
+        next: (response) => {
+          this.mails = response.data!;
+          this.mailService.updateMails(this.mails);
+        },
+        error: (e) => {
+        }
+      });
+  }
 }

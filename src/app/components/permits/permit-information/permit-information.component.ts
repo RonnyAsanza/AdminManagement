@@ -13,6 +13,9 @@ import { MonerisService } from 'src/app/services/moneris.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MonerisReceiptRequest } from 'src/app/models/moneris/moneris-receipt-request.model';
 import { ContactDetails, MonerisPreloadRequest } from 'src/app/models/moneris/moneris-preload-request.model';
+import { PdfService } from 'src/app/services/pdf.service';
+import { ReceiptViewModel } from 'src/app/models/receipt.model';
+import { MenuItem } from 'primeng/api';
 
 declare var monerisCheckout: any;
 
@@ -31,6 +34,7 @@ export class PermitInformationComponent implements OnInit {
   expirationDateUtc: string = "";
   paymentTC: boolean = false;
   imp: number = 15;
+
   creditCards: CreditCard[] =
     [
       new CreditCard(1, 'Mario Asanza', 'American Express', '3730****2324', '01/29'),
@@ -43,12 +47,16 @@ export class PermitInformationComponent implements OnInit {
       new PaymentType(2, 'Cash')
     ];
   paymentType!: PaymentType;
+  items: MenuItem[] = [];
+
+  
   constructor(private activatedRoute: ActivatedRoute,
     private datePipe: DatePipe,
     private router: Router,
     private permitService: PermitService,
     private monerisService: MonerisService,
     private authService: AuthService,
+    private pdfService: PdfService,
     private companyService: CompanyService) { }
 
   ngOnInit(): void {
@@ -60,6 +68,7 @@ export class PermitInformationComponent implements OnInit {
         .subscribe((response) => {
           if (response.succeeded) {
             this.permit = response.data!;
+            console.log(this.permit);
             this.startDateUtc = this.datePipe.transform(this.permit.startDateUtc, 'dd/MMMM/YYYY HH:mm')!;
             this.expirationDateUtc = this.datePipe.transform(this.permit.expirationDateUtc, 'dd/MMMM/YYYY HH:mm')!;
           }
@@ -68,6 +77,12 @@ export class PermitInformationComponent implements OnInit {
           }
         });
     });
+
+    this.items = [
+      { label: 'Export PDF', icon: 'pi pi-refresh' },
+      { separator: true },
+      { label: 'Open Receipt', icon: 'pi pi-cog' }
+  ];
   }
 
   OnSelectPaymentType(paymentType: PaymentType) {
@@ -183,37 +198,11 @@ export class PermitInformationComponent implements OnInit {
         }
       }
       );
-
-    setTimeout(() => {
-      alert("pasa")
-      console.log(this.permitService);
-      console.table(this.permitService);
-    }, 10000);
   }
 
-  imprimirContenido() {
-    const contenidoElement = document.getElementById('contenidoParaDescargar');
-    if (!contenidoElement) {
-        console.error('Elemento no encontrado');
-        return;
-    }
-    const contenido = contenidoElement.outerHTML;
 
-    const ventana = window.open('', '_blank');
-    if (!ventana) {
-        console.error('No se pudo abrir la ventana');
-        return;
-    }
-
-    ventana.document.write('<html><head><title>Descargar como PDF</title>');
-    // Añade tus hojas de estilo aquí. Asegúrate de usar rutas absolutas o incluir todo el CSS directamente.
-    ventana.document.write('<link rel="stylesheet" type="text/css" href="../">');
-    ventana.document.write('</head><body>');
-    ventana.document.write(contenido);
-    ventana.document.write('</body></html>');
-    ventana.document.close();
-}
-
-
+  generatePDF(action: string) {
+    this.pdfService.generaReceiptPDF(action, this.permit);
+  }
 
 }

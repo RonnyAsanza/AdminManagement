@@ -1,3 +1,5 @@
+import { ReceiptViewModel } from "./receipt.model";
+
 export class Permit {
     permitKey?: number;
     permitGuid?: string;
@@ -17,5 +19,6 @@ export class Permit {
     price?: number;
     quantity?: number;
     description?: string;
+    monerisReceipt?: ReceiptViewModel;
   }
   

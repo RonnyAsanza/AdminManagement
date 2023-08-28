@@ -29,6 +29,7 @@
     "@fullcalendar/interaction": "^6.0.3",
     "@fullcalendar/timegrid": "^6.0.3",
     "chart.js": "^3.3.2",
+    "pdfmake": "^0.2.5",
     "primeflex": "^3.2.1",
     "primeicons": "6.0.1",
     "primeng": "15.2.0",

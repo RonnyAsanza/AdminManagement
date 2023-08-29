@@ -74,8 +74,8 @@
                     <i
                         class="pi pi-fw text-xl"
                         [ngClass]="{
-                            'pi-star-fill': mail.starred,
-                            'pi-star': !mail.starred
+                            'pi-star-fill': mail.isStarred,
+                            'pi-star': !mail.isStarred
                         }"
                     ></i>
                 </span>
@@ -85,7 +85,8 @@
                     (click)="onGoToApplication(mail.applicationGuid)"
                     class="cursor-pointer link-style"
                 >
-                {{"ClientPermit.Application" | translate}} # {{ mail.applicationKey }}
+                    {{ "ClientPermit.Application" | translate }} #
+                    {{ mail.applicationKey }}
                 </span>
             </td>
             <td

@@ -81,6 +81,8 @@ export class MessageListComponent implements OnInit {
         event.stopPropagation();
     }
 
+    
+
     onArchive(event: Event, mail: PermitMessageViewModel) {
 
         this.mailService.updateAndRefreshEmail(mail, MessageAction.IsArchived)
@@ -95,7 +97,7 @@ export class MessageListComponent implements OnInit {
         event.stopPropagation();
     }
 
-    onDelete(mail: PermitMessageViewModel) {
+    onDelete(event: Event, mail: PermitMessageViewModel) {
 
         this.mailService.updateAndRefreshEmail(mail, MessageAction.IsDeleted)
             .subscribe({
@@ -105,6 +107,7 @@ export class MessageListComponent implements OnInit {
                 error: (e) => {
                 }
             });
+        event.stopPropagation();
     }
 
     onTrash(event: Event, mail: PermitMessageViewModel) {

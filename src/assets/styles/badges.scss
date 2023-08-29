@@ -246,3 +246,27 @@
     }
 
 }
+
+.messages-badge {
+    border-radius: var(--border-radius);
+    padding: .25em .5rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .3px;
+
+    &.success {
+        color: #008000;
+        background-color: #d6ffdf;
+    }
+
+    &.error {
+        color: #8b0000;
+        background-color: #ffd6cc;
+    }
+
+    &.warning {
+        color: #ff7f00;
+        background-color: #ffe0b3;
+    }
+}

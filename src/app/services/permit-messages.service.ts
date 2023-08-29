@@ -36,14 +36,9 @@ export class PermitMessagesService {
     return this.http.get<PermitsResponse<PermitMessageViewModel[]>>(urlPath);
   }
 
-  updateMessages(ids: string[], action: MessageAction): Observable<PermitsResponse<boolean>> {
-    let updatePermitMessageViewModels = ids.map(id => ({
-      PermitMessageKey: id,
-      Action: action
-    }));
-
+  updateMessages(permitMessageViewModels: PermitMessageViewModel[]): Observable<PermitsResponse<boolean>> {
     var urlPath = environment.apiPermitsURL + 'PermitMessages/UpdateMessages';
-    return this.http.post<PermitsResponse<boolean>>(urlPath, updatePermitMessageViewModels);
+    return this.http.post<PermitsResponse<boolean>>(urlPath, permitMessageViewModels);
   }
 
   // --- Utils
@@ -83,30 +78,32 @@ export class PermitMessagesService {
 
   updateAndRefreshEmails(mails: PermitMessageViewModel[], action: MessageAction): Observable<PermitsResponse<boolean>> {
     const ids = mails.map(mail => mail.permitMessageKey!).filter(Boolean) as string[];
-    return this.updateMessages(ids, action).pipe(
+    mails.forEach(mail => {
+      switch (action) {
+        case MessageAction.IsReaded:
+          mail.isReaded = true;
+          break;
+        case MessageAction.IsStarred:
+          mail.isStarred = !mail.isStarred;
+          mail.isDeleted = false;
+          mail.isArchived = false;
+          break;
+        case MessageAction.IsArchived:
+          mail.isArchived = !mail.isArchived;
+          mail.isStarred = false;
+          mail.isDeleted = false;
+          break;
+        case MessageAction.IsDeleted:
+          mail.isDeleted = !mail.isDeleted;
+          mail.isArchived = false;
+          mail.isStarred = false;
+          break;
+      }
+    });
+    return this.updateMessages(mails).pipe(
       tap((response: PermitsResponse<boolean>) => {
         if (response && response.data) {
           mails.forEach(mail => {
-            switch (action) {
-              case MessageAction.IsReaded:
-                mail.isReaded = true;
-                break;
-              case MessageAction.IsStarred:
-                mail.isStarred = true;
-                mail.isDeleted = false;
-                mail.isArchived = false;
-                break;
-              case MessageAction.IsArchived:
-                mail.isArchived = true;
-                mail.isStarred = false;
-                mail.isDeleted = false;
-                break;
-              case MessageAction.IsDeleted:
-                mail.isDeleted = true;
-                mail.isArchived = false;
-                mail.isStarred = false;
-                break;
-            }
             this.updateEmail(mail);
           });
         }

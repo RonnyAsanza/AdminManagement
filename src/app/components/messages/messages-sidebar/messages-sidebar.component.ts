@@ -52,7 +52,7 @@ export class MessagesSidebarComponent {
         for (let i = 0; i < data.length; i++) {
             let mail = data[i];
 
-            if (!mail.isArchived && !mail.isDeleted && !mail.isStarred && !mail.hasOwnProperty('sent') && mail.senderType != 'PortalUser') {
+            if (!mail.isArchived && !mail.isDeleted && !mail.isReaded && !mail.hasOwnProperty('sent') && mail.senderType != 'PortalUser') {
                 inbox.push(mail);
             }
             if (mail.isStarred && !mail.isArchived && !mail.isDeleted) {

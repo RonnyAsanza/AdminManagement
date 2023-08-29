@@ -6,7 +6,7 @@ import { PortalUserViewModel } from 'src/app/models/auth/portal-user.model';
 import { Company } from 'src/app/models/company.model';
 import { PermitMessageViewModel } from 'src/app/models/permit-messages.model';
 import { CompanyService } from 'src/app/services/company.service';
-import { PermitMessagesService } from 'src/app/services/permit-messages.service';
+import { MessageAction, PermitMessagesService } from 'src/app/services/permit-messages.service';
 
 @Component({
     selector: 'app-message-list',
@@ -21,7 +21,6 @@ export class MessageListComponent implements OnInit {
     mail: PermitMessageViewModel = {};
     dialogVisible: boolean = false;
     menuItems: MenuItem[] = [];
-
 
     constructor(private router: Router,
         private companyService: CompanyService,
@@ -54,11 +53,9 @@ export class MessageListComponent implements OnInit {
     }
 
     onRowSelect(mail: PermitMessageViewModel) {
-        this.mailService.onRead(mail.permitMessageKey!)
+        this.mailService.updateAndRefreshEmail(mail, MessageAction.IsReaded)
             .subscribe({
                 next: (response) => {
-                    mail.isReaded = true;
-                    this.mailService.updateEmail(mail);
                 },
                 error: (e) => {
                 }
@@ -70,13 +67,9 @@ export class MessageListComponent implements OnInit {
 
     onStar(event: Event, mail: PermitMessageViewModel) {
 
-        this.mailService.onStar(mail.permitMessageKey!)
+        this.mailService.updateAndRefreshEmail(mail, MessageAction.IsStarred)
             .subscribe({
                 next: (response) => {
-                    mail.isStarred = true;
-                    mail.isDeleted = false;
-                    mail.isArchived = false;
-                    this.mailService.updateEmail(mail);
                     this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Mail Star', life: 3000 });
                 },
                 error: (e) => {
@@ -88,13 +81,9 @@ export class MessageListComponent implements OnInit {
 
     onArchive(event: Event, mail: PermitMessageViewModel) {
 
-        this.mailService.onArchive(mail.permitMessageKey!)
+        this.mailService.updateAndRefreshEmail(mail, MessageAction.IsArchived)
             .subscribe({
                 next: (response) => {
-                    mail.isArchived = true;
-                    mail.isStarred = false;
-                    mail.isDeleted = false;
-                    this.mailService.updateEmail(mail);
                     this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Mail archived', life: 3000 });
                 },
                 error: (e) => {
@@ -104,20 +93,11 @@ export class MessageListComponent implements OnInit {
         event.stopPropagation();
     }
 
-    onBookmark(event: Event, id: number) {
-        /* event.stopPropagation();
-         this.mailService.onBookmark(id);*/
-    }
-
     onDelete(mail: PermitMessageViewModel) {
 
-        this.mailService.onDelete(mail.permitMessageKey!)
+        this.mailService.updateAndRefreshEmail(mail, MessageAction.IsDeleted)
             .subscribe({
                 next: (response) => {
-                    mail.isDeleted = true;
-                    mail.isArchived = false;
-                    mail.isStarred = false;
-                    this.mailService.updateEmail(mail);
                     this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Mail deleted', life: 3000 });
                 },
                 error: (e) => {
@@ -125,9 +105,23 @@ export class MessageListComponent implements OnInit {
             });
     }
 
+    onTrash(event: Event, mail: PermitMessageViewModel) {
+
+        this.mailService.updateAndRefreshEmail(mail, MessageAction.IsDeleted)
+            .subscribe({
+                next: (response) => {
+                    this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Mail deleted', life: 3000 });
+                },
+                error: (e) => {
+                }
+            });
+
+        event.stopPropagation();
+    }
+
     onDeleteMultiple() {
         if (this.selectedMails && this.selectedMails.length > 0) {
-            this.mailService.onDeleteMultiple(this.selectedMails)
+            this.mailService.updateAndRefreshEmails(this.selectedMails, MessageAction.IsDeleted)
                 .subscribe({
                     next: (response) => {
                         this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Mails deleted', life: 3000 });
@@ -138,18 +132,10 @@ export class MessageListComponent implements OnInit {
         }
     }
 
-    onSpamMultiple() {
-        /*   if (this.selectedMails && this.selectedMails.length > 0) {
-               this.mailService.onSpamMultiple(this.selectedMails);
-               this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Moved to spam', life: 3000 });
-           }
-         */
-    }
-
     onArchiveMultiple() {
 
         if (this.selectedMails && this.selectedMails.length > 0) {
-            this.mailService.onArchiveMultiple(this.selectedMails)
+            this.mailService.updateAndRefreshEmails(this.selectedMails, MessageAction.IsArchived)
                 .subscribe({
                     next: (response) => {
                         this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Moved to archive', life: 3000 });
@@ -160,32 +146,29 @@ export class MessageListComponent implements OnInit {
         }
     }
 
-    onTrash(event: Event, mail: PermitMessageViewModel) {
-
-        this.mailService.onTrash(mail.permitMessageKey!)
-            .subscribe({
-                next: (response) => {
-                    mail.isDeleted = true;
-                    mail.isArchived = false;
-                    mail.isStarred = false;
-                    this.mailService.updateEmail(mail);
-                },
-                error: (e) => {
-                }
-            });
-
-        event.stopPropagation();
-    }
-
     onReply(event: Event, mail: PermitMessageViewModel) {
-        event.stopPropagation();
-        this.mail = mail;
-        this.dialogVisible = true;
+
+        this.onRowSelect(mail);
+
+        // event.stopPropagation();
+        // this.mail = mail;
+        // this.dialogVisible = true;
     }
 
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
     }
 
+    onSpamMultiple() {
+        /*   if (this.selectedMails && this.selectedMails.length > 0) {
+               this.mailService.onSpamMultiple(this.selectedMails);
+               this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Moved to spam', life: 3000 });
+           }
+         */
+    }
 
+    onBookmark(event: Event, id: number) {
+        /* event.stopPropagation();
+         this.mailService.onBookmark(id);*/
+    }
 }

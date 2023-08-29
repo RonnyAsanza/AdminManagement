@@ -4,5 +4,6 @@ export class UnreadMessageViewModel {
     applicationKey?: string;
     message?: string;
     messageType?: string;
-    messageSent?: string;   
+    messageSent?: string;
+    senderType?: string;
 }

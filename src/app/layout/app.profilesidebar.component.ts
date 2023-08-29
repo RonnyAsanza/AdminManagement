@@ -5,7 +5,7 @@ import { CompanyService } from '../services/company.service';
 import { AuthService } from '../services/auth/auth.service';
 import { PortalUserViewModel } from '../models/auth/portal-user.model';
 import { UnreadMessageViewModel } from '../models/unread-messages.model';
-import { PermitMessagesService } from '../services/permit-messages.service';
+import { MessageAction, PermitMessagesService } from '../services/permit-messages.service';
 import { Company } from 'src/app/models/company.model';
 import { PermitMessageViewModel } from '../models/permit-messages.model';
 
@@ -69,11 +69,9 @@ export class AppProfileSidebarComponent {
     if (mail && this.company && this.company.portalAlias) {
       this.visible = false;
 
-      this.permitMessagesService.onRead(mail.permitMessageKey!)
+      this.permitMessagesService.updateAndRefreshEmail(mail, MessageAction.IsReaded)
         .subscribe({
           next: (response) => {
-            mail.isReaded = true;
-            // this.permitMessagesService.updateEmail(mail);
             const index = this.messages.findIndex(x => x.permitMessageKey === mail.permitMessageKey);
             if (index !== -1) {
               this.messages.splice(index, 1);

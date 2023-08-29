@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { MessageService } from 'primeng/api';
 import { PermitMessageViewModel } from 'src/app/models/permit-messages.model';
-import { PermitMessagesService } from 'src/app/services/permit-messages.service';
+import { PermitMessagesService, SenderType } from 'src/app/services/permit-messages.service';
 import { CompanyService } from 'src/app/services/company.service';
 import { Company } from 'src/app/models/company.model';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -66,8 +66,12 @@ export class MessageDetailComponent implements OnDestroy {
       this.mailService.replayMessage(this.newMail, this.messageId)
         .subscribe({
           next: (response) => {
-            this.newMail.senderType = "PortalUser";
+            
+            let id = response.data;
+            this.newMail.senderType = SenderType[SenderType.PortalUser];
+            this.newMail.permitMessageKey = id;
             this.mailService.addReplayEmail(this.newMail);
+
             this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Mail sent' });
             this.router.navigate(['/' + this.company.portalAlias + '/messages/inbox']);
           },

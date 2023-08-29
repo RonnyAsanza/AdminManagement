@@ -6,6 +6,7 @@ import { PermitsResponse } from './permits-response.model';
 import { UnreadMessageViewModel } from '../models/unread-messages.model';
 import { PermitMessageViewModel } from '../models/permit-messages.model';
 import { BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +18,12 @@ export class PermitMessagesService {
 
   constructor(private http: HttpClient) { }
 
-  replayMessage(permitMessage: PermitMessageViewModel, messageId: string): Observable<PermitsResponse<boolean>> {
+  replayMessage(permitMessage: PermitMessageViewModel, messageId: string): Observable<PermitsResponse<string>> {
     let email = this._mails.find(x => x.permitMessageKey === messageId);
     permitMessage.applicationKey = email?.applicationKey;
-    permitMessage.senderType = "2";
+    permitMessage.senderType = SenderType.PortalUser.toString();
     var urlPath = environment.apiPermitsURL + 'PermitMessages';
-    return this.http.post<PermitsResponse<boolean>>(urlPath, permitMessage);
+    return this.http.post<PermitsResponse<string>>(urlPath, permitMessage);
   }
 
   GetUnreadMessages(portalUserKey: number): Observable<PermitsResponse<UnreadMessageViewModel[]>> {
@@ -35,6 +36,17 @@ export class PermitMessagesService {
     return this.http.get<PermitsResponse<PermitMessageViewModel[]>>(urlPath);
   }
 
+  updateMessages(ids: string[], action: MessageAction): Observable<PermitsResponse<boolean>> {
+    let updatePermitMessageViewModels = ids.map(id => ({
+      PermitMessageKey: id,
+      Action: action
+    }));
+
+    var urlPath = environment.apiPermitsURL + 'PermitMessages/UpdateMessages';
+    return this.http.post<PermitsResponse<boolean>>(urlPath, updatePermitMessageViewModels);
+  }
+
+  // --- Utils
   updateMails(data: PermitMessageViewModel[]) {
     this._mails = data;
     this.mails.next(data);
@@ -54,50 +66,63 @@ export class PermitMessagesService {
     }
   }
 
-  onRead(id: string) {
-    return this.updateMessages([id], MessageAction.Readed);
+  sendAndAddReplayMessage(newMail: PermitMessageViewModel, messageId: string): Observable<PermitsResponse<string>> {
+    return this.replayMessage(newMail, messageId).pipe(
+      tap((response: PermitsResponse<string>) => {
+        if (response && response.data) {
+          newMail.senderType = SenderType[SenderType.PortalUser];
+          this.addReplayEmail(newMail);
+        }
+      })
+    );
   }
 
-  onStar(id: string) {
-    return this.updateMessages([id], MessageAction.IsStarred);
+  updateAndRefreshEmail(mail: PermitMessageViewModel, action: MessageAction): Observable<PermitsResponse<boolean>> {
+    return this.updateAndRefreshEmails([mail], action);
   }
 
-  onArchive(id: string) {
-    return this.updateMessages([id], MessageAction.IsArchived);
-  }
-
-  onDelete(id: string) {
-    return this.updateMessages([id], MessageAction.IsDeleted);
-  }
-
-  onTrash(id: string) {
-    return this.updateMessages([id], MessageAction.IsDeleted);
-  }
-
-  onDeleteMultiple(mails: PermitMessageViewModel[]) {
-    const ids = mails.map(mail => mail.permitMessageKey).filter(Boolean) as string[];
-    return this.updateMessages(ids, MessageAction.IsDeleted);
-  }
-
-  onArchiveMultiple(mails: PermitMessageViewModel[]) {
-    const ids = mails.map(mail => mail.permitMessageKey).filter(Boolean) as string[];
-    return this.updateMessages(ids, MessageAction.IsArchived);
-  }
-
-  updateMessages(ids: string[], action: MessageAction): Observable<PermitsResponse<boolean>> {
-    let updatePermitMessageViewModels = ids.map(id => ({
-      PermitMessageKey: id,
-      Action: action
-    }));
-
-    var urlPath = environment.apiPermitsURL + 'PermitMessages/UpdateMessages';
-    return this.http.post<PermitsResponse<boolean>>(urlPath, updatePermitMessageViewModels);
+  updateAndRefreshEmails(mails: PermitMessageViewModel[], action: MessageAction): Observable<PermitsResponse<boolean>> {
+    const ids = mails.map(mail => mail.permitMessageKey!).filter(Boolean) as string[];
+    return this.updateMessages(ids, action).pipe(
+      tap((response: PermitsResponse<boolean>) => {
+        if (response && response.data) {
+          mails.forEach(mail => {
+            switch (action) {
+              case MessageAction.IsReaded:
+                mail.isReaded = true;
+                break;
+              case MessageAction.IsStarred:
+                mail.isStarred = true;
+                mail.isDeleted = false;
+                mail.isArchived = false;
+                break;
+              case MessageAction.IsArchived:
+                mail.isArchived = true;
+                mail.isStarred = false;
+                mail.isDeleted = false;
+                break;
+              case MessageAction.IsDeleted:
+                mail.isDeleted = true;
+                mail.isArchived = false;
+                mail.isStarred = false;
+                break;
+            }
+            this.updateEmail(mail);
+          });
+        }
+      })
+    );
   }
 }
 
 export enum MessageAction {
-  Readed = 101,
+  IsReaded = 101,
   IsStarred,
   IsArchived,
   IsDeleted,
+}
+
+export enum SenderType {
+  System = 1,
+  PortalUser = 2
 }

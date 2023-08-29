@@ -7,11 +7,13 @@ import { Company } from 'src/app/models/company.model';
 import { PermitMessageViewModel } from 'src/app/models/permit-messages.model';
 import { CompanyService } from 'src/app/services/company.service';
 import { MessageAction, PermitMessagesService } from 'src/app/services/permit-messages.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
     selector: 'app-message-list',
     templateUrl: './message-list.component.html',
-    styleUrls: ['./message-list.component.scss']
+    styleUrls: ['./message-list.component.scss'],
+    providers: [MessageService, TranslatePipe]
 })
 export class MessageListComponent implements OnInit {
     @Input() mails!: PermitMessageViewModel[];
@@ -25,14 +27,14 @@ export class MessageListComponent implements OnInit {
     constructor(private router: Router,
         private companyService: CompanyService,
         private mailService: PermitMessagesService,
-        private messageService: MessageService) {
+        private messageService: MessageService,
+        private translate: TranslatePipe) {
     }
 
     ngOnInit(): void {
-
         this.menuItems = [
-            { label: 'Archive', icon: 'pi pi-fw pi-file', command: () => this.onArchiveMultiple() },
-            { label: 'Delete', icon: 'pi pi-fw pi-trash', command: () => this.onDeleteMultiple() },
+            { label: this.translate.transform('ClientPermit.Archive'), icon: 'pi pi-fw pi-file', command: () => this.onArchiveMultiple() },
+            { label: this.translate.transform('ClientPermit.Delete'), icon: 'pi pi-fw pi-trash', command: () => this.onDeleteMultiple() },
         ];
     }
 

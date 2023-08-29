@@ -6,11 +6,14 @@ import { Company } from 'src/app/models/company.model';
 import { PermitMessageViewModel } from 'src/app/models/permit-messages.model';
 import { CompanyService } from 'src/app/services/company.service';
 import { PermitMessagesService } from 'src/app/services/permit-messages.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
     selector: 'app-messages-sidebar',
     templateUrl: './messages-sidebar.component.html',
-    styleUrls: ['./messages-sidebar.component.scss']
+    styleUrls: ['./messages-sidebar.component.scss'],
+    providers: [TranslatePipe]
+
 })
 export class MessagesSidebarComponent {
     items: MenuItem[] = [];
@@ -22,7 +25,8 @@ export class MessagesSidebarComponent {
     url: string = '';
     constructor(private router: Router,
         private companyService: CompanyService,
-        private mailService: PermitMessagesService) {
+        private mailService: PermitMessagesService,
+        private translate: TranslatePipe) {
         this.mailSubscription = this.mailService.mails$.subscribe(data => this.getBadgeValues(data));
 
         this.routeSubscription = this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((params: any) => {
@@ -81,11 +85,11 @@ export class MessagesSidebarComponent {
     updateSidebar() {
         this.company = this.companyService.getLocalCompany();
         this.items = [
-            { label: 'Inbox', icon: 'pi pi-inbox', badge: this.badgeValues.inbox, routerLink: this.company.portalAlias + '/messages/inbox' },
-            { label: 'Starred', icon: 'pi pi-star', badge: this.badgeValues.starred, routerLink: this.company.portalAlias + '/messages/starred' },
-            { label: 'Sent', icon: 'pi pi-send', badge: this.badgeValues.sent, routerLink: this.company.portalAlias + '/messages/sent' },
-            { label: 'Archived', icon: 'pi pi-book', badge: this.badgeValues.archived, routerLink: this.company.portalAlias + '/messages/archived' },
-            { label: 'Trash', icon: 'pi pi-trash', badge: this.badgeValues.trash, routerLink: this.company.portalAlias + '/messages/trash' },
+            { label: this.translate.transform('ClientPermit.Inbox'), icon: 'pi pi-inbox', badge: this.badgeValues.inbox, routerLink: this.company.portalAlias + '/messages/inbox' },
+            { label: this.translate.transform('ClientPermit.Starred'), icon: 'pi pi-star', badge: this.badgeValues.starred, routerLink: this.company.portalAlias + '/messages/starred' },
+            { label: this.translate.transform('ClientPermit.Sent'), icon: 'pi pi-send', badge: this.badgeValues.sent, routerLink: this.company.portalAlias + '/messages/sent' },
+            { label: this.translate.transform('ClientPermit.Archived'), icon: 'pi pi-book', badge: this.badgeValues.archived, routerLink: this.company.portalAlias + '/messages/archived' },
+            { label: this.translate.transform('ClientPermit.Trash'), icon: 'pi pi-trash', badge: this.badgeValues.trash, routerLink: this.company.portalAlias + '/messages/trash' },
         ];
     }
 

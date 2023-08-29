@@ -45,7 +45,7 @@
                     pInputText
                     type="text"
                     (input)="onGlobalFilter(dt, $event)"
-                    placeholder="Search Mail"
+                    [placeholder]="'ClientPermit.SearchMail' | translate"
                     class="w-full sm:w-auto"
                 />
             </span>
@@ -85,7 +85,7 @@
                     (click)="onGoToApplication(mail.applicationGuid)"
                     class="cursor-pointer link-style"
                 >
-                    Application # {{ mail.applicationKey }}
+                {{"ClientPermit.Application" | translate}} # {{ mail.applicationKey }}
                 </span>
             </td>
             <td
@@ -127,7 +127,7 @@
                             icon="pi pi-inbox"
                             class="h-2rem w-2rem mr-2"
                             (click)="onArchive($event, mail)"
-                            pTooltip="Archive"
+                            [pTooltip]="'ClientPermit.Archive' | translate"
                             tooltipPosition="top"
                             type="button"
                         ></button>
@@ -137,7 +137,7 @@
                             icon="pi pi-reply"
                             class="p-button-secondary h-2rem w-2rem mr-2"
                             (click)="onReply($event, mail)"
-                            pTooltip="Reply"
+                            [pTooltip]="'ClientPermit.Reply' | translate"
                             tooltipPosition="top"
                             type="button"
                         ></button>
@@ -147,7 +147,7 @@
                             icon="pi pi-trash"
                             class="p-button-danger h-2rem w-2rem"
                             (click)="onTrash($event, mail)"
-                            pTooltip="Trash"
+                            [pTooltip]="'ClientPermit.Trash' | translate"
                             tooltipPosition="top"
                             type="button"
                         ></button>

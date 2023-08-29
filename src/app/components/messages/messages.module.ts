@@ -45,7 +45,8 @@ import { MessageArchivedComponent } from './message-archived/message-archived.co
     EditorModule,
     ToastModule,
     FileUploadModule,
-    DialogModule
+    DialogModule,
+    TranslationsModule
   ],
   declarations: [
     MessageListComponent,

@@ -150,7 +150,7 @@ export class PermitInformationComponent implements OnInit {
             myCheckout.startCheckout(this.ticket);
           }
           else {
-            console.log("ERRORRRRRRR- MonerisPreloadRequest");
+            console.log("ERRORRRRRRR - MonerisPreloadRequest");
           }
 
         }

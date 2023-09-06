@@ -13,22 +13,22 @@ export class ApplicationService {
   constructor(private http: HttpClient) { }
 
   getApplicationbyId(applicationKey: string): Observable<PermitsResponse<Application>>{
-    var urlPath = environment.apiPermitsURL + 'Application/GetApplicationById/'+applicationKey;
+    var urlPath = environment.apiPermitsURL + 'Application/'+applicationKey;
     return this.http.get<PermitsResponse<Application>>(urlPath);
   }
 
   getApplicationsByUser(): Observable<PermitsResponse<Application[]>>{
-    var urlPath = environment.apiPermitsURL + 'Application/GetApplicationsByUser';
+    var urlPath = environment.apiPermitsURL + 'Application';
     return this.http.get<PermitsResponse<Application[]>>(urlPath);
   }
 
   submitApplication(applicationKey: string): Observable<PermitsResponse<number>>{
-    var urlPath = environment.apiPermitsURL + 'Application/SubmitApplication/'+ applicationKey;
+    var urlPath = environment.apiPermitsURL + 'Application/submit/'+ applicationKey;
     return this.http.put<PermitsResponse<number>>(urlPath, null);
   }
   
   cancelApplication(applicationKey: string): Observable<PermitsResponse<number>>{
-    var urlPath = environment.apiPermitsURL + 'Application/submitApplication'+ applicationKey;
+    var urlPath = environment.apiPermitsURL + 'Application/cancel'+ applicationKey;
     return this.http.delete<PermitsResponse<number>>(urlPath);
   }
 
@@ -62,7 +62,7 @@ export class ApplicationService {
       formData.append('proofReisdence', reSubmitApplication.proofReisdence, reSubmitApplication.proofReisdence.name);
     }
 
-    var urlPath = environment.apiPermitsURL + 'Application/ReSubmitPermit';
+    var urlPath = environment.apiPermitsURL + 'Application/resubmit';
     return this.http.patch<PermitsResponse<number>>(urlPath, formData);
   }
 

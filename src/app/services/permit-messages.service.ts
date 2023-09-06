@@ -27,18 +27,18 @@ export class PermitMessagesService {
   }
 
   GetUnreadMessages(portalUserKey: number): Observable<PermitsResponse<UnreadMessageViewModel[]>> {
-    var urlPath = environment.apiPermitsURL + 'PermitMessages/GetUnreadMessages/' + portalUserKey;
+    var urlPath = environment.apiPermitsURL + 'PermitMessages/unread/user/' + portalUserKey;
     return this.http.get<PermitsResponse<UnreadMessageViewModel[]>>(urlPath);
   }
 
   getAllMessages(portalUserKey: number): Observable<PermitsResponse<PermitMessageViewModel[]>> {
-    var urlPath = environment.apiPermitsURL + 'PermitMessages/GetMessagesByUserkey/' + portalUserKey;
+    var urlPath = environment.apiPermitsURL + 'PermitMessages/user/' + portalUserKey;
     return this.http.get<PermitsResponse<PermitMessageViewModel[]>>(urlPath);
   }
 
   updateMessages(permitMessageViewModels: PermitMessageViewModel[]): Observable<PermitsResponse<boolean>> {
-    var urlPath = environment.apiPermitsURL + 'PermitMessages/UpdateMessages';
-    return this.http.post<PermitsResponse<boolean>>(urlPath, permitMessageViewModels);
+    var urlPath = environment.apiPermitsURL + 'PermitMessages';
+    return this.http.put<PermitsResponse<boolean>>(urlPath, permitMessageViewModels);
   }
 
   // --- Utils

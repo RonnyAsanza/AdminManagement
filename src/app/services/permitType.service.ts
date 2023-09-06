@@ -13,7 +13,7 @@ export class PermitTypeService {
 	constructor(private http: HttpClient) { }
 
     getPermitsTypeByCompanyKey(companykey: number): Observable<PermitsResponse<PermitTypeViewModel[]>>{
-		var urlPath = environment.apiPermitsURL + 'PermitType/GetPermitsTypeByCompany/'+companykey;
+		var urlPath = environment.apiPermitsURL + 'PermitType/company/'+companykey;
 		return this.http.get<PermitsResponse<PermitTypeViewModel[]>>(urlPath);
 	}
 

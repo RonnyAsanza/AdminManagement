@@ -24,7 +24,7 @@ export class RateEngineService {
       .set('EndTime', rateEngineRequest.EndTime?.toString()!)
       .set('TCP_Calculate_Add', rateEngineRequest.TCP_Calculate_Add);
   
-    var urlPath = environment.apiPermitsURL + 'ExternalTariff/GetRateEngineByEndDateBased';
+    var urlPath = environment.apiPermitsURL + 'ExternalTariff/rate-engine/enddate-based';
     var response = this.http.get<PermitsResponse<RateEngineByEndDateBasedRResponse>>(urlPath, { params: params });
     return response;
   }  

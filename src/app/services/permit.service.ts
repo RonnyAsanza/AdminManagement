@@ -59,17 +59,17 @@ export class PermitService {
       formData.append('proofReisdence', applyPermit.proofReisdence, applyPermit.proofReisdence.name);
     }
 
-    var urlPath = environment.apiPermitsURL + 'Application/ApplyPermit';
+    var urlPath = environment.apiPermitsURL + 'Application/apply';
     return this.http.post<PermitsResponse<number>>(urlPath, formData);
   }
 
   getPermitbyId(permitId: string): Observable<PermitsResponse<Permit>>{
-    var urlPath = environment.apiPermitsURL + 'Permit/GetPermitbyId/'+permitId;
+    var urlPath = environment.apiPermitsURL + 'Permit/'+permitId;
     return this.http.get<PermitsResponse<Permit>>(urlPath);
   }
 
   getPermitsByUser(): Observable<PermitsResponse<Permit[]>>{
-    var urlPath = environment.apiPermitsURL + 'Permit/GetPermitsByUser';
+    var urlPath = environment.apiPermitsURL + 'Permit';
     return this.http.get<PermitsResponse<Permit[]>>(urlPath);
   }
 

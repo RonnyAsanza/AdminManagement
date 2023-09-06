@@ -26,7 +26,7 @@ export class TranslateService {
     }
 
     return new Promise<TranslationsModel[]>(resolve => {
-      var urlPath = environment.apiTranslationServiceURL + 'Translation/GetTranslationsByLanguage/'+languageCode;
+      var urlPath = environment.apiTranslationServiceURL + 'Translation/language/'+languageCode;
       this.http.get<PermitsResponse<TranslationsModel[]>>(urlPath)
       .subscribe({
         next: (response) => {

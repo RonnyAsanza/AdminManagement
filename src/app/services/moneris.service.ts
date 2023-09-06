@@ -25,9 +25,7 @@ export class MonerisService {
     let data = {
       MonerisRequestViewModel: request
       };
-    var urlPath = environment.apiPermitsURL + 'Moneris/MonerisPreloadRequest';
-    console.log(urlPath);
-    console.log(data);
+    var urlPath = environment.apiPermitsURL + 'Moneris/preload-request';
     return this.http.post<PermitsResponse<MonerisPreloadResponse>>(urlPath, data);
   }
 
@@ -35,7 +33,7 @@ export class MonerisService {
     let data = {
         MonerisReceiptRequestViewModel: request
       };
-    var urlPath = environment.apiPermitsURL + 'Moneris/MonerisReceiptRequest';
+    var urlPath = environment.apiPermitsURL + 'Moneris/receipt-request';
     return this.http.post<PermitsResponse<MonerisReceiptResponse>>(urlPath, data);
   }
 

@@ -13,12 +13,12 @@ export class CompanyService {
   }
 
   getAllCompanies(): Observable<PermitsResponse<Company[]>>{
-    var urlPath = environment.apiPermitsURL + 'Company/GetAllCompanies';
+    var urlPath = environment.apiPermitsURL + 'Company';
     return this.http.get<PermitsResponse<Company[]>>(urlPath);
   }
 
   getCompanyConfigurations(companyAlias: string): Observable<PermitsResponse<Company>>{
-    var urlPath = environment.apiPermitsURL + 'Company/GetCompanyConfigurations/'+companyAlias;
+    var urlPath = environment.apiPermitsURL + 'Company/alias/'+companyAlias+'/configurations';
     return this.http.get<PermitsResponse<Company>>(urlPath);
   }
 

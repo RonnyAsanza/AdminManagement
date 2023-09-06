@@ -37,13 +37,11 @@ export class MessageDetailComponent implements OnDestroy {
     this.route.paramMap.subscribe(params => {
       var id = params.get('id');
       this.messageId = id!;
-      console.log(id);
     });
 
     this.subscription = this.route.params.pipe(
       switchMap(params => {
         this.id = params['id'];
-        console.log(this.id);
         return this.mailService.mails$
       })
     ).subscribe(data => {

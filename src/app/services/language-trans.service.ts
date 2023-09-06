@@ -14,7 +14,7 @@ export class LanguageTransService {
   }
 
   getAllLanguages(): Observable<PermitsResponse<LanguageModel[]>>{
-    var urlPath = environment.apiTranslationServiceURL + 'Language/GetAllLanguages';
+    var urlPath = environment.apiTranslationServiceURL + 'Language';
     return this.http.get<PermitsResponse<LanguageModel[]>>(urlPath);
   }
 

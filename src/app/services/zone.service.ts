@@ -13,7 +13,7 @@ export class ZoneService {
 	constructor(private http: HttpClient) { }
 
 	getZonesByCompany(companykey: number): Observable<PermitsResponse<ZoneViewModel[]>>{
-		var urlPath = environment.apiPermitsURL + 'Zone/GetZonesByCompanyKey/'+companykey;
+		var urlPath = environment.apiPermitsURL + 'Zone/company/'+companykey;
 		return this.http.get<PermitsResponse<ZoneViewModel[]>>(urlPath);
 	}
 

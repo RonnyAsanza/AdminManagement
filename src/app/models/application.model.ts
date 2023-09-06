@@ -5,6 +5,7 @@ export class Application {
     zone? : string;
     permitTypeKey?: number;
     permitType? : string;
+    price?: number;
     tariffKey?: number;
     tariff? : string;
     licensePlate? : string;

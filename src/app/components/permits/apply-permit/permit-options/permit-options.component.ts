@@ -159,12 +159,15 @@ export class PermitOptionsComponent {
             this.rateEngineResponse = response.data!;
             this.totalCharge = parseFloat(this.rateEngineResponse.totalCharge.replace("$", "").trim());
 
+            var q = this.getHoursFromRateEngine(this.rateEngineResponse.totalDuration);
             var quantity = this.form?.value.quantity;
             let price = this.totalCharge;
 
             this.form?.patchValue({
               price: price,
               total: price * quantity,
+              quantity: quantity,
+              endDate: new Date(this.rateEngineResponse.endTime ?? "")
             });
           }
         },
@@ -298,4 +301,28 @@ export class PermitOptionsComponent {
 
     this.getPriceRangeEngine();
   }
+
+  getHoursFromRateEngine(hoursDays: string | null | undefined): number{
+    if(!hoursDays)
+      return 0;
+
+    let totalHours: number = 0;
+
+    const parts: string[] = hoursDays.split(' ');
+    for (let i = 0; i < parts.length; i += 2) {
+      const value: number = parseInt(parts[i], 10);
+      const unit: string = parts[i + 1];
+      if(unit){
+        if (unit.includes('hour')) {
+          totalHours += value;
+        } else if (unit.includes('day')) {
+          totalHours += value * 24; // Convert days to hours
+        }
+      }
+    }
+
+    console.log(totalHours)
+    return totalHours;
+  }
+
 }

@@ -29,7 +29,7 @@ export class ApplicationService {
   
   cancelApplication(applicationKey: string): Observable<PermitsResponse<number>>{
     var urlPath = environment.apiPermitsURL + 'Application/cancel/'+ applicationKey;
-    return this.http.delete<PermitsResponse<number>>(urlPath);
+    return this.http.put<PermitsResponse<number>>(urlPath, null);
   }
 
   reSubmitApplication(reSubmitApplication: ReSubmitApplication): Observable<PermitsResponse<number>>{

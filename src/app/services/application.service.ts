@@ -28,7 +28,7 @@ export class ApplicationService {
   }
   
   cancelApplication(applicationKey: string): Observable<PermitsResponse<number>>{
-    var urlPath = environment.apiPermitsURL + 'Application/cancel'+ applicationKey;
+    var urlPath = environment.apiPermitsURL + 'Application/cancel/'+ applicationKey;
     return this.http.delete<PermitsResponse<number>>(urlPath);
   }
 

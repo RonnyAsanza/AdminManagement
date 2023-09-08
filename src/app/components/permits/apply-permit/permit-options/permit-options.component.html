@@ -273,6 +273,6 @@
     </ng-template>
     <ng-template pTemplate="footer">
         <button pButton pRipple icon="pi pi-times-circle" [label]="'ClientPermit.Cancel' | translate" class="p-button-danger" (click)="hideDialog()"></button>
-        <button pButton pRipple icon="pi pi-save" class="p-button-primary" [label]="'ClientPermit.Submit' | translate" (click)="savePermit()"></button>
+        <button pButton pRipple [disabled]="!form?.valid" icon="pi pi-save" class="p-button-primary" [label]="'ClientPermit.Submit' | translate" (click)="savePermit()"></button>
     </ng-template>
 </p-dialog>     

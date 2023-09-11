@@ -2,7 +2,6 @@ import { Injector, Injectable } from '@angular/core';
 import {
     HttpInterceptor,
     HttpRequest,
-    HttpResponse,
     HttpHandler,
     HttpEvent,
     HttpErrorResponse
@@ -12,7 +11,6 @@ import {  Observable, throwError } from 'rxjs';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { LoaderService } from '../services/loader.service';
 import { AuthService } from '../services/auth/auth.service';
-
 @Injectable(
     {
         providedIn: 'root'
@@ -20,11 +18,12 @@ import { AuthService } from '../services/auth/auth.service';
 )
 export class HttpConfigInterceptor implements HttpInterceptor {
     private totalRequests = 0;
+    private refreshingToken = false;
     private loader : LoaderService;
-    // private messageService: MessageService;
+    private authService: AuthService;
     constructor(private injector: Injector) {
         this.loader = this.injector.get(LoaderService);
-        // this.messageService = this.injector.get(MessageService);
+         this.authService = this.injector.get(AuthService);
       }
     // constructor(private loader: LoaderService) { }
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -67,17 +66,46 @@ export class HttpConfigInterceptor implements HttpInterceptor {
       );
   }
     addAuthToken(request: HttpRequest<any>) {
-        const token: string = localStorage.getItem('token')!;
+        var  token: string = localStorage.getItem('token')!;
         if (!token) {
           return request;
         }
 
-        return request.clone({
-          setHeaders: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        let tokenExpiration = localStorage.getItem("tokenExpiration")!;
+        const tokenExpirationDate = new Date(tokenExpiration);
+        const currentUtcTime = new Date();
+/*
+        console.log("currentUtcTime", currentUtcTime);
+        console.log("tokenExpirationDate", tokenExpirationDate);
+*/
+        if( currentUtcTime >= tokenExpirationDate) {
+          if (!this.refreshingToken) {
+            console.log('Token Expired... Initiating Token Refresh');           
+            // Set the flag to indicate that a token refresh is in progress
+            this.refreshingToken = true;
+            this.authService.refreshToken().subscribe({
+              next: (response) => {
+                token = response.token!;
+                localStorage.setItem('token', token);
+                localStorage.setItem('tokenExpiration', response.expiration);
+
+                this.refreshingToken = false;
+              },
+              error: (err) => {
+                console.log(err);
+              }
+            });
+          }
+       }  
+
+       return request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`,
+        },
+       });
+
       }
+
       private hasFileInRequestBody(body: any): boolean {
         return body instanceof FormData;
       }

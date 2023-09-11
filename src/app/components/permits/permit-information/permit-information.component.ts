@@ -14,7 +14,6 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { MonerisReceiptRequest } from 'src/app/models/moneris/moneris-receipt-request.model';
 import { ContactDetails, MonerisPreloadRequest } from 'src/app/models/moneris/moneris-preload-request.model';
 import { PdfService } from 'src/app/services/pdf.service';
-import { ReceiptViewModel } from 'src/app/models/receipt.model';
 import { MenuItem } from 'primeng/api';
 
 declare var monerisCheckout: any;
@@ -64,18 +63,7 @@ export class PermitInformationComponent implements OnInit {
     this.company = this.companyService.getLocalCompany();
     this.activatedRoute.params.subscribe(params => {
       this.permitId = params['permitId'];
-      this.permitService.getPermitbyId(this.permitId)
-        .subscribe((response) => {
-          if (response.succeeded) {
-            this.permit = response.data!;
-            console.log(this.permit);
-            this.startDateUtc = this.datePipe.transform(this.permit.startDateUtc, 'dd/MMMM/YYYY HH:mm')!;
-            this.expirationDateUtc = this.datePipe.transform(this.permit.expirationDateUtc, 'dd/MMMM/YYYY HH:mm')!;
-          }
-          else {
-            this.router.navigate(['/' + this.company.portalAlias + '/']);
-          }
-        });
+      this.OnLoadPermit();
     });
 
     this.items = [
@@ -83,6 +71,20 @@ export class PermitInformationComponent implements OnInit {
       { separator: true },
       { label: 'Open Receipt', icon: 'pi pi-cog' }
   ];
+  }
+
+  OnLoadPermit(){
+    this.permitService.getPermitbyId(this.permitId)
+    .subscribe((response) => {
+      if (response.succeeded) {
+        this.permit = response.data!;
+        this.startDateUtc = this.datePipe.transform(this.permit.startDateUtc, 'dd/MMMM/YYYY HH:mm')!;
+        this.expirationDateUtc = this.datePipe.transform(this.permit.expirationDateUtc, 'dd/MMMM/YYYY HH:mm')!;
+      }
+      else {
+        this.router.navigate(['/' + this.company.portalAlias + '/']);
+      }
+    });
   }
 
   OnSelectPaymentType(paymentType: PaymentType) {
@@ -128,7 +130,7 @@ export class PermitInformationComponent implements OnInit {
       } as ContactDetails;
 
       var monerisRequest = {
-        txn_total: "10.00",
+        txn_total: (Math.round(this.permit.price! * 100) / 100).toFixed(2),
         permitKey: this.permit.permitKey,
         contact_details: contactDetails
       } as MonerisPreloadRequest;
@@ -188,18 +190,26 @@ export class PermitInformationComponent implements OnInit {
     } as MonerisReceiptRequest;
 
     this.monerisService.MonerisReceiptRequest(monerisReciptRequest)
-      .subscribe(res => {
-        this.monerisService.setMonerisResponse(res.data!);
-        if (res.succeeded) {
-          myCheckout.setMode(environment.setMode);
+      .subscribe({
+        next: (response) => {
+          this.monerisService.setMonerisResponse(response.data!);
+          if (response.succeeded) {
+            myCheckout.setMode(environment.setMode);
+          }
+          else {
+            this.MonerisPreloadRequest();
+          }
+        },
+        error: (err) => {
+          console.log(err);
         }
-        else {
-          this.MonerisPreloadRequest();
-        }
-      }
-      );
-  }
+      });
 
+      setTimeout(() => {
+        myCheckout.closeCheckout(this.ticket);
+        this.OnLoadPermit();
+      }, 5000);
+  }
 
   generatePDF(action: string) {
     this.pdfService.generaReceiptPDF(action, this.permit);

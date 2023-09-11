@@ -144,7 +144,6 @@ export class PdfService {
 
     if(action == 'P' ){
       this.pdfMake.createPdf(docDefinition).open();   
-
     }
     else{
       this.pdfMake.createPdf(docDefinition).download('ReceiptPermit.pdf');

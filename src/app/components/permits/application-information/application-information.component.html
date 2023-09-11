@@ -127,7 +127,9 @@
                                               
                         <div class="col-12">
                             <div class="grid">
-                                <div class="col-12 md:col-6">
+                                <div class="col-12 md:col-6" *ngIf="application?.applicationStatusKey !== 11 && 
+                                                                    application?.applicationStatusKey !== 10  &&
+                                                                    application?.applicationStatusKey !== 4 ">
                                     <button pButton pRipple icon="pi pi-times-circle" [label]="'ClientPermit.Cancel' | translate" class="p-button-danger w-full" (click)="onClickCancelApplication()">
                                     </button>
                                 </div>

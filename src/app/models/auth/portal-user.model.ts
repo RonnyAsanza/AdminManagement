@@ -16,4 +16,5 @@ export interface PortalUserViewModel {
     portalUserStatusKey?: number;
     portalUserStatusName?: string;
     token?: string;
+    expiration?: Date;
 }

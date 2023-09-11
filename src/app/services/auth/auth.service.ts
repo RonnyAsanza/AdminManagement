@@ -23,6 +23,11 @@ export class AuthService {
     return this.http.post<PermitsResponse<PortalUserViewModel>>(urlPath, request);
   }
 
+  refreshToken() {
+    var urlPath = environment.apiPermitsURL + 'Login/refresh-token';
+    return  this.http.post<any>(urlPath, null)
+}
+
   setLocalToken(token: string): void {
     localStorage.setItem('token', token);
   }
@@ -30,6 +35,7 @@ export class AuthService {
   setLocalUser(user: PortalUserViewModel) {
     let userJsonString = JSON.stringify(user);
     this.setLocalToken(user.token!);
+    localStorage.setItem('tokenExpiration', JSON.stringify(user.expiration));
     localStorage.setItem('user',userJsonString);
   }
 

@@ -9,7 +9,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 
 export class VerificationComponent implements OnInit {
     message:string = 'waiting for the vaidation...';
-    company!:string;
+    portalUserKey:number = 0;
     constructor(private activatedRoute: ActivatedRoute,
                 private layoutService: LayoutService,
                 private authService: AuthService) { }
@@ -19,9 +19,9 @@ export class VerificationComponent implements OnInit {
             }
     ngOnInit(): void {
         this.activatedRoute.params.subscribe(params => {
-        this.company = params['company'];
+        this.portalUserKey = params['user'];
         let activationCode = params['token'];
-        this.authService.confirmEmail(this.company, activationCode)
+        this.authService.confirmEmail(this.portalUserKey, activationCode)
         .subscribe((response)=>{
                 this.message = (response.succeeded)?'Your account was successfully validated.':'There was a problem verifying your email.';
             });

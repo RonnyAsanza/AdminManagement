@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
         { path: 'forgotpassword', loadChildren: () => import('./forgotpassword/forgotpassword.module').then(m => m.ForgotPasswordModule) },
         { path: 'register', loadChildren: () => import('./register/register.module').then(m => m.RegisterModule) },
         { path: 'newpassword', loadChildren: () => import('./newpassword/newpassword.module').then(m => m.NewPasswordModule) },
-        { path: 'verification/:token', loadChildren: () => import('./verification/verification.module').then(m => m.VerificationModule) },
+        { path: 'verification/:user/:token', loadChildren: () => import('./verification/verification.module').then(m => m.VerificationModule) },
         { path: 'lockscreen', loadChildren: () => import('./lockscreen/lockscreen.module').then(m => m.LockScreenModule) },
         { path: '**', redirectTo: '/notfound' }
     ])],

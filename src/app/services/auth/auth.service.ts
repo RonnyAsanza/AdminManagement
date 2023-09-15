@@ -59,12 +59,11 @@ export class AuthService {
     return this.http.post<PermitsResponse<number>>(urlPath, data);
   }
 
-  confirmEmail(companyId: string, activationCode: string): Observable<PermitsResponse<number>>{
+  confirmEmail(portalUserKey: number, activationCode: string): Observable<PermitsResponse<number>>{
     let body = {
-      PortalAlias: companyId,
+      PortalUserKey: portalUserKey,
       ActivationCode: activationCode,
     };
-
     var urlPath = environment.apiPermitsURL + 'PortalUser/ConfirmEmail';
     return this.http.post<PermitsResponse<number>>(urlPath, body);
   }

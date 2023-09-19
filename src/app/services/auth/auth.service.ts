@@ -15,12 +15,8 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   login(loginRequest: LoginRequest): Observable<PermitsResponse<PortalUserViewModel>>{
-    let request ={
-			login: loginRequest
-		}
-		
-    var urlPath = environment.apiPermitsURL + 'Login/Login';
-    return this.http.post<PermitsResponse<PortalUserViewModel>>(urlPath, request);
+    var urlPath = environment.apiPermitsURL + 'Login';
+    return this.http.post<PermitsResponse<PortalUserViewModel>>(urlPath, loginRequest);
   }
 
   refreshToken() {
@@ -51,12 +47,8 @@ export class AuthService {
   }
 
   createPortalUser(portalUser: PortalUser): Observable<PermitsResponse<number>>{
-    let data = {
-      portalUser: portalUser
-    };
-
-    var urlPath = environment.apiPermitsURL + 'PortalUser/CreatePortalUser';
-    return this.http.post<PermitsResponse<number>>(urlPath, data);
+    var urlPath = environment.apiPermitsURL + 'PortalUser/create';
+    return this.http.post<PermitsResponse<number>>(urlPath, portalUser);
   }
 
   confirmEmail(portalUserKey: number, activationCode: string): Observable<PermitsResponse<number>>{
@@ -64,7 +56,7 @@ export class AuthService {
       PortalUserKey: portalUserKey,
       ActivationCode: activationCode,
     };
-    var urlPath = environment.apiPermitsURL + 'PortalUser/ConfirmEmail';
+    var urlPath = environment.apiPermitsURL + 'PortalUser/confirm-email';
     return this.http.post<PermitsResponse<number>>(urlPath, body);
   }
 

@@ -26,7 +26,7 @@ export class MonerisService {
       MonerisRequestViewModel: request
       };
     var urlPath = environment.apiPermitsURL + 'Moneris/preload-request';
-    return this.http.post<PermitsResponse<MonerisPreloadResponse>>(urlPath, data);
+    return this.http.post<PermitsResponse<MonerisPreloadResponse>>(urlPath, request);
   }
 
   MonerisReceiptRequest(request: MonerisReceiptRequest): Observable<PermitsResponse<MonerisReceiptResponse>>{
@@ -34,7 +34,7 @@ export class MonerisService {
         MonerisReceiptRequestViewModel: request
       };
     var urlPath = environment.apiPermitsURL + 'Moneris/receipt-request';
-    return this.http.post<PermitsResponse<MonerisReceiptResponse>>(urlPath, data);
+    return this.http.post<PermitsResponse<MonerisReceiptResponse>>(urlPath, request);
   }
 
 }

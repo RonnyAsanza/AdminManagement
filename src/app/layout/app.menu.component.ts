@@ -24,7 +24,7 @@ export class AppMenuComponent implements OnInit {
                 icon: 'pi pi-home',
                 items: [
                     {
-                        label: this.translate.transform('ClientPermit.Precise'),
+                        label: this.translate.transform('ClientPermit.Home'),
                         icon: 'pi pi-fw pi-home',
                         routerLink: ['/'+this.company.portalAlias+'/']
                     },
@@ -37,11 +37,6 @@ export class AppMenuComponent implements OnInit {
                         label: 'Messages',
                         icon: 'pi pi-fw pi-user',
                         routerLink: ['/'+this.company.portalAlias+'/messages']
-                    },
-                    {
-                        label: this.translate.transform('ClientPermit.Account'),
-                        icon: 'pi pi-fw pi-user',
-                        routerLink: ['/'+this.company.portalAlias+'/account']
                     }
                 ]
             },

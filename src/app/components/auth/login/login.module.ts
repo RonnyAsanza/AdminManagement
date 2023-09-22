@@ -10,6 +10,7 @@ import { AppConfigModule } from 'src/app/layout/config/app.config.module';
 import { ToastModule } from 'primeng/toast';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
     imports: [
@@ -23,7 +24,8 @@ import { MessageModule } from 'primeng/message';
         ToastModule,
         AppConfigModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        SharedModule
     ],
     declarations: [LoginComponent]
 })

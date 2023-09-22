@@ -6,14 +6,15 @@ import { Subject } from 'rxjs';
 })
 export class LoaderService {
 
+  isLoading = new Subject<boolean>();
+
   constructor() { }
 
-  isLoading = new Subject<boolean>();
   show() {
       this.isLoading.next(true);
   }
+
   hide() {
       this.isLoading.next(false);
   }
-
 }

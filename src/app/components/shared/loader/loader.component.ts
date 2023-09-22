@@ -8,7 +8,7 @@ import { LoaderService } from 'src/app/services/loader.service';
   styleUrls: ['./loader.component.scss']
 })
 export class LoaderComponent {
-  isLoading: Subject<boolean> = this.loader.isLoading;
+  isLoading: Subject<boolean> = this.loaderService.isLoading;
 
-  constructor(public loader: LoaderService) { }
+  constructor(public loaderService: LoaderService) { }
 }

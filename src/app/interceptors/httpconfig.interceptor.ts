@@ -19,18 +19,15 @@ import { AuthService } from '../services/auth/auth.service';
 export class HttpConfigInterceptor implements HttpInterceptor {
     private totalRequests = 0;
     private refreshingToken = false;
-    private loader : LoaderService;
     private authService: AuthService;
-    constructor(private injector: Injector) {
-        this.loader = this.injector.get(LoaderService);
+    constructor(private injector: Injector, private loaderService: LoaderService) {
          this.authService = this.injector.get(AuthService);
       }
     // constructor(private loader: LoaderService) { }
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
       this.totalRequests++;
-      this.loader.show();
+      this.loaderService.show();
       request = this.addAuthToken(request);
-      
       if (request.method === 'POST' || request.method === 'PUT') {
 
         if (!this.hasFileInRequestBody(request.body)) {
@@ -60,7 +57,7 @@ export class HttpConfigInterceptor implements HttpInterceptor {
           finalize(() => {
             this.totalRequests--;
             if (this.totalRequests == 0) {
-              this.loader.hide();
+              this.loaderService.hide();
             }
           })
       );

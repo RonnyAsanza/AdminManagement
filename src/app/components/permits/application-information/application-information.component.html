@@ -9,7 +9,16 @@
             <div class="col-12">
                 <p-fieldset class="line-height-3 m-0 bg-color py-0">
                     <ng-template pTemplate="header">
-                        <span [class]="'applications-badge ' + application?.applicationStatusCode?.toLowerCase()">{{application?.applicationStatus}}</span>
+                        <div [class]="'card p-0 border-round applications-badge ' + application?.applicationStatusCode?.toLowerCase()">
+                            <div class="flex flex-row flex-wrap card-container">
+                                <div class="flex align-items-center justify-content-center m-2">
+                                    <span># {{ application?.applicationKey }}</span>  
+                                </div>
+                                <div class="flex align-items-center justify-content-center m-2">
+                                    <span>{{application?.applicationStatus}}</span>
+                                </div>
+                            </div>
+                        </div>
                     </ng-template>
                     <div class="p-fluid p-formgrid grid" >
                         <div class="col-12 md:col-6">

@@ -22,7 +22,7 @@ const routes: Routes = [
     {
         path: ':company/auth',
         loadChildren: () => import('./components/auth/auth.module').then(m => m.AuthModule),
-      },
+    },
     { path: 'landing', loadChildren: () => import('./components/landing/landing.module').then(m => m.LandingModule) },
     { path: 'notfound', loadChildren: () => import('./components/notfound/notfound.module').then(m => m.NotfoundModule) },
     { path: '**', redirectTo: '/notfound' }

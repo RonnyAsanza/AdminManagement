@@ -111,32 +111,32 @@
                         </div>                      
                         <div class="col-12">
                             <label htmlFor="optional1">{{"ClientPermit.OptionalInput" | translate}} 1:
-                                <input type="text" pInputText name="optional1" formControlName="optional1"/>
+                                <input type="text" pInputText name="optional1" maxlength="100" formControlName="optional1"/>
                             </label>
                         </div>
                         <div class="col-12">
                             <label htmlFor="optional2">{{"ClientPermit.OptionalInput" | translate}} 2:
-                                <input type="text" pInputText name="optional2" formControlName="optional2"/>
+                                <input type="text" pInputText name="optional2" maxlength="100" formControlName="optional2"/>
                             </label>
                         </div>
                         <ng-container *ngIf="permit?.permitTypeModel?.requireAdditionalInput3">
                             <div class="col-12">
                                 <label htmlFor="optional3">{{"ClientPermit.OptionalInput" | translate}} 3:
-                                    <input type="text" pInputText name="optional3" formControlName="optional3"/>
+                                    <input type="text" pInputText name="optional3" maxlength="200" formControlName="optional3"/>
                                 </label>
                             </div> 
                         </ng-container>
                         <ng-container *ngIf="permit?.permitTypeModel?.requireAdditionalInput4">
                             <div class="col-12">
                                 <label htmlFor="optional4">{{"ClientPermit.OptionalInput" | translate}} 4:
-                                    <input type="text" pInputText name="optional4" formControlName="optional4"/>
+                                    <input type="text" pInputText name="optional4" maxlength="200" formControlName="optional4"/>
                                 </label>
                             </div> 
                         </ng-container>
                         <ng-container *ngIf="permit?.permitTypeModel?.requireAdditionalInput5">
                             <div class="col-12">
                                 <label htmlFor="optional5">{{"ClientPermit.OptionalInput" | translate}} 5:
-                                    <input type="text" pInputText name="optional5" formControlName="optional5"/>
+                                    <input type="text" pInputText name="optional5" maxlength="2000" formControlName="optional5"/>
                                 </label>
                             </div>
                         </ng-container>

@@ -7,7 +7,6 @@ import { HttpConfigInterceptor } from 'src/app/interceptors/httpconfig.intercept
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { LoaderComponent } from './loader/loader.component';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
-import { LoaderService } from 'src/app/services/loader.service';
 import { TranslateService } from 'src/app/services/translate.service';
 import { LanguageSelectorComponent } from './language-selector/language-selector.component';
 

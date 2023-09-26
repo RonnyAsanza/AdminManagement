@@ -13,15 +13,15 @@
                                 <h4>{{"ClientPermit.Permits" | translate}} #: {{permit.permitKey}}</h4>
                             </div>
                             <div class="col-12 xl:col-6  py-0">
-                                <span [class]="'permits-badge ' + permit?.permitStatusCode?.toLowerCase()">{{permit.permitStatus}}</span>
+                                <span [class]="'permits-badge ' + permit?.permitStatusCode?.toLowerCase()">{{ "PermitStatus."+permit?.permitStatusCode | translate }}</span>
                             </div>
                         </div>
                         <div class="card-content py-2">
-                            <span class="card-item">{{"ClientPermit.LicensePlate" | translate}} {{permit.licensePlate}}</span>
+                            <span class="card-item">{{"ClientPermit.LicensePlate" | translate}}: {{permit.licensePlate}}</span>
                             <span class="card-item">{{"ClientPermit.Type" | translate}}: {{permit.permitType}}</span>
                             <span class="card-item">{{"ClientPermit.Address" | translate}}: Ontario Street</span>
-                            <span class="card-item">{{"ClientPermit.StartDate" | translate}}: {{permit.startDateUtc | date: 'dd/MMMM/YYYY'}} </span>
-                            <span class="card-item">{{"ClientPermit.EndDate" | translate}}: {{permit.expirationDateUtc | date: 'dd/MMMM/YYYY'}}</span>
+                            <span class="card-item">{{"ClientPermit.StartDate" | translate}}: {{permit.startDateUtc | date: 'yyyy-MM-dd HH:mm'}} </span>
+                            <span class="card-item">{{"ClientPermit.EndDate" | translate}}: {{permit.expirationDateUtc | date: 'yyyy-MM-dd HH:mm'}}</span>
                         </div>
                         <ng-template pTemplate="footer">
                             <button pButton pRipple [label]="'ClientPermit.View' | translate" icon="pi pi-arrow-right"  class="p-button-primary" (click)="onViewPermit(permit.permitGuid)"></button>
@@ -38,15 +38,15 @@
                                 <h4>{{"ClientPermit.Applications" | translate}} #: {{application.applicationKey}}</h4>
                             </div>
                             <div class="col-12 xl:col-5  py-0">
-                                <span [class]="'applications-badge ' + application?.applicationStatusCode?.toLowerCase()">{{application.applicationStatus}}</span>
+                                <span [class]="'applications-badge ' + application?.applicationStatusCode?.toLowerCase()">{{ "ApplicationStatus."+application?.applicationStatusCode | translate }}</span>
                             </div>
                         </div>
                         <div class="card-content py-2">
-                            <span class="card-item">{{"ClientPermit.LicensePlate" | translate}} {{application.licensePlate}}</span>
+                            <span class="card-item">{{"ClientPermit.LicensePlate" | translate}}: {{application.licensePlate}}</span>
                             <span class="card-item">{{"ClientPermit.Type" | translate}}: {{application.permitType}}</span>
                             <span class="card-item">{{"ClientPermit.Address" | translate}}: Ontario Street</span>
-                            <span class="card-item">{{"ClientPermit.StartDate" | translate}}: {{application.startDateUtc | date: 'dd/MMMM/YYYY'}} </span>
-                            <span class="card-item">{{"ClientPermit.EndDate" | translate}}:: {{application.expirationDateUtc | date: 'dd/MMMM/YYYY'}}</span>
+                            <span class="card-item">{{"ClientPermit.StartDate" | translate}}: {{application.startDateUtc | date: 'yyyy-MM-dd HH:mm'}} </span>
+                            <span class="card-item">{{"ClientPermit.EndDate" | translate}}:: {{application.expirationDateUtc | date: 'yyyy-MM-dd HH:mm'}}</span>
                         </div>
                         <ng-template pTemplate="footer">
                             <button pButton pRipple [label]="'ClientPermit.View' | translate" icon="pi pi-arrow-right"  class="p-button-primary" (click)="onViewApplication(application.applicationGuid)"></button>

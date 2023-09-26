@@ -44,8 +44,8 @@ export class ApplicationInformationComponent implements OnInit {
         .subscribe((response) => {
           if (response.succeeded) {
             this.application = response.data!;
-            this.startDateUtc = this.datePipe.transform(this.application.startDateUtc, 'dd/MMMM/YYYY HH:mm')!;
-            this.expirationDateUtc = this.datePipe.transform(this.application.expirationDateUtc, 'dd/MMMM/YYYY HH:mm')!;
+            this.startDateUtc = this.datePipe.transform(this.application.startDateUtc, 'yyyy-MM-dd HH:mm')!;
+            this.expirationDateUtc = this.datePipe.transform(this.application.expirationDateUtc, 'yyyy-MM-dd HH:mm')!;
           }
           else {
             this.router.navigate(['/' + this.company.portalAlias + '/']);

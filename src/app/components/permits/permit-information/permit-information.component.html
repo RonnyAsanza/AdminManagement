@@ -1,11 +1,11 @@
 <div class="grid">
     <div class="col-12">
         <ng-container>
-            <div class="grid">
+            <!--<div class="grid">
                 <div class="col-12">
                     <h4>{{ "ClientPermit.PermitInformation" | translate }}</h4>
                 </div>
-            </div>
+            </div>-->
             <div class="col-12">
                 <p-fieldset class="line-height-3 m-0 bg-color py-0">
                     <ng-template pTemplate="header">
@@ -16,7 +16,7 @@
                                 </div>
                                 <div class="flex align-items-center justify-content-center font-bold border-round m-2">
                                     <span [class]="'permits-badge ' + permit?.permitStatusCode?.toLowerCase()">
-                                        {{ permit?.permitStatus }}
+                                        {{ "PermitStatus."+permit?.permitStatusCode | translate }}
                                     </span>
                                 </div>
                             </div>
@@ -113,6 +113,19 @@
                                     value="{{ permit?.zone }}"
                                     readonly
                                 />
+                            </label>
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <label
+                                >{{ "ClientPermit.Price" | translate }}:
+                                <p-inputNumber
+                                    name="price"
+                                    mode="currency"
+                                    [(ngModel)]="permit.price"
+                                    currency="CAD"
+                                    [readonly]="true"
+                                >
+                                </p-inputNumber>
                             </label>
                         </div>
                     </div>

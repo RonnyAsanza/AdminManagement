@@ -109,8 +109,8 @@ export class PermitOptionsComponent {
 
     this.rateEngineRequest = {
       TariffID: this.form?.value.tariff.tariffId,
-      StartTime: this.datePipe.transform(this.form?.value.startDate, 'dd/MMMM/YYYY HH:mm') ?? '',
-      EndTime: this.datePipe.transform(this.form?.value.endDate, 'dd/MMMM/YYYY HH:mm') ?? '',
+      StartTime: this.datePipe.transform(this.form?.value.startDate, 'yyyy-MM-dd HH:mm') ?? '',
+      EndTime: this.datePipe.transform(this.form?.value.endDate, 'yyyy-MM-dd HH:mm') ?? '',
       TCP_Calculate_Add: true
     }
     this.getPriceRangeEngine();
@@ -281,8 +281,8 @@ export class PermitOptionsComponent {
   }
 
   onChangeDate(isStartDate: boolean) {
-    this.rateEngineRequest.StartTime = this.datePipe.transform(this.form?.value.startDate, 'dd/MMMM/YYYY HH:mm') ?? '';
-    this.rateEngineRequest.EndTime = this.datePipe.transform(this.form?.value.endDate, 'dd/MMMM/YYYY HH:mm') ?? '';
+    this.rateEngineRequest.StartTime = this.datePipe.transform(this.form?.value.startDate, 'yyyy-MM-dd HH:mm') ?? '';
+    this.rateEngineRequest.EndTime = this.datePipe.transform(this.form?.value.endDate, 'yyyy-MM-dd HH:mm') ?? '';
     let startDate = new Date(this.form?.value.startDate);
     let endDate = new Date(this.form?.value.endDate);
 
@@ -295,7 +295,7 @@ export class PermitOptionsComponent {
       newDate.setMonth(data.getMonth());
       isStartDate ? this.rateEngineRequest.EndTime = this.rateEngineRequest.StartTime : this.rateEngineRequest.StartTime = this.rateEngineRequest.EndTime;
       this.form?.patchValue({
-        [input]: this.datePipe.transform(newDate, 'dd/MMMM/YYYY HH:mm')
+        [input]: this.datePipe.transform(newDate, 'yyyy-MM-dd HH:mm')
       });
     }
 
@@ -320,8 +320,6 @@ export class PermitOptionsComponent {
         }
       }
     }
-
-    console.log(totalHours)
     return totalHours;
   }
 

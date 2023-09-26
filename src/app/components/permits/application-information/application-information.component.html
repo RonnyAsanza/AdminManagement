@@ -1,11 +1,11 @@
 <div class="grid">
     <div class="col-12">
         <ng-container>
-            <div class="grid" >
+            <!--<div class="grid" >
                 <div class="col-12">
                     <h4>{{"ClientPermit.ApplicationInformation" | translate}}</h4>
                 </div>
-            </div>
+            </div>-->
             <div class="col-12">
                 <p-fieldset class="line-height-3 m-0 bg-color py-0">
                     <ng-template pTemplate="header">
@@ -15,7 +15,7 @@
                                     <span># {{ application?.applicationKey }}</span>  
                                 </div>
                                 <div class="flex align-items-center justify-content-center m-2">
-                                    <span>{{application?.applicationStatus}}</span>
+                                    <span>{{ "ApplicationStatus."+application?.applicationStatusCode | translate }}</span>
                                 </div>
                             </div>
                         </div>

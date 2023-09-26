@@ -24,6 +24,7 @@ import { TabMenuModule } from 'primeng/tabmenu';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ImageModule } from 'primeng/image';
 import { TranslationsModule } from '../shared/translations.module';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @NgModule({
   imports: [
@@ -47,7 +48,8 @@ import { TranslationsModule } from '../shared/translations.module';
     TabMenuModule,
     FileUploadModule,
     ImageModule,
-    TranslationsModule
+    TranslationsModule,
+    InputNumberModule
   ],
   declarations: [
     PermitListComponent,

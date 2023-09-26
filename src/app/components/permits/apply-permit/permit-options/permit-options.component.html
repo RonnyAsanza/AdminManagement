@@ -54,7 +54,7 @@
                                             [showButtonBar]="true"
                                             [minDate]="minDate"
                                             formControlName="startDate"
-                                            dateFormat="dd/MM/yy"
+                                            dateFormat="yy-MM-dd"
                                             [showTime]="true"
                                             (onClose)="onChangeStartDate()"
                                             name="startDate">
@@ -68,7 +68,7 @@
                                             [showButtonBar]="true"
                                             [minDate]="minDate"
                                             formControlName="endDate"
-                                            dateFormat="dd/MM/yy"
+                                            dateFormat="yy-MM-dd"
                                             [showTime]="true"
                                             (onClose)="onChangeEndDate()"
                                             name="endDate">
@@ -77,7 +77,7 @@
                         </div>    
                         <div class="col-12">
                             <label>{{"ClientPermit.LicensePlate" | translate}}*:
-							    <input type="text" pInputText name="licensePlate" formControlName="licensePlate" onkeyup="this.value = this.value.toUpperCase();"/>
+							    <input type="text" pInputText name="licensePlate" formControlName="licensePlate" appNoSpecialCharacters maxlength="10"/>
                             </label>
                         </div>    
                         <div class="col-12">

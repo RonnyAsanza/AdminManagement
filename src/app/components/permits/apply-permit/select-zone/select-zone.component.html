@@ -1,33 +1,34 @@
 <div class="grid">
     <div class="col-12 px-6">
         <ng-container>
-            <div class="grid" >
+            <div class="grid center-content">
                 <div class="col-12 md:col-6">
                     <h4>{{"ClientPermit.ZoneSelection" | translate}}</h4>
                 </div>
             </div>
-            <form>
-                <div class="p-fluid p-formgrid grid" >
+            <form [formGroup]="form" (submit)="onClickNext(form)">
+                <div class="p-fluid p-formgrid grid center-content">
                     <div class="col-12 md:col-6">
                         <label>{{"ClientPermit.SelectZone" | translate}}:
                             <p-dropdown 
-                                [formControl]="zoneControl"
+                                formControlName="zone" 
                                 name="zone" 
                                 optionLabel="name" 
                                 [options]="zones" 
                                 [placeholder]="'ClientPermit.SelectZone' | translate"
                                 class="w-full"
+                                [ngClass]="{'ng-invalid': !form.controls['zone'].valid && !form.controls['zone'].dirty}">
                             >
                                 <ng-template let-option pTemplate="item">
                                     {{option.name}}
                                 </ng-template>
-                            </p-dropdown>   
+                            </p-dropdown>
                         </label>             
                     </div>         
                 </div>
-                <div class="grid" >
-                    <div class="col-12 md:col-6 xl:col-3 ">
-                        <button pButton pRipple icon="pi pi-arrow-right" [label]="'ClientPermit.NextStep' | translate" class="p-button-primary w-full" (click)="onClickNext()">
+                <div class="p-fluid p-formgrid grid center-content">
+                    <div class="col-12 md:col-6">
+                        <button pButton pRipple icon="pi pi-arrow-right" [label]="'ClientPermit.NextStep' | translate" class="p-button-primary w-full" [disabled]="!form?.valid">
                         </button>
                     </div>
                 </div>

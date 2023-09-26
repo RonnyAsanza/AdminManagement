@@ -22,6 +22,7 @@ import { InputNumberModule } from "primeng/inputnumber";
 import { FileUploadModule } from 'primeng/fileupload';
 import { DialogModule } from 'primeng/dialog';
 import { TranslationsModule } from '../../shared/translations.module';
+import { NoSpecialCharactersDirective } from '../../directives/no-special-characters.directive';
 
 @NgModule({
   imports: [
@@ -51,7 +52,8 @@ import { TranslationsModule } from '../../shared/translations.module';
     SelectZoneComponent,
     SelectPermittypeComponent,
     PermitOptionsComponent,
-    NewPermitComponent
+    NewPermitComponent,
+    NoSpecialCharactersDirective
   ]
 })
 export class ApplyPermitModule { }

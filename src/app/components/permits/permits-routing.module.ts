@@ -14,6 +14,11 @@ const routes: Routes = [
       },
     ]
   },
+  {
+    path: ":tabIndex/activity",
+    data: { breadcrumb: 'Home' }, 
+    component: PermitHomeComponent 
+  },
   { 
     path: 'new-permit', 
     data: { breadcrumb: 'New Permit' }, 

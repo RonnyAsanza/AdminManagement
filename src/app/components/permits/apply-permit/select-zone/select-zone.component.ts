@@ -1,8 +1,6 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-
-import { ApplyPermit } from 'src/app/models/apply-permit.model';
 import { Company } from 'src/app/models/company.model';
 import { ZoneViewModel } from 'src/app/models/zone.model';
 import { CompanyService } from 'src/app/services/company.service';
@@ -15,15 +13,17 @@ import { ZoneService } from 'src/app/services/zone.service';
   styleUrls: ['./select-zone.component.scss'],
   providers: [MessageService]
 })
-export class SelectZoneComponent {
+export class SelectZoneComponent implements OnInit{
   zones: ZoneViewModel[] = [];
   @Output() goNext = new EventEmitter();
   localCompany: Company = {};
   zoneControl = new FormControl('');
+	form!: FormGroup;
 
   constructor(private zone: ZoneService,
     private companyService: CompanyService,
-    private permitService: PermitService) { 
+    private permitService: PermitService,
+    private fb: FormBuilder) { 
       this.localCompany = this.companyService.getLocalCompany();
       this.zone.getZonesByCompany(this.localCompany.companyKey!)
       .subscribe({
@@ -36,11 +36,17 @@ export class SelectZoneComponent {
           error: (e) => {
           }
       });
+      
     }
 
+    ngOnInit(): void {
+      this.form = this.fb.group({
+        zone: [null, [Validators.required]]
+      });
+      }
 
-    onClickNext(){
-      var zone: any = this.zoneControl.value;
+    onClickNext(form: FormGroup){
+      var zone: any = form.value.zone;
       if(zone && zone.name)
       {
         var permit = this.permitService.getLocalApplyPermit();

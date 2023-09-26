@@ -29,9 +29,14 @@ export class AppMenuComponent implements OnInit {
                         routerLink: ['/'+this.company.portalAlias+'/']
                     },
                     {
-                        label: this.translate.transform('ClientPermit.Activity'),
+                        label: this.translate.transform('ClientPermit.Applications'),
                         icon: 'pi pi-fw pi-book',
-                        routerLink: ['/'+this.company.portalAlias+'/activity']
+                        routerLink: ['/'+this.company.portalAlias+'/1/activity']
+                    },
+                    {
+                        label: this.translate.transform('ClientPermit.Permits'),
+                        icon: 'pi pi-fw pi-book',
+                        routerLink: ['/'+this.company.portalAlias+'/2/activity']
                     },
                     {
                         label: 'Messages',
@@ -39,8 +44,8 @@ export class AppMenuComponent implements OnInit {
                         routerLink: ['/'+this.company.portalAlias+'/messages']
                     }
                 ]
-            },
-            {
+            }
+      /*      {
                 label: this.translate.transform('ClientPermit.Resources'),
                 icon: 'pi pi-fw pi-briefcase',
                 items: [
@@ -52,7 +57,7 @@ export class AppMenuComponent implements OnInit {
 
                 ]
             },
-          
+          */
         ];
     }
 }

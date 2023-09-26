@@ -78,8 +78,8 @@ export class PermitInformationComponent implements OnInit {
     .subscribe((response) => {
       if (response.succeeded) {
         this.permit = response.data!;
-        this.startDateUtc = this.datePipe.transform(this.permit.startDateUtc, 'dd/MMMM/YYYY HH:mm')!;
-        this.expirationDateUtc = this.datePipe.transform(this.permit.expirationDateUtc, 'dd/MMMM/YYYY HH:mm')!;
+        this.startDateUtc = this.datePipe.transform(this.permit.startDateUtc, 'yyyy-MM-dd HH:mm')!;
+        this.expirationDateUtc = this.datePipe.transform(this.permit.expirationDateUtc, 'yyyy-MM-dd HH:mm')!;
       }
       else {
         this.router.navigate(['/' + this.company.portalAlias + '/']);

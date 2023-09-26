@@ -133,7 +133,7 @@
                         [ngClass]="{ 'font-semibold': !mail.isReaded }"
                         class="white-space-nowrap"
                     >
-                        {{ mail.dateCreatedUtc | date : "dd/MMMM/yyyy HH:mm" }}
+                        {{ mail.dateCreatedUtc | date : "yyyy-MM-dd HH:mm" }}
                     </span>
                     <div style="display: none" #options>
                         <button

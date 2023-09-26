@@ -6,11 +6,6 @@ import { CompanyService } from 'src/app/services/company.service';
 import { MessageService } from 'primeng/api';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
-interface Image {
-  name: string;
-  objectURL: string;
-}
-
 @Component({
   selector: 'app-permit-home',
   templateUrl: './permit-home.component.html',
@@ -33,7 +28,7 @@ export class PermitHomeComponent implements OnInit {
       {
           label: this.translate.transform('ClientPermit.Activity'), icon: 'pi pi-fw pi-home',
           command: (event: any) => {
-            this.tabIndex =0;
+            this.tabIndex = 0;
           }
       },
       {
@@ -60,6 +55,11 @@ export class PermitHomeComponent implements OnInit {
       });
     }
 
+    this.activatedRoute.params.subscribe(params => {
+      let index = parseInt(params['tabIndex'], 10);
+      if (!isNaN(index)) 
+        this.tabIndex = index;
+    });
   }
 
   onClickNewPermit(){

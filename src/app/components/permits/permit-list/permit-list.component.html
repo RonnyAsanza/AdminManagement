@@ -17,11 +17,11 @@
                             </div>
                         </div>
                         <div class="card-content py-2">
-                            <span class="card-item">{{"ClientPermit.LicensePlate" | translate}}: {{permit.licensePlate}}</span>
-                            <span class="card-item">Type: {{permit.permitType}}</span>
-                            <span class="card-item">Adress: Ontario Street</span>
-                            <span class="card-item">{{"ClientPermit.StartDate" | translate}}: {{permit.startDateUtc | date: 'yyyy-MM-dd HH:mm'}} </span>
-                            <span class="card-item">{{"ClientPermit.EndDate" | translate}}:: {{permit.expirationDateUtc | date: 'yyyy-MM-dd HH:mm'}}</span>
+                            <span class="card-item"><strong>{{"ClientPermit.LicensePlate" | translate}}:</strong> {{permit.licensePlate}}</span>
+                            <span class="card-item"><strong>Type:</strong> {{permit.permitType}}</span>
+                            <span class="card-item"><strong>Adress:</strong> Ontario Street</span>
+                            <span class="card-item"><strong>{{"ClientPermit.StartDate" | translate}}:</strong> {{permit.startDateUtc | date: 'yyyy-MM-dd HH:mm'}} </span>
+                            <span class="card-item"><strong>{{"ClientPermit.EndDate" | translate}}:</strong> {{permit.expirationDateUtc | date: 'yyyy-MM-dd HH:mm'}}</span>
                         </div>
                         <ng-template pTemplate="footer">
                             <button pButton pRipple label="View" icon="pi pi-arrow-right"  class="p-button-primary" (click)="onViewPermit(permit.permitGuid)"></button>

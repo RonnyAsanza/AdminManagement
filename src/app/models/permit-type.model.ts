@@ -20,5 +20,7 @@ export interface PermitTypeViewModel {
     requireAdditionalInput3?: boolean;
     requireAdditionalInput4?: boolean;
     requireAdditionalInput5?: boolean;
+    permitTypeEnum?: number;
+    permitTypeEnumValue?: string;
   }
   

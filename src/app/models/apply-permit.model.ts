@@ -10,7 +10,7 @@ export class ApplyPermit {
   zoneTypeKey?: number;
   zoneType?: string;
   tariffKey?: number;
-  startDateUtc?: Date;
+  startDateUtc?: string;
   expirationDateUtc?: string;
   licensePlate?: string;
   quantity?: number;

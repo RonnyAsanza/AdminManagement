@@ -42,8 +42,8 @@ export class PermitInformationComponent implements OnInit {
     ];
   paymentTypes: PaymentType[] =
     [
-      new PaymentType(1, 'Credit Card'),
-      new PaymentType(2, 'Cash')
+      new PaymentType(1, 'Credit Card', 'Payment will be reflected right away'),
+      new PaymentType(2, 'Cash', 'Payment will be reflected in a few hours')
     ];
   paymentType!: PaymentType;
   items: MenuItem[] = [];

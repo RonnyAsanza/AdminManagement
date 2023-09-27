@@ -16,18 +16,7 @@
                         </div>    
                         <div class="col-12">
                             <label>{{"ClientPermit.Type" | translate}}*:
-                                <p-dropdown 
-                                    formControlName="permitType"
-                                    name="permitType" 
-                                    optionLabel="name" 
-                                    [options]="permitTypes" 
-                                    [placeholder]="'ClientPermit.SelectZone' | translate"
-                                    class="w-full"
-                                >
-                                    <ng-template let-option pTemplate="item">
-                                        {{option.name}}
-                                    </ng-template>
-                                </p-dropdown>   
+							    <input type="text" readonly pInputText name="permitType" formControlName="permitType"/>
                             </label>
                         </div>    
                         <div class="col-12">
@@ -94,6 +83,7 @@
                                 <p-inputNumber 
                                     formControlName="quantity" 
                                     [min]=1 
+                                    [readonly]="permit?.permitTypeModel?.permitTypeEnum! === 0"
                                     (onInput)="onChangeQuantity()"
                                     [showButtons]="true" 
                                     inputId="quantity"> 

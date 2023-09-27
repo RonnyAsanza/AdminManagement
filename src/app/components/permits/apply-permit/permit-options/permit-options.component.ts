@@ -37,14 +37,6 @@ export class PermitOptionsComponent {
   licenseDriver!: File;
   proofReisdence!: File;
 
-  permitTypes: PermitType[] =
-    [
-      new PermitType(1, 'Visitor'),
-      new PermitType(2, 'Standard'),
-      new PermitType(3, 'Bulk'),
-      new PermitType(4, 'Banked')
-    ];
-
   tariffs: Tariff[] =
     [
       new Tariff(6, 'Standard Hour'),
@@ -66,7 +58,7 @@ export class PermitOptionsComponent {
 
       this.form = this.fb.group({
         zone: ['', [Validators.required]],
-        permitType: [this.permitTypes[1], [Validators.required]],
+        permitType: ['', [Validators.required]],
         tariff: [this.tariffs[0], [Validators.required]],
         startDate: [this.minDate, [Validators.required]],
         endDate: [endDate, [Validators.required]],
@@ -95,6 +87,7 @@ export class PermitOptionsComponent {
     this.permitService.permit.subscribe(permit => {
       this.form?.patchValue({
         zone: permit.zoneName,
+        permitType: permit.permitTypeModel?.permitTypeEnumValue,
         licensePlate: permit.licensePlate,
         driversLicense: '',
         proffOfResidence: '',
@@ -265,6 +258,10 @@ export class PermitOptionsComponent {
 
     permit.licenseDriver = this.licenseDriver;
     permit.proofReisdence = this.proofReisdence;
+    permit.startDateUtc = this.datePipe.transform(this.form?.value.startDate, 'yyyy-MM-dd HH:mm') ?? '';
+    permit.expirationDateUtc = this.datePipe.transform(this.form?.value.endDate, 'yyyy-MM-dd HH:mm') ?? '';
+
+    this.permitService.setLocalApplyPermit(permit);
 
     this.permitService.applyPermit(permit)
       .subscribe({

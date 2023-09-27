@@ -17,11 +17,11 @@
                             </div>
                         </div>
                         <div class="card-content py-2">
-                            <span class="card-item">{{"ClientPermit.LicensePlate" | translate}}: {{application.licensePlate}}</span>
-                            <span class="card-item">{{"ClientPermit.Type" | translate}}: {{application.permitType}}</span>
-                            <span class="card-item">{{"ClientPermit.Adress" | translate}}: Ontario Street</span>
-                            <span class="card-item">{{"ClientPermit.StartDate" | translate}}: {{application.startDateUtc | date: 'yyyy-MM-dd HH:mm'}} </span>
-                            <span class="card-item">{{"ClientPermit.EndDate" | translate}}:: {{application.expirationDateUtc | date: 'yyyy-MM-dd HH:mm'}}</span>
+                            <span class="card-item"><strong>{{"ClientPermit.LicensePlate" | translate}}:</strong> {{application.licensePlate}}</span>
+                            <span class="card-item"><strong>{{"ClientPermit.Type" | translate}}:</strong> {{application.permitType}}</span>
+                            <span class="card-item"><strong>{{"ClientPermit.Adress" | translate}}:</strong> Ontario Street</span>
+                            <span class="card-item"><strong>{{"ClientPermit.StartDate" | translate}}:</strong> {{application.startDateUtc | date: 'yyyy-MM-dd HH:mm'}} </span>
+                            <span class="card-item"><strong>{{"ClientPermit.EndDate" | translate}}:</strong> {{application.expirationDateUtc | date: 'yyyy-MM-dd HH:mm'}}</span>
                         </div>
                         <ng-template pTemplate="footer">
                             <button pButton pRipple [label]="'View' | translate" icon="pi pi-arrow-right"  class="p-button-primary" (click)="onViewApplication(application.applicationGuid)"></button>

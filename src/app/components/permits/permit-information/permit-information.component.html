@@ -162,12 +162,13 @@
                         <tr>
                             <th>{{ "ClientPermit.Code" | translate }}</th>
                             <th>{{ "ClientPermit.Name" | translate }}</th>
+                            <th></th>
                             <th>{{ "ClientPermit.Action" | translate }}</th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-paymentType>
                         <tr>
-                            <td style="width: 30%; min-width: 10rem">
+                            <td style="width: 10%; min-width: 10rem">
                                 <span class="p-column-title">{{
                                     "ClientPermit.Code" | translate
                                 }}</span>
@@ -178,6 +179,9 @@
                                     "ClientPermit.Name" | translate
                                 }}</span>
                                 {{ paymentType.name }}
+                            </td>
+                            <td style="width: 20%; min-width: 10rem">
+                                {{ paymentType.description }}
                             </td>
                             <td>
                                 <div class="flex">

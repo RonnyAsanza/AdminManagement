@@ -69,32 +69,35 @@ export class HttpConfigInterceptor implements HttpInterceptor {
         }
 
         let tokenExpiration = localStorage.getItem("tokenExpiration")!;
-        const tokenExpirationDate = new Date(tokenExpiration);
-        const currentUtcTime = new Date();
-/*
-        console.log("currentUtcTime", currentUtcTime);
-        console.log("tokenExpirationDate", tokenExpirationDate);
-*/
-        if( currentUtcTime >= tokenExpirationDate) {
-          if (!this.refreshingToken) {
-            console.log('Token Expired... Initiating Token Refresh');           
-            // Set the flag to indicate that a token refresh is in progress
-            this.refreshingToken = true;
-            this.authService.refreshToken().subscribe({
-              next: (response) => {
-                token = response.token!;
-                localStorage.setItem('token', token);
-                localStorage.setItem('tokenExpiration', response.expiration);
 
-                this.refreshingToken = false;
-              },
-              error: (err) => {
-                console.log(err);
-              }
-            });
-          }
-       }  
+        if (tokenExpiration) {
+          tokenExpiration = tokenExpiration.replace(/^"|"$/g, '');
 
+          const tokenExpirationDate = new Date(tokenExpiration);
+          const currentUtcTime = new Date();
+
+          if( currentUtcTime >= tokenExpirationDate) {
+            if (!this.refreshingToken) {
+              this.refreshingToken = true;
+                console.log('Token Expired... Initiating Token Refresh');           
+                // Set the flag to indicate that a token refresh is in progress
+                this.refreshingToken = true;
+                this.authService.refreshToken().subscribe({
+                  next: (response) => {
+                    token = response.token!;
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('tokenExpiration', response.expiration);
+    
+                    this.refreshingToken = false;
+                  },
+                  error: (err) => {
+                    console.log(err);
+                  }
+                });
+            }
+         }  
+
+        }
        return request.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,

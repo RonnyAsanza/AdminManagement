@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Company } from 'src/app/models/company.model';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { CompanyService } from 'src/app/services/company.service';
 
 @Component({
@@ -20,11 +19,11 @@ export class CompanyListComponent implements OnInit {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private authService: AuthService,
     private companyService: CompanyService
   ) { }
 
   ngOnInit(): void {
+   // localStorage.clear();
     this.companyService.getAllCompanies()
     .subscribe((response)=>{
       if(response.succeeded )
@@ -42,6 +41,6 @@ export class CompanyListComponent implements OnInit {
   onGoToCompany(company: Company) {
     localStorage.clear();
     this.companyService.setLocalCompany(company);
-    this.router.navigate(['/'+company.portalAlias+'/auth'], { relativeTo: this.activatedRoute });
+    this.router.navigate(['/'+company.portalAlias+'/auth']);
    }
 }

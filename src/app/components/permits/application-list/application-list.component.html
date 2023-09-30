@@ -10,7 +10,7 @@
                     >
                         <div class="grid">
                             <div class="col-12 xl:col-7 py-0">
-                                <h4>{{"ClientPermit.Application" | translate}} #: {{application.applicationKey}}</h4>
+                                <h4>{{"ClientPermit.Application" | translate}} #: {{application.requestNumber}}</h4>
                             </div>
                             <div class="col-12 xl:col-5 py-0">
                                 <span [class]="'applications-badge ' + application?.applicationStatusCode?.toLowerCase()">{{application.applicationStatus}}</span>

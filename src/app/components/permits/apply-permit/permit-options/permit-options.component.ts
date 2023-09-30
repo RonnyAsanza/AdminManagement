@@ -268,7 +268,7 @@ export class PermitOptionsComponent {
         next: (response) => {
           if (response.succeeded) {
             this.hideDialog();
-            var path = (permit.permitTypeModel?.requireAccessControl === true) ? 'application' : 'permits';
+            var path = (permit.permitTypeModel?.requireApproval === true) ? 'application' : 'permits';
             this.router.navigate(['/' + this.company.portalAlias + '/' + path + '/' + response.data]);
           }
         },

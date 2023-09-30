@@ -215,4 +215,8 @@ export class PermitInformationComponent implements OnInit {
     this.pdfService.generaReceiptPDF(action, this.permit);
   }
 
+  onViewApplication(applicationId: any){
+    this.router.navigate(['/' + this.company.portalAlias+'/application/' + applicationId]);
+  }
+
 }

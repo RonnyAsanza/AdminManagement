@@ -37,12 +37,12 @@ export class ActivityListComponent implements OnInit {
       });
     }
 
-    this.permitService.getPermitsByUser()
+    this.permitService.GetLastPermits(5)
     .subscribe({
 			next: (response) => {
         if(response.succeeded )
         {
-          this.permits = response.data!.slice(0, 3);
+          this.permits = response.data!;
         }
 			},
 			error: (e) => {
@@ -55,12 +55,12 @@ export class ActivityListComponent implements OnInit {
 			}
     });
 
-    this.applicationService.getApplicationsByUser()
+    this.applicationService.getLasApplications(3)
     .subscribe({
 			next: (response) => {
         if(response.succeeded )
         {
-          this.applications = response.data!.slice(0, 3);
+          this.applications = response.data!;
         }
 			},
 			error: (e) => {

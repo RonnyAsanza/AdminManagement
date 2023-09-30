@@ -22,6 +22,11 @@ export class ApplicationService {
     return this.http.get<PermitsResponse<Application[]>>(urlPath);
   }
 
+  getLasApplications(applicationsNumber: number): Observable<PermitsResponse<Application[]>>{
+    var urlPath = environment.apiPermitsURL + 'Application/last/'+applicationsNumber;
+    return this.http.get<PermitsResponse<Application[]>>(urlPath);
+  }
+
   submitApplication(applicationKey: string): Observable<PermitsResponse<number>>{
     var urlPath = environment.apiPermitsURL + 'Application/submit/'+ applicationKey;
     return this.http.put<PermitsResponse<number>>(urlPath, null);

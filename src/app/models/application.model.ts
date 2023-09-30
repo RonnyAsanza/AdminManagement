@@ -19,6 +19,7 @@ export class Application {
     additionalInput2?: string;
     sostToClient? : number;
     documents?: Document[];
+    requestNumber?: number;
   }
 
   export interface Document {

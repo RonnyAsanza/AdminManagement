@@ -73,6 +73,11 @@ export class PermitService {
     return this.http.get<PermitsResponse<Permit[]>>(urlPath);
   }
 
+  GetLastPermits(permitsNumber: number): Observable<PermitsResponse<Permit[]>>{
+    var urlPath = environment.apiPermitsURL + 'Permit/last/'+permitsNumber;
+    return this.http.get<PermitsResponse<Permit[]>>(urlPath);
+  }
+
   payPermit(permitKey: string): Observable<PermitsResponse<number>>{
     let payPermit = {
       PermitKey: permitKey

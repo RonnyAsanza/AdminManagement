@@ -23,7 +23,7 @@
                     <tr>
                         <td style="width:20%; min-width:10rem;">
                             <span class="p-column-title">Name</span>
-                            <a [href]="'#' + company.portalAlias">{{company.portalAlias}}</a>
+                            <a class="link-style" (click)="onGoToCompany(company)">{{company.portalAlias}}</a>
                         </td>
                         <td style="width:20%; min-width:10rem;">
                             <span class="p-column-title">Description</span>

@@ -3,6 +3,7 @@ import { ReceiptViewModel } from "./receipt.model";
 export class Permit {
     permitKey?: number;
     permitGuid?: string;
+    applicationGuid?: string;
     zoneKey?: number;
     zone? : string;
     permitTypeKey?: number;
@@ -20,5 +21,6 @@ export class Permit {
     quantity?: number;
     description?: string;
     monerisReceipt?: ReceiptViewModel;
+    requestNumber?: number;
   }
   

@@ -14,7 +14,7 @@ export interface PermitTypeViewModel {
     allowComments?: boolean;
     allowSharing?: boolean;
     allowCancellation?: boolean;
-    requireAccessControl?: boolean;
+    requireApproval?: boolean;
     requireAdditionalInput1?: boolean;
     requireAdditionalInput2?: boolean;
     requireAdditionalInput3?: boolean;

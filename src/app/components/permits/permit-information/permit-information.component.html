@@ -12,7 +12,7 @@
                         <div class="card p-0">
                             <div class="flex flex-row flex-wrap card-container">
                                 <div class="flex align-items-center justify-content-center font-bold border-round m-2">
-                                    <span># {{ permit?.permitKey }}</span>  
+                                    <span># {{ permit?.requestNumber }}</span>  
                                 </div>
                                 <div class="flex align-items-center justify-content-center font-bold border-round m-2">
                                     <span [class]="'permits-badge ' + permit?.permitStatusCode?.toLowerCase()">
@@ -127,6 +127,11 @@
                                 >
                                 </p-inputNumber>
                             </label>
+                        </div>
+                        <div class="col-0 md:col-6">       
+                        </div>
+                        <div class="col-12 md:col-3">       
+                                <button pButton pRipple [label]="'ClientPermit.ViewApplication' | translate" icon="pi pi-arrow-right"  class="p-button-primary" (click)="onViewApplication(permit.applicationGuid)"></button>
                         </div>
                     </div>
                 </p-fieldset>

@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ApplyPermit } from 'src/app/models/apply-permit.model';
 import { Company } from 'src/app/models/company.model';
-import { PermitType } from 'src/app/models/permit-type.models';
 import { Tariff } from 'src/app/models/tariff.models';
 import { CompanyService } from 'src/app/services/company.service';
 import { PermitService } from 'src/app/services/permit.service';
@@ -25,6 +24,7 @@ export class PermitOptionsComponent {
   permitOptions = new FormControl();
   form!: FormGroup;
   minDate = new Date();
+  minEndDate = new Date();
   company!: Company;
   confirmationDialog: boolean = false;
   permit!: ApplyPermit;
@@ -33,6 +33,7 @@ export class PermitOptionsComponent {
   rateEngineRequest: RateEngineByEndDateBasedRequest = new RateEngineByEndDateBasedRequest();
   rateEngineResponse: RateEngineByEndDateBasedRResponse = new RateEngineByEndDateBasedRResponse();
   totalCharge: number = 0;
+  cancelNewPermit: boolean = false;
 
   licenseDriver!: File;
   proofReisdence!: File;
@@ -55,6 +56,7 @@ export class PermitOptionsComponent {
       endDate.setMinutes(0);
       this.minDate.setHours(this.startHour);
       this.minDate.setMinutes(0);
+      this.minEndDate = this.minDate;
 
       this.form = this.fb.group({
         zone: ['', [Validators.required]],
@@ -83,7 +85,7 @@ export class PermitOptionsComponent {
     endDate.setMinutes(0);
     this.minDate.setHours(this.startHour);
     this.minDate.setMinutes(0);
-
+    this.minEndDate = this.minDate;
     this.permitService.permit.subscribe(permit => {
       this.form?.patchValue({
         zone: permit.zoneName,
@@ -129,12 +131,12 @@ export class PermitOptionsComponent {
 
   onChangeEndDate() {
     this.onChangeDate(false);
-
   }
 
   onChangeStartDate(){
-    this.onChangeDate(true);
 
+    this.minEndDate = this.form?.value.startDate;
+    this.onChangeDate(true);
   }
 
   onTariffChange(tariff: any) {
@@ -150,7 +152,12 @@ export class PermitOptionsComponent {
         next: (response) => {
           if (response.succeeded) {
             this.rateEngineResponse = response.data!;
-            this.totalCharge = parseFloat(this.rateEngineResponse.totalCharge.replace("$", "").trim());
+            const cleanedTotalCharge = this.rateEngineResponse.totalCharge.replace("$", "").trim();
+            if (cleanedTotalCharge) {
+              this.totalCharge = parseFloat(cleanedTotalCharge);
+            } else {
+              this.totalCharge = 0;
+            }
 
             var q = this.getHoursFromRateEngine(this.rateEngineResponse.totalDuration);
             var quantity = this.form?.value.quantity;
@@ -245,6 +252,11 @@ export class PermitOptionsComponent {
 
   onCancel() {
     console.log('cancel');
+  }
+
+  confirmCancel(){
+    this.cancelNewPermit = false;
+    this.router.navigate(['/' + this.company.portalAlias]);
   }
 
   hideDialog() {

@@ -6,7 +6,7 @@
                     <h4>{{"ClientPermit.PermitOptionsStatus" | translate}}: {{"ClientPermit.New" | translate}}</h4>
                 </div>
             </div>
-            <form class="form-options" [formGroup]="form" (submit)="onSubmitPermit()">
+            <form class="form-options" [formGroup]="form">
                 <div class="p-fluid p-formgrid grid" >
                     <div class="col-12 xl:col-6">
                         <div class="col-12">
@@ -55,7 +55,7 @@
                                 <p-calendar [showIcon]="true"
                                             [touchUI]="true" 
                                             [showButtonBar]="true"
-                                            [minDate]="minDate"
+                                            [minDate]="minEndDate"
                                             formControlName="endDate"
                                             dateFormat="yy-MM-dd"
                                             [showTime]="true"
@@ -168,11 +168,11 @@
                                 <div class="col-12">
                                     <div class="grid">
                                         <div class="col-12 md:col-6">
-                                            <button pButton pRipple icon="pi pi-times-circle" [label]="'ClientPermit.Cancel' | translate"  class="p-button-danger w-full">
+                                            <button pButton pRipple icon="pi pi-times-circle" [label]="'ClientPermit.Cancel' | translate"  class="p-button-danger w-full" (click)="cancelNewPermit = true">
                                             </button>
                                         </div>
                                         <div class="col-12 md:col-6">
-                                            <button pButton pRipple icon="pi pi-save" class="p-button-primary w-full" [label]="'ClientPermit.Submit' | translate"  [disabled]="!form?.valid">
+                                            <button pButton pRipple icon="pi pi-save" class="p-button-primary w-full" [label]="'ClientPermit.Submit' | translate"  [disabled]="!form?.valid" (submit)="onSubmitPermit()">
                                             </button>
                                         </div>
                                     </div>  
@@ -266,3 +266,14 @@
         <button pButton pRipple [disabled]="!form?.valid" icon="pi pi-save" class="p-button-primary" [label]="'ClientPermit.Submit' | translate" (click)="savePermit()"></button>
     </ng-template>
 </p-dialog>     
+
+<p-dialog [(visible)]="cancelNewPermit" [header]="'ClientPermit.Confirm' | translate" [modal]="true" [style]="{width:'450px'}">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>{{"ClientPermit.CancelApplication" | translate}}</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-check" class="p-button-danger" [label]="'ClientPermit.Yes' | translate" (click)="confirmCancel()"></button>
+        <button pButton pRipple icon="pi pi-times" class="p-button-primary" [label]="'ClientPermit.No' | translate" (click)="cancelNewPermit = false"></button>
+    </ng-template>
+</p-dialog>

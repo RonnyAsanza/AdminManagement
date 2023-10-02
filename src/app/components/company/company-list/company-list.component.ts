@@ -4,6 +4,7 @@ import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Company } from 'src/app/models/company.model';
 import { CompanyService } from 'src/app/services/company.service';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
 
 @Component({
   selector: 'app-company-list',
@@ -18,12 +19,11 @@ export class CompanyListComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private companyService: CompanyService
+    private companyService: CompanyService,
+    private localStorageService: LocalStorageService
   ) { }
 
   ngOnInit(): void {
-   // localStorage.clear();
     this.companyService.getAllCompanies()
     .subscribe((response)=>{
       if(response.succeeded )
@@ -39,7 +39,7 @@ export class CompanyListComponent implements OnInit {
   }
 
   onGoToCompany(company: Company) {
-    localStorage.clear();
+    this.localStorageService.clear();
     this.companyService.setLocalCompany(company);
     this.router.navigate(['/'+company.portalAlias+'/auth']);
    }

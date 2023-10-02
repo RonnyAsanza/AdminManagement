@@ -6,13 +6,15 @@ import { PermitsResponse } from '../permits-response.model';
 import { LoginRequest } from 'src/app/models/auth/login-request.model';
 import { PortalUserViewModel } from 'src/app/models/auth/portal-user.model';
 import { PortalUser } from 'src/app/models/portal-user.model';
+import { LocalStorageService } from '../local-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+    private localStorageService: LocalStorageService) { }
 
   login(loginRequest: LoginRequest): Observable<PermitsResponse<PortalUserViewModel>>{
     var urlPath = environment.apiPermitsURL + 'Login';
@@ -25,22 +27,22 @@ export class AuthService {
 }
 
   setLocalToken(token: string): void {
-    localStorage.setItem('token', token);
+    this.localStorageService.setItem('token', token);
   }
 
   setLocalUser(user: PortalUserViewModel) {
     let userJsonString = JSON.stringify(user);
     this.setLocalToken(user.token!);
-    localStorage.setItem('tokenExpiration', JSON.stringify(user.expiration));
-    localStorage.setItem('user',userJsonString);
+    this.localStorageService.setItem('tokenExpiration', JSON.stringify(user.expiration));
+    this.localStorageService.setItem('user',userJsonString);
   }
 
   getLocalToken(): string {
-    return localStorage.getItem('token')!;
+    return this.localStorageService.getItem('token')!;
   }
 
   getLocalUser(): PortalUserViewModel {
-    let userJsonString = localStorage.getItem('user');
+    let userJsonString = this.localStorageService.getItem('user');
    if (userJsonString == 'undefined')
          return {};
     return JSON.parse(userJsonString!);
@@ -59,5 +61,4 @@ export class AuthService {
     var urlPath = environment.apiPermitsURL + 'PortalUser/confirm-email';
     return this.http.post<PermitsResponse<number>>(urlPath, body);
   }
-
 }

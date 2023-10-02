@@ -6,21 +6,19 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Permit } from '../models/permit.model';
 import { PermitsResponse } from './permits-response.model';
 import { ApplyPermit } from '../models/apply-permit.model';
+import { LocalStorageService } from './local-storage.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class PermitService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private localStorageService: LocalStorageService) { }
 
   private permitSource = new BehaviorSubject<ApplyPermit>(new ApplyPermit());
   permit = this.permitSource.asObservable()
 
   applyPermit(applyPermit: ApplyPermit): Observable<PermitsResponse<number>>{
-    let ApplyPermitViewModel = {
-      ApplyPermitViewModel: applyPermit
-    };
 
     const formData: FormData = new FormData();
     formData.append('companyKey', applyPermit.companyKey?.toString() || '');
@@ -89,12 +87,12 @@ export class PermitService {
 
   setLocalApplyPermit(applyPermit: ApplyPermit): void {
     let companyJsonString = JSON.stringify(applyPermit);
-    localStorage.setItem('applyPermit',companyJsonString);
+    this.localStorageService.setItem('applyPermit',companyJsonString);
     this.permitSource.next(applyPermit);
   }
 
   getLocalApplyPermit(): ApplyPermit {
-    let permitJsonString = localStorage.getItem('applyPermit');
+    let permitJsonString = this.localStorageService.getItem('applyPermit');
     if (!permitJsonString)
           return {};
     return JSON.parse(permitJsonString);

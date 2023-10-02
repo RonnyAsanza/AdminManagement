@@ -11,6 +11,7 @@ import {  Observable, throwError } from 'rxjs';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { LoaderService } from '../services/loader.service';
 import { AuthService } from '../services/auth/auth.service';
+import { LocalStorageService } from '../services/local-storage.service';
 @Injectable(
     {
         providedIn: 'root'
@@ -20,8 +21,10 @@ export class HttpConfigInterceptor implements HttpInterceptor {
     private totalRequests = 0;
     private refreshingToken = false;
     private authService: AuthService;
+    private localStorageService: LocalStorageService;
     constructor(private injector: Injector, private loaderService: LoaderService) {
          this.authService = this.injector.get(AuthService);
+         this.localStorageService = this.injector.get(LocalStorageService);
       }
     // constructor(private loader: LoaderService) { }
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -63,12 +66,12 @@ export class HttpConfigInterceptor implements HttpInterceptor {
       );
   }
     addAuthToken(request: HttpRequest<any>) {
-        var  token: string = localStorage.getItem('token')!;
+        var  token: string = this.localStorageService.getItem('token')!;
         if (!token) {
           return request;
         }
 
-        let tokenExpiration = localStorage.getItem("tokenExpiration")!;
+        let tokenExpiration = this.localStorageService.getItem("tokenExpiration")!;
 
         if (tokenExpiration) {
           tokenExpiration = tokenExpiration.replace(/^"|"$/g, '');
@@ -85,8 +88,8 @@ export class HttpConfigInterceptor implements HttpInterceptor {
                 this.authService.refreshToken().subscribe({
                   next: (response) => {
                     token = response.token!;
-                    localStorage.setItem('token', token);
-                    localStorage.setItem('tokenExpiration', response.expiration);
+                    this.localStorageService.setItem('token', token);
+                    this.localStorageService.setItem('tokenExpiration', response.expiration);
     
                     this.refreshingToken = false;
                   },

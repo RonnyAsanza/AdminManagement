@@ -26,7 +26,7 @@ declare var monerisCheckout: any;
 })
 export class PermitInformationComponent implements OnInit {
   permitId: string = "";
-  permit!: Permit;
+  permit: Permit = new Permit();
   company!: Company;
   ticket: string = "";
   startDateUtc: string = "";

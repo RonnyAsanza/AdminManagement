@@ -139,7 +139,7 @@
 
             <div
                 class="col-12"
-                *ngIf="permit?.permitStatusCode === 'payment-pending'"
+                *ngIf="permit?.permitStatusCode === 'payment-pending' || permit?.permitStatusCode === 'payment-failed'"
             >
                 <p-table
                     *ngIf="paymentTC === false"

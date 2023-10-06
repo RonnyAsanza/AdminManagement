@@ -50,6 +50,7 @@ export class PermitOptionsComponent {
     private router: Router,
     private fb: FormBuilder,
     private permitService: PermitService,
+    private messageService: MessageService,
     private rateEngineService: RateEngineService) {
       var endDate = new Date();
       endDate.setHours(this.endHour);
@@ -65,9 +66,9 @@ export class PermitOptionsComponent {
         startDate: [this.minDate, [Validators.required]],
         endDate: [endDate, [Validators.required]],
         licensePlate: [null, [Validators.required, Validators.minLength(3)]],
-        price: [0, [Validators.required]],
+        price: [0, [Validators.required, Validators.min(1)]],
         quantity: [1, [Validators.required]],
-        total: [0],
+        total: [0, [Validators.min(1)]],
         driversLicense: [''],
         proffOfResidence: [''],
         optional1: [''],
@@ -157,6 +158,7 @@ export class PermitOptionsComponent {
               this.totalCharge = parseFloat(cleanedTotalCharge);
             } else {
               this.totalCharge = 0;
+              this.showTariffErrorMessage();
             }
 
             var q = this.getHoursFromRateEngine(this.rateEngineResponse.totalDuration);
@@ -172,9 +174,20 @@ export class PermitOptionsComponent {
           }
         },
         error: (e) => {
+          this.showTariffErrorMessage();
         }
       });
   }
+
+showTariffErrorMessage(){
+  this.messageService.add({
+    key: 'msg',
+    severity: 'error',
+    summary: 'Error',
+    detail: 'Service not available at this time, try later in a few minutes.',
+    life: 10000
+  });
+}
 
   // setEndDate(startDate: Date, tariff: Tariff) {
 

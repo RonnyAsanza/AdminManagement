@@ -32,10 +32,6 @@ export class LoginComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		var user = this.authService.getLocalUser();
-		if(user?.companyGuid)
-			this.router.navigate(['/'+user?.companyGuid+'/']);
-
 		var localCompany = this.companyService.getLocalCompany();
 		var companyAlias = "";
 
@@ -46,54 +42,57 @@ export class LoginComponent implements OnInit {
 		if(companyAlias === "" && localCompany)
 			companyAlias = localCompany?.portalAlias!;
 
+		var user = this.authService.getLocalUser();
+		if(user?.companyGuid)
+			this.router.navigate(['/'+companyAlias+'/']);
+
 		this.getCompanyConfigurations(companyAlias);
 		this.form = this.fb.group({
 		  username: ['', [Validators.required, Validators.minLength(3)]],
 		  password: ['', [Validators.required, Validators.minLength(3)]],
 		  rememberMe: [false]
 		});
-	  }
+	}
 
-	  getCompanyConfigurations(companyAlias: string){
-		this.companyService.getCompanyConfigurations(companyAlias)
-		.subscribe({
-		  next: (response) => {
-			  if(response.succeeded ){            
-				  this.company = response.data!;
-				  this.companyService.setLocalCompany(this.company);
-			  }
-		  },
-		  error: (e) => {
-			  this.messageService.add({
-				  key: 'msg',
-				  severity: 'error',
-				  summary: 'Error',
-				  detail: e
-			  });
-		  }
-		 });
-	  }
-
-
-	  onLoginClick(loginForm: FormGroup){
-		var loginRequest = new LoginRequest(loginForm.value.username, loginForm.value.password, this.company.externalCompanyId!);
-        this.authService.login(loginRequest)
-		.subscribe({
-			next: (response) => {
-				if(response.succeeded ){            
-				    this.authService.setLocalUser(response.data!);
-					this.router.navigate(['/'+this.company.portalAlias+'/'], { relativeTo: this.activatedRoute });
-                    return;
-				}
-			},
-			error: (e) => {
-				this.messageService.add({
-					key: 'msg',
-					severity: 'error',
-					summary: 'Error',
-					detail: e	
-				});
+	getCompanyConfigurations(companyAlias: string){
+	this.companyService.getCompanyConfigurations(companyAlias)
+	.subscribe({
+		next: (response) => {
+			if(response.succeeded ){            
+				this.company = response.data!;
+				this.companyService.setLocalCompany(this.company);
 			}
-		   });
-	  }
+		},
+		error: (e) => {
+			this.messageService.add({
+				key: 'msg',
+				severity: 'error',
+				summary: 'Error',
+				detail: e
+			});
+		}
+		});
+	}
+
+	onLoginClick(loginForm: FormGroup){
+	var loginRequest = new LoginRequest(loginForm.value.username, loginForm.value.password, this.company.externalCompanyId!);
+	this.authService.login(loginRequest)
+	.subscribe({
+		next: (response) => {
+			if(response.succeeded ){            
+				this.authService.setLocalUser(response.data!);
+				this.router.navigate(['/'+this.company.portalAlias+'/'], { relativeTo: this.activatedRoute });
+				return;
+			}
+		},
+		error: (e) => {
+			this.messageService.add({
+				key: 'msg',
+				severity: 'error',
+				summary: 'Error',
+				detail: e	
+			});
+		}
+		});
+	}
 }

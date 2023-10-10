@@ -23,7 +23,7 @@ export class LocalStorageService {
   }
 
   clear() {
-    for (let i = 0; i < localStorage.length; i++) {
+    for (let i = localStorage.length - 1; i >= 0; i--) {
       const key = localStorage.key(i);
       if (key && key.startsWith(`${this.appName}-`)) {
         localStorage.removeItem(key);

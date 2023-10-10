@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { LayoutService } from './service/app.layout.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import {  Router } from '@angular/router';
 import { CompanyService } from '../services/company.service';
 import { AuthService } from '../services/auth/auth.service';
 import { PortalUserViewModel } from '../models/auth/portal-user.model';
@@ -8,7 +8,6 @@ import { UnreadMessageViewModel } from '../models/unread-messages.model';
 import { MessageAction, PermitMessagesService } from '../services/permit-messages.service';
 import { Company } from 'src/app/models/company.model';
 import { PermitMessageViewModel } from '../models/permit-messages.model';
-import { LocalStorageService } from '../services/local-storage.service';
 
 @Component({
   selector: 'app-profilemenu',
@@ -23,8 +22,6 @@ export class AppProfileSidebarComponent {
     private companyService: CompanyService,
     private router: Router,
     private userService: AuthService,
-    private activatedRoute: ActivatedRoute,
-    private localStorageService: LocalStorageService,
     private permitMessagesService: PermitMessagesService) {
     this.user = this.userService.getLocalUser();
     this.company = this.companyService.getLocalCompany();
@@ -49,9 +46,7 @@ export class AppProfileSidebarComponent {
   }
 
   onSignOut() {
-    var company = this.companyService.getLocalCompany();
-    this.localStorageService.clear();
-    this.router.navigate(['/' + company?.portalAlias + '/auth'], { relativeTo: this.activatedRoute });
+    this.userService.logout();
   }
 
   getIconClass(messageType: string): string {

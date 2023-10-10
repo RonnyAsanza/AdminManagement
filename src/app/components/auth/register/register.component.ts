@@ -64,8 +64,19 @@ export class RegisterComponent {
 		this.authService.createPortalUser(portalUser)
 		.subscribe({
 			next: (response) => {
-				if(response.succeeded ){            
-					this.router.navigate(['/'+this.company.portalAlias+'/auth']);
+				if(response.succeeded ){        
+					
+					this.messageService.add({
+						key: 'msg',
+						severity: 'success',
+						summary: 'Success',
+						detail: 'User successfully created, you will get an email to confirm you account!'
+					});
+					
+					setTimeout(() => {
+						this.router.navigate(['/'+this.company.portalAlias+'/auth']);
+						return;				  
+					}, 3000);
 				}
 			},
 			error: (e) => {
@@ -78,5 +89,4 @@ export class RegisterComponent {
 			}
 		   });	
 	  }
-
 }

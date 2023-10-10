@@ -12,6 +12,7 @@ import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
 import { MessageModule } from 'primeng/message';
 import { MessagesModule } from 'primeng/messages';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
     imports: [
@@ -27,7 +28,8 @@ import { MessagesModule } from 'primeng/messages';
         MessageModule,
         MessagesModule,
         ToastModule,
-        PasswordModule
+        PasswordModule,
+        SharedModule
     ],
     declarations: [RegisterComponent]
 })

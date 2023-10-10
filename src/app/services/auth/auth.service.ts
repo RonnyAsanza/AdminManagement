@@ -7,6 +7,8 @@ import { LoginRequest } from 'src/app/models/auth/login-request.model';
 import { PortalUserViewModel } from 'src/app/models/auth/portal-user.model';
 import { PortalUser } from 'src/app/models/portal-user.model';
 import { LocalStorageService } from '../local-storage.service';
+import { CompanyService } from '../company.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -14,11 +16,19 @@ import { LocalStorageService } from '../local-storage.service';
 export class AuthService {
 
   constructor(private http: HttpClient,
-    private localStorageService: LocalStorageService) { }
+    private localStorageService: LocalStorageService,
+    private companyService: CompanyService,
+    private router: Router) { }
 
   login(loginRequest: LoginRequest): Observable<PermitsResponse<PortalUserViewModel>>{
     var urlPath = environment.apiPermitsURL + 'Login';
     return this.http.post<PermitsResponse<PortalUserViewModel>>(urlPath, loginRequest);
+  }
+
+  logout() {
+    var company = this.companyService.getLocalCompany();
+    this.localStorageService.clear();
+    this.router.navigate(['/'+company.portalAlias+'/auth']);
   }
 
   refreshToken() {

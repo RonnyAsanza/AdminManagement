@@ -8,6 +8,7 @@ import { Application } from 'src/app/models/application.model';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { ReSubmitApplication } from 'src/app/models/resubmit-application.model';
 import { FileService } from 'src/app/services/file.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-application-information',
@@ -31,6 +32,7 @@ export class ApplicationInformationComponent implements OnInit {
   constructor(private activatedRoute: ActivatedRoute,
     private datePipe: DatePipe,
     private router: Router,
+    private location: Location,
     private applicationService: ApplicationService,
     private companyService: CompanyService,
     private sanitizer: DomSanitizer,
@@ -84,7 +86,7 @@ export class ApplicationInformationComponent implements OnInit {
       .subscribe({
         next: (response) => {
           if (response.succeeded) {
-            this.router.navigate(['/' + this.company.portalAlias]);
+            window.location.reload();
           }
         },
         error: (e) => {

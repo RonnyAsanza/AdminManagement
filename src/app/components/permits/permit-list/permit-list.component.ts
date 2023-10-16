@@ -15,7 +15,7 @@ import { MessageService } from 'primeng/api';
 export class PermitListComponent implements OnInit {
   company!: Company;
   permits!: Permit[];
-
+  itemEditing!: string | null;
   constructor(private companyService: CompanyService,
               private router: Router,
               private permitService: PermitService,
@@ -55,5 +55,20 @@ export class PermitListComponent implements OnInit {
 
   onViewPermit(permitId: any){
     this.router.navigate(['/' + this.company.portalAlias+'/permits/' + permitId]);
+  }
+
+  onEditPermit(permitGuid: any) {
+    if(this.itemEditing)
+    {
+
+      this.itemEditing = null;
+
+    }
+    else
+      this.itemEditing = permitGuid;
+  }
+
+  onCancelEdit(){
+    this.itemEditing = null;
   }
 }

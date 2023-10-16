@@ -98,4 +98,9 @@ export class PermitService {
     return JSON.parse(permitJsonString);
   }
   
+  updatePermitLicensePlate(permitKey: number, licensePlate: string): Observable<PermitsResponse<number>>{
+    var urlPath = environment.apiPermitsURL + 'Permit/'+permitKey+'/license-plate/'+licensePlate;
+    return this.http.put<PermitsResponse<number>>(urlPath, null);
+  }
+
 }

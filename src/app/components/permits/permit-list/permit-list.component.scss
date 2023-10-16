@@ -9,3 +9,30 @@
     width: auto;
     border-bottom: 1px solid;
   }
+
+  :host ::ng-deep {
+    .p-card {
+      &:hover {
+        transform: scale(0.98);
+        box-shadow: 2px 0px 8px 0px rgb(0 0 0 / 90%);  }
+  
+        .p-card-footer {
+          padding: 0;
+        }
+     }
+    }
+  
+  .footer-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  
+    button {
+      margin: 0;
+    }
+  }
+
+  .edit-input {
+    width: 100%;
+    box-sizing: border-box; 
+  }

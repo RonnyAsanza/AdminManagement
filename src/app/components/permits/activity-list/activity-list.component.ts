@@ -7,6 +7,7 @@ import { PermitService } from 'src/app/services/permit.service';
 import { MessageService } from 'primeng/api';
 import { Application } from 'src/app/models/application.model';
 import { ApplicationService } from 'src/app/services/application.service';
+
 @Component({
   selector: 'app-activity-list',
   templateUrl: './activity-list.component.html',
@@ -18,6 +19,8 @@ export class ActivityListComponent implements OnInit {
   company!: Company;
   permits!: Permit[];
   applications!: Application[];
+
+  itemEditing!: string | null;
 
   constructor(private companyService: CompanyService,
               private router: Router,
@@ -77,7 +80,48 @@ export class ActivityListComponent implements OnInit {
   onViewPermit(permitId: any){
     this.router.navigate(['/' + this.company.portalAlias+'/permits/' + permitId]);
   }
+
   onViewApplication(applicationId: any){
     this.router.navigate(['/' + this.company.portalAlias+'/application/' + applicationId]);
+  }
+
+  onEditPermit(permit: Permit) {
+    if(this.itemEditing)
+    {
+      this.permitService.updatePermitLicensePlate(permit.permitKey!, permit.licensePlate!)
+      .subscribe({
+        next: (response) => {
+          if(response.succeeded )
+          {
+            this.itemEditing = null;
+          }
+        },
+        error: (e) => {
+          this.messageService.add({
+            key: 'msg',
+            severity: 'error',
+            summary: 'Error',
+            detail: e	
+          });
+        }
+      });
+    }
+    else
+      this.itemEditing = permit.permitGuid!;
+  }
+
+  onCancelEdit(){
+    this.itemEditing = null;
+  }
+
+  onEditApplication(permitGuid: any) {
+    if(this.itemEditing)
+    {
+
+      this.itemEditing = null;
+
+    }
+    else
+      this.itemEditing = permitGuid;
   }
 }

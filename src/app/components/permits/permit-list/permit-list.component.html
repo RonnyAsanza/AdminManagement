@@ -10,24 +10,96 @@
                     >
                         <div class="grid">
                             <div class="col-12 xl:col-6 py-0">
-                                <h4>Permit #: {{permit.requestNumber}}</h4>
+                                <h4>{{"ClientPermit.Permit" | translate}} #: {{permit.requestNumber}}</h4>
                             </div>
                             <div class="col-12 xl:col-6  py-0">
-                                <span [class]="'permits-badge ' + permit?.permitStatusCode?.toLowerCase()">{{permit.permitStatus}}</span>
+                                <span [class]="'permits-badge ' + permit?.permitStatusCode?.toLowerCase()">{{ "PermitStatus."+permit?.permitStatusCode | translate }}</span>
                             </div>
                         </div>
                         <div class="card-content py-2">
-                            <span class="card-item"><strong>{{"ClientPermit.LicensePlate" | translate}}:</strong> {{permit.licensePlate}}</span>
-                            <span class="card-item"><strong>Type:</strong> {{permit.permitType}}</span>
-                            <span class="card-item"><strong>Adress:</strong> Ontario Street</span>
-                            <span class="card-item"><strong>{{"ClientPermit.StartDate" | translate}}:</strong> {{permit.startDateUtc | date: 'yyyy-MM-dd HH:mm'}} </span>
-                            <span class="card-item"><strong>{{"ClientPermit.EndDate" | translate}}:</strong> {{permit.expirationDateUtc | date: 'yyyy-MM-dd HH:mm'}}</span>
+                            <div class="grid card-item">
+                                <div class="col-6 p-0">
+                                    <span><strong>{{"ClientPermit.LicensePlate" | translate}}:</strong></span>
+                                </div>
+                                <div class="col-6 p-0" *ngIf="!(itemEditing == permit.permitGuid)">
+                                    <span>{{permit.licensePlate}}</span>                                
+                                </div>
+                                <div class="col-6 p-0" *ngIf="itemEditing == permit.permitGuid">
+                                    <input type="text" pInputText [(ngModel)]="permit.licensePlate" maxlength="10" class="edit-input" />
+                                </div>
+                            </div>
+                            <div class="grid card-item">
+                                <div class="col-6 p-0">
+                                    <span><strong>{{"ClientPermit.Type" | translate}}:</strong></span>
+                                </div>
+                                <div class="col-6 p-0">
+                                    <span>{{permit.permitType}}</span>                                
+                                </div>
+                            </div>
+                            <div class="grid card-item">
+                                <div class="col-6 p-0">
+                                    <span><strong>{{"ClientPermit.Zone" | translate}}:</strong></span>
+                                </div>
+                                <div class="col-6 p-0">
+                                    <span>{{permit.zone}}</span>                                
+                                </div>
+                            </div>
+                            <div class="grid card-item">
+                                <div class="col-6 p-0">
+                                    <span><strong>{{"ClientPermit.StartDate" | translate}}:</strong></span>
+                                </div>
+                                <div class="col-6 p-0">
+                                    <span>{{permit.startDateUtc | date: 'yyyy-MM-dd HH:mm'}} </span>                                
+                                </div>
+                            </div>
+                            <div class="grid card-item">
+                                <div class="col-6 p-0">
+                                    <span><strong>{{"ClientPermit.EndDate" | translate}}:</strong></span>
+                                </div>
+                                <div class="col-6 p-0">
+                                    <span>{{permit.expirationDateUtc | date: 'yyyy-MM-dd HH:mm'}}</span>                                
+                                </div>
+                            </div>
+                            <div class="grid card-item">
+                                <div class="col-6 p-0">
+                                    <span><strong>{{"ClientPermit.Price" | translate}}:</strong></span>
+                                </div>
+                                <div class="col-6 p-0">
+                                    <span>CAD {{permit?.price}}</span>                                
+                                </div>
+                            </div>                           
                         </div>
                         <ng-template pTemplate="footer">
-                            <button pButton pRipple label="View" icon="pi pi-arrow-right"  class="p-button-primary" (click)="onViewPermit(permit.permitGuid)"></button>
+                            <div class="footer-buttons">
+                                <button 
+                                    *ngIf="!(itemEditing == permit.permitGuid)"
+                                    pButton 
+                                    pRipple 
+                                    [label]="'ClientPermit.View' | translate" 
+                                    icon="pi pi-arrow-right"  
+                                    class="p-button-primary" 
+                                    (click)="onViewPermit(permit.permitGuid)">
+                                </button>
+                                <button 
+                                    *ngIf="itemEditing == permit.permitGuid"
+                                    pButton 
+                                    pRipple 
+                                    icon="pi pi-times"  
+                                    class="p-button-danger" 
+                                    (click)="onCancelEdit()">
+                                </button>
+                                <button
+                                  pButton
+                                  pRipple
+                                  icon="pi pi-pencil"
+                                  [icon]="(itemEditing == permit.permitGuid) ? 'pi pi-check' : 'pi pi-pencil'"
+                                  class="p-button-rounded p-button-primary"
+                                  (click)="onEditPermit(permit.permitGuid)">
+                                </button>
+                              </div>                     
                         </ng-template>
                     </p-card>
-                </div>                                                   
+                </div>                                                 
             </div>
         </ng-container>
     </div>

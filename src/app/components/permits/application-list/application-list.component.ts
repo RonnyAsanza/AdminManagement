@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Company } from 'src/app/models/company.model';
-import { Permit } from 'src/app/models/permit.model';
 import { CompanyService } from 'src/app/services/company.service';
 import { PermitService } from 'src/app/services/permit.service';
 import { MessageService } from 'primeng/api';
@@ -18,15 +17,15 @@ export class ApplicationListComponent implements OnInit {
   company!: Company;
   applications!: Application[];
 
+  itemEditing!: string | null;
+
   constructor(private companyService: CompanyService,
               private router: Router,
-              private permitService: PermitService,
               private applicationService: ApplicationService,
               private messageService: MessageService,
               private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-    //validate company-user
     this.company = this.companyService.getLocalCompany();
     if(this.company == null)
     {
@@ -57,5 +56,20 @@ export class ApplicationListComponent implements OnInit {
 
   onViewApplication(applicationId: any){
     this.router.navigate(['/' + this.company.portalAlias+'/application/' + applicationId]);
+  }
+
+  onEditPermit(permitGuid: any) {
+    if(this.itemEditing)
+    {
+
+      this.itemEditing = null;
+
+    }
+    else
+      this.itemEditing = permitGuid;
+  }
+
+  onCancelEdit(){
+    this.itemEditing = null;
   }
 }

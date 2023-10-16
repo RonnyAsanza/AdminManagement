@@ -69,7 +69,10 @@
                             </div>    
                             <div class="field grid px-3 mt-4">
                                 <button pButton pRipple label="Log In" [disabled]="!form?.valid"></button>
-                            </div>  
+                            </div>
+                            <span class="w-full mt-4" align="center">
+                                <a routerLink= "/{{this.company?.portalAlias}}/auth/" >Already have an account? Sign in</a>
+                            </span>
                         </div>
                     </form>
                 </ng-container>

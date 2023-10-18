@@ -40,10 +40,10 @@ export class PermitOptionsComponent {
 
   tariffs: Tariff[] =
     [
-      new Tariff(6, 'Standard Hour'),
-      new Tariff(2014, 'Standard Day'),
-      new Tariff(74, 'Standard Month'),
-      new Tariff(2541, 'Standard year')
+      new Tariff(3197, 'Day'),
+      new Tariff(3198, 'Week'),
+      new Tariff(3199, 'Month'),
+      new Tariff(3200, 'Year')
     ];
   constructor(private companyService: CompanyService,
     private datePipe: DatePipe,

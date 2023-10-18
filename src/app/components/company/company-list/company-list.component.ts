@@ -5,6 +5,7 @@ import { Table } from 'primeng/table';
 import { Company } from 'src/app/models/company.model';
 import { CompanyService } from 'src/app/services/company.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { ThemeService } from 'src/app/services/theme.service';
 
 @Component({
   selector: 'app-company-list',
@@ -20,7 +21,8 @@ export class CompanyListComponent implements OnInit {
   constructor(
     private router: Router,
     private companyService: CompanyService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private themeService: ThemeService
   ) { }
 
   ngOnInit(): void {
@@ -41,6 +43,7 @@ export class CompanyListComponent implements OnInit {
   onGoToCompany(company: Company) {
     this.localStorageService.clear();
     this.companyService.setLocalCompany(company);
+    this.themeService.changeTheme(company.companyKey?.toString()??"");
     this.router.navigate(['/'+company.portalAlias+'/auth']);
    }
 }

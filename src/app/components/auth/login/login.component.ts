@@ -15,7 +15,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class LoginComponent implements OnInit {
 	rememberMe: boolean = false;
 	form!: FormGroup;
-	company: Company = new Company();
+	company!: Company;
     userName: string = '';
     password: string = '';
 
@@ -39,14 +39,15 @@ export class LoginComponent implements OnInit {
 		  companyAlias = params['company'];
 		});
 
-		if(companyAlias === "" && localCompany)
+		this.getCompanyConfigurations(companyAlias);
+
+		if(!this.company)
 			companyAlias = localCompany?.portalAlias!;
 
 		var user = this.authService.getLocalUser();
 		if(user?.companyGuid)
 			this.router.navigate(['/'+companyAlias+'/']);
 
-		this.getCompanyConfigurations(companyAlias);
 		this.form = this.fb.group({
 		  username: ['', [Validators.required, Validators.minLength(3)]],
 		  password: ['', [Validators.required, Validators.minLength(3)]],
@@ -55,6 +56,7 @@ export class LoginComponent implements OnInit {
 	}
 
 	getCompanyConfigurations(companyAlias: string){
+
 	this.companyService.getCompanyConfigurations(companyAlias)
 	.subscribe({
 		next: (response) => {
@@ -62,15 +64,15 @@ export class LoginComponent implements OnInit {
 				this.company = response.data!;
 				this.companyService.setLocalCompany(this.company);
 			}
-		},
-		error: (e) => {
-			this.messageService.add({
-				key: 'msg',
-				severity: 'error',
-				summary: 'Error',
-				detail: e
-			});
-		}
+			else{
+				this.messageService.add({
+					key: 'msg',
+					severity: 'error',
+					summary: 'Error',
+					detail: response.message
+					});
+				}
+			}
 		});
 	}
 
@@ -84,15 +86,15 @@ export class LoginComponent implements OnInit {
 				this.router.navigate(['/'+this.company.portalAlias+'/'], { relativeTo: this.activatedRoute });
 				return;
 			}
-		},
-		error: (e) => {
-			this.messageService.add({
-				key: 'msg',
-				severity: 'error',
-				summary: 'Error',
-				detail: e	
-			});
-		}
+			else{
+				this.messageService.add({
+					key: 'msg',
+					severity: 'error',
+					summary: 'Error',
+					detail: response.message
+					});
+				}
+			}
 		});
 	}
 }

@@ -47,7 +47,7 @@
                         </p-checkbox>
                         <label for="rememberMe" class="text-900 font-medium mr-8">Remember Me</label>
                     </div>
-                    <a [routerLink]="['/auth/forgotpassword']" class="text-600 cursor-pointer hover:text-primary cursor-pointer ml-auto transition-colors transition-duration-300">Reset password</a>
+                    <a routerLink= "/{{this.company?.portalAlias}}/auth/forgotpassword" class="text-600 cursor-pointer hover:text-primary cursor-pointer ml-auto transition-colors transition-duration-300">Reset password</a>
                 </div>
                 <button pButton pRipple label="Log In" class="w-full" [disabled]="!form?.valid"></button>
                 <span class="w-full mt-4" align="center">

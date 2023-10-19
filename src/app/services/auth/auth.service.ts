@@ -9,6 +9,7 @@ import { PortalUser } from 'src/app/models/portal-user.model';
 import { LocalStorageService } from '../local-storage.service';
 import { CompanyService } from '../company.service';
 import { Router } from '@angular/router';
+import { ChangePasswordViewModel } from 'src/app/models/auth/change-password.model';
 
 @Injectable({
   providedIn: 'root'
@@ -71,4 +72,15 @@ export class AuthService {
     var urlPath = environment.apiPermitsURL + 'PortalUser/confirm-email';
     return this.http.post<PermitsResponse<number>>(urlPath, body);
   }
+
+  resetPassword(email: string, companyKey: number): Observable<PermitsResponse<number>>{
+    var urlPath = environment.apiPermitsURL + 'PortalUser/'+ email + '/reset-password';
+    return this.http.put<PermitsResponse<number>>(urlPath, companyKey);
+  }
+
+  changePassword(portalUserKey: string, changePassword: ChangePasswordViewModel): Observable<PermitsResponse<number>>{
+    var urlPath = environment.apiPermitsURL + 'PortalUser/'+ portalUserKey + '/change-password';
+    return this.http.put<PermitsResponse<number>>(urlPath, changePassword);
+  }
+
 }

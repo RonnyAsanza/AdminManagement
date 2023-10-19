@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NewPasswordComponent } from './newpassword.component';
 import { NewPasswordRoutingModule } from './newpassword-routing.module';
 import { ButtonModule } from 'primeng/button';
@@ -8,6 +8,10 @@ import { InputTextModule } from 'primeng/inputtext';
 import { RippleModule } from 'primeng/ripple';
 import { AppConfigModule } from 'src/app/layout/config/app.config.module';
 import { PasswordModule } from 'primeng/password';
+import { MessageModule } from 'primeng/message';
+import { MessagesModule } from 'primeng/messages';
+import { ToastModule } from 'primeng/toast';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
     imports: [
@@ -16,9 +20,14 @@ import { PasswordModule } from 'primeng/password';
         FormsModule,
         ButtonModule,
         InputTextModule,
+        ReactiveFormsModule,
         RippleModule,
         AppConfigModule,
-        PasswordModule
+        PasswordModule,
+        MessageModule,
+        MessagesModule,
+        ToastModule,
+        SharedModule
     ],
     declarations: [NewPasswordComponent]
 })

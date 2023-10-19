@@ -56,23 +56,22 @@ export class LoginComponent implements OnInit {
 	}
 
 	getCompanyConfigurations(companyAlias: string){
-
-	this.companyService.getCompanyConfigurations(companyAlias)
-	.subscribe({
-		next: (response) => {
-			if(response.succeeded ){            
-				this.company = response.data!;
-				this.companyService.setLocalCompany(this.company);
-			}
-			else{
-				this.messageService.add({
-					key: 'msg',
-					severity: 'error',
-					summary: 'Error',
-					detail: response.message
-					});
+		this.companyService.getCompanyConfigurations(companyAlias)
+		.subscribe({
+			next: (response) => {
+				if(response.succeeded ){            
+					this.company = response.data!;
+					this.companyService.setLocalCompany(this.company);
 				}
-			}
+				else{
+					this.messageService.add({
+						key: 'msg',
+						severity: 'error',
+						summary: 'Error',
+						detail: response.message
+						});
+					}
+				}
 		});
 	}
 

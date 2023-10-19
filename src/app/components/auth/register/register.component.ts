@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { LayoutService } from 'src/app/layout/service/app.layout.service';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Company } from 'src/app/models/company.model';
 import { CompanyService } from 'src/app/services/company.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Router } from '@angular/router';
 import { PortalUser } from 'src/app/models/portal-user.model';
-import { environment } from 'src/environments/environment';
 import { MessageService } from 'primeng/api';
 
 @Component({
@@ -65,7 +64,6 @@ export class RegisterComponent {
 		.subscribe({
 			next: (response) => {
 				if(response.succeeded ){        
-					
 					this.messageService.add({
 						key: 'msg',
 						severity: 'success',
@@ -78,14 +76,15 @@ export class RegisterComponent {
 						return;				  
 					}, 3000);
 				}
-			},
-			error: (e) => {
-				this.messageService.add({
-					key: 'msg',
-					severity: 'error',
-					summary: 'Error',
-					detail: e
-				});
+				else
+				{
+					this.messageService.add({
+						key: 'msg',
+						severity: 'error',
+						summary: 'Error',
+						detail: response.message
+					});
+				}
 			}
 		   });	
 	  }

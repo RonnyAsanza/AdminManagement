@@ -15,8 +15,8 @@ export class VerificationComponent implements OnInit {
                 private authService: AuthService) { }
 
     get dark(): boolean {
-    return this.layoutService.config.colorScheme !== 'light';
-            }
+    return this.layoutService.config.colorScheme !== 'light';}
+
     ngOnInit(): void {
         this.activatedRoute.params.subscribe(params => {
         this.portalUserKey = params['user'];

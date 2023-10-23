@@ -187,6 +187,7 @@
                             </button>
                             <button
                               pButton
+                              *ngIf="(application?.applicationStatusKey === 1 || application?.applicationStatusKey === 2 || application?.applicationStatusKey === 9)"
                               pRipple
                               icon="pi pi-pencil"
                               [icon]="(itemEditing == application.applicationGuid) ? 'pi pi-check' : 'pi pi-pencil'"

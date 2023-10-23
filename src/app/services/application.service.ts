@@ -67,8 +67,7 @@ export class ApplicationService {
       formData.append('proofReisdence', reSubmitApplication.proofReisdence, reSubmitApplication.proofReisdence.name);
     }
 
-    var urlPath = environment.apiPermitsURL + 'Application/resubmit';
-    return this.http.patch<PermitsResponse<number>>(urlPath, formData);
+    var urlPath = environment.apiPermitsURL + 'Application/resubmit/'+reSubmitApplication.applicationKey;
+    return this.http.put<PermitsResponse<number>>(urlPath, formData);
   }
-
 }

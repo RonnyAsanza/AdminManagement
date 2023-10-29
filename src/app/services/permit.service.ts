@@ -47,15 +47,15 @@ export class PermitService {
     formData.append('additionalInput4', applyPermit.additionalInput4 || '');
     formData.append('additionalInput5', applyPermit.additionalInput5 || '');
 
-    // Append the licenseDriver file to formData
-    if (applyPermit.licenseDriver) {
-      formData.append('licenseDriver', applyPermit.licenseDriver, applyPermit.licenseDriver.name);
-    }
+    applyPermit.requiredDocuments?.forEach((document, index) => {
+      formData.append(`RequiredDocuments[${index}].RequiredDocumentKey`, document.requiredDocumentKey?.toString()??"");
+      formData.append(`RequiredDocuments[${index}].DocumentTypeKey`, document.documentTypeKey?.toString()??"");
+      formData.append(`RequiredDocuments[${index}].DocumentKey`, document.documentKey?.toString()??"");
 
-    // Append the proofReisdence file to formData
-    if (applyPermit.proofReisdence) {
-      formData.append('proofReisdence', applyPermit.proofReisdence, applyPermit.proofReisdence.name);
-    }
+      if (document.documentFile) {
+        formData.append(`RequiredDocuments[${index}].DocumentFile`, document.documentFile, document.documentFile.name);
+      }
+    });
 
     var urlPath = environment.apiPermitsURL + 'Application/apply';
     return this.http.post<PermitsResponse<number>>(urlPath, formData);

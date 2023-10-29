@@ -1,3 +1,4 @@
+import { DocumentViewModel } from "./application.model";
 
 export class ReSubmitApplication {
   applicationKey?: number;
@@ -13,6 +14,8 @@ export class ReSubmitApplication {
   total?: number;
   additionalInput1?: string;
   additionalInput2?: string;
-  licenseDriver?: File;
-  proofReisdence?: File;
+  additionalInput3?: string;
+  additionalInput4?: string;
+  additionalInput5?: string;
+  documents?: DocumentViewModel[];
 }

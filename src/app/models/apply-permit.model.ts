@@ -1,4 +1,5 @@
 import { PermitTypeViewModel } from "./permit-type.model";
+import { RequiredDocumentViewModel } from "./required-document.model";
 
 export class ApplyPermit {
   companyKey?: number;
@@ -21,6 +22,8 @@ export class ApplyPermit {
   additionalInput3?: string;
   additionalInput4?: string;
   additionalInput5?: string;
-  licenseDriver?: File;
-  proofReisdence?: File;
+  requiredDocuments?: RequiredDocumentViewModel[]
+
+  //licenseDriver?: File;
+  //proofReisdence?: File;
 }

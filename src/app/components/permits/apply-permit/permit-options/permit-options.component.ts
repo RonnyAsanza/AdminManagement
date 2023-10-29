@@ -1,5 +1,5 @@
 import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ApplyPermit } from 'src/app/models/apply-permit.model';
@@ -10,6 +10,8 @@ import { PermitService } from 'src/app/services/permit.service';
 import { DatePipe } from '@angular/common';
 import { RateEngineService } from 'src/app/services/rate-engine.service';
 import { RateEngineByEndDateBasedRequest, RateEngineByEndDateBasedRResponse } from '../../../../models/external-tariff'
+import { RequiredDocumentService } from 'src/app/services/required-document.service';
+import { RequiredDocumentViewModel } from 'src/app/models/required-document.model';
 
 @Component({
   selector: 'app-permit-options',
@@ -34,9 +36,7 @@ export class PermitOptionsComponent {
   rateEngineResponse: RateEngineByEndDateBasedRResponse = new RateEngineByEndDateBasedRResponse();
   totalCharge: number = 0;
   cancelNewPermit: boolean = false;
-
-  licenseDriver!: File;
-  proofReisdence!: File;
+  requiredDocuments: RequiredDocumentViewModel[] = [];
 
   tariffs: Tariff[] =
     [
@@ -51,7 +51,8 @@ export class PermitOptionsComponent {
     private fb: FormBuilder,
     private permitService: PermitService,
     private messageService: MessageService,
-    private rateEngineService: RateEngineService) {
+    private rateEngineService: RateEngineService,
+    private requiredDocumentService: RequiredDocumentService) {
       var endDate = new Date();
       endDate.setHours(this.endHour);
       endDate.setMinutes(0);
@@ -59,23 +60,37 @@ export class PermitOptionsComponent {
       this.minDate.setMinutes(0);
       this.minEndDate = this.minDate;
 
-      this.form = this.fb.group({
-        zone: ['', [Validators.required]],
-        permitType: ['', [Validators.required]],
-        tariff: [this.tariffs[0], [Validators.required]],
-        startDate: [this.minDate, [Validators.required]],
-        endDate: [endDate, [Validators.required]],
-        licensePlate: [null, [Validators.required, Validators.minLength(3)]],
-        price: [0, [Validators.required, Validators.min(1)]],
-        quantity: [1, [Validators.required]],
-        total: [0, [Validators.min(1)]],
-        driversLicense: [''],
-        proffOfResidence: [''],
-        optional1: [''],
-        optional2: [''],
-        optional3: [''],
-        optional4: [''],
-        optional5: ['']
+      this.permitService.permit.subscribe(permit => {
+        if(this.confirmationDialog === false){
+          this.form = this.fb.group({
+            zone: ['', [Validators.required]],
+            permitType: ['', [Validators.required]],
+            tariff: [this.tariffs[0], [Validators.required]],
+            startDate: [this.minDate, [Validators.required]],
+            endDate: [endDate, [Validators.required]],
+            licensePlate: [null, [Validators.required, Validators.minLength(3)]],
+            price: [0, [Validators.required, Validators.min(1)]],
+            quantity: [1, [Validators.required]],
+            total: [0, [Validators.min(1)]],
+            optional1: ['', permit.permitTypeModel?.requireAdditionalInput1?[Validators.required]:[] ],
+            optional2: ['', permit.permitTypeModel?.requireAdditionalInput2?[Validators.required]:[] ],
+            optional3: ['', permit.permitTypeModel?.requireAdditionalInput3?[Validators.required]:[] ],
+            optional4: ['', permit.permitTypeModel?.requireAdditionalInput4?[Validators.required]:[] ],
+            optional5: ['', permit.permitTypeModel?.requireAdditionalInput5?[Validators.required]:[] ],
+          });
+
+        this.requiredDocumentService.getRequiredDocuments(permit?.companyKey??0, 
+          permit?.permitTypeKey??0, 
+          permit?.tariffKey??0, 
+          permit?.zoneKey??0)
+        .subscribe({
+          next: (response) => {
+              if (response.succeeded) {
+                this.requiredDocuments = response.data!;
+              }
+            }
+          });
+        }
       });
   }
 
@@ -92,13 +107,11 @@ export class PermitOptionsComponent {
         zone: permit.zoneName,
         permitType: permit.permitTypeModel?.permitTypeEnumValue,
         licensePlate: permit.licensePlate,
-        driversLicense: '',
-        proffOfResidence: '',
-        optional1: '',
-        optional2: '',
-        optional3: '',
-        optional4: '',
-        optional5: ''
+        optional1: permit.additionalInput1,
+        optional2: permit.additionalInput2,
+        optional3: permit.additionalInput3,
+        optional4: permit.additionalInput4,
+        optional5: permit.additionalInput5
       });
       this.permit = permit;
     });
@@ -112,15 +125,13 @@ export class PermitOptionsComponent {
     this.getPriceRangeEngine();
   }
 
-  async onUploadLicenseDriver(event: any) {
+  onUploadFiles(requiredDocument: RequiredDocumentViewModel, event: any) {
     for (let file of event.files) {
-      this.licenseDriver = file;
-    }
-  }
-
-  onUploadProofResidence(event: any) {
-    for (let file of event.files) {
-      this.proofReisdence = file;
+      this.requiredDocuments.forEach(item =>{
+        if(item.requiredDocumentKey == requiredDocument.requiredDocumentKey){
+            item.documentFile = file
+        }
+    });
     }
   }
 
@@ -179,15 +190,15 @@ export class PermitOptionsComponent {
       });
   }
 
-showTariffErrorMessage(){
-  this.messageService.add({
-    key: 'msg',
-    severity: 'error',
-    summary: 'Error',
-    detail: 'Service not available at this time, try later in a few minutes.',
-    life: 10000
-  });
-}
+  showTariffErrorMessage(){
+    this.messageService.add({
+      key: 'msg',
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Service not available at this time, try later in a few minutes.',
+      life: 10000
+    });
+  }
 
   // setEndDate(startDate: Date, tariff: Tariff) {
 
@@ -258,9 +269,13 @@ showTariffErrorMessage(){
     permit.quantity = this.form?.value.quantity;
     permit.additionalInput1 = this.form?.value.optional1;
     permit.additionalInput2 = this.form?.value.optional2;
+    permit.additionalInput3 = this.form?.value.optional3;
+    permit.additionalInput4 = this.form?.value.optional4;
+    permit.additionalInput5 = this.form?.value.optional5;
+
+    this.confirmationDialog = true;
     this.permitService.setLocalApplyPermit(permit);
     this.permit = { ...permit };
-    this.confirmationDialog = true;
   }
 
   onCancel() {
@@ -281,8 +296,8 @@ showTariffErrorMessage(){
     var permit = this.permitService.getLocalApplyPermit();
     this.hideDialog();
 
-    permit.licenseDriver = this.licenseDriver;
-    permit.proofReisdence = this.proofReisdence;
+    permit.requiredDocuments = this.requiredDocuments;
+
     permit.startDateUtc = this.datePipe.transform(this.form?.value.startDate, 'yyyy-MM-dd HH:mm') ?? '';
     permit.expirationDateUtc = this.datePipe.transform(this.form?.value.endDate, 'yyyy-MM-dd HH:mm') ?? '';
 
@@ -344,5 +359,15 @@ showTariffErrorMessage(){
     }
     return totalHours;
   }
+
+  get f(): {
+    [key: string]: AbstractControl
+  } {
+      return this.form.controls;
+  }
+
+hasRequiredDocuments(): boolean {
+  return this.requiredDocuments.length > 0;
+}
 
 }

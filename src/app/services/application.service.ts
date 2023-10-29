@@ -49,23 +49,14 @@ export class ApplicationService {
     formData.append('startDateUtc', reSubmitApplication.startDateUtc?.toString() || '');
     formData.append('expirationDateUtc', reSubmitApplication.expirationDateUtc?.toString() || '');
     formData.append('licensePlate', reSubmitApplication.licensePlate || '');
-    //formData.append('quantity', reSubmitApplication.quantity?.toString() || '');
-    // Append other properties to formData as needed
 
-    //formData.append('price', reSubmitApplication.price?.toString() || '');
-    //formData.append('total', reSubmitApplication.total?.toString() || '');
-    //formData.append('additionalInput1', reSubmitApplication.additionalInput1 || '');
-    //formData.append('additionalInput2', reSubmitApplication.additionalInput2 || '');
+    reSubmitApplication?.documents?.forEach((document, index) => {
+      formData.append(`RequiredDocuments[${index}].applicationRequiredDocumentationKey`, document.applicationRequiredDocumentationKey?.toString()??"");
 
-    // Append the licenseDriver file to formData
-    if (reSubmitApplication.licenseDriver) {
-      formData.append('licenseDriver', reSubmitApplication.licenseDriver, reSubmitApplication.licenseDriver.name);
-    }
-
-    // Append the proofReisdence file to formData
-    if (reSubmitApplication.proofReisdence) {
-      formData.append('proofReisdence', reSubmitApplication.proofReisdence, reSubmitApplication.proofReisdence.name);
-    }
+      if (document.documentFile) {
+        formData.append(`RequiredDocuments[${index}].documentFile`, document.documentFile, document.documentFile.name);
+      }
+    });
 
     var urlPath = environment.apiPermitsURL + 'Application/resubmit/'+reSubmitApplication.applicationKey;
     return this.http.put<PermitsResponse<number>>(urlPath, formData);

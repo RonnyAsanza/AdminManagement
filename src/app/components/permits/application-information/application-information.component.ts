@@ -4,11 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationService } from 'src/app/services/application.service';
 import { CompanyService } from 'src/app/services/company.service';
 import { Company } from 'src/app/models/company.model';
-import { Application } from 'src/app/models/application.model';
-import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
+import { Application, DocumentViewModel } from 'src/app/models/application.model';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ReSubmitApplication } from 'src/app/models/resubmit-application.model';
 import { FileService } from 'src/app/services/file.service';
-import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-application-information',
@@ -24,15 +23,10 @@ export class ApplicationInformationComponent implements OnInit {
   expirationDateUtc: string = "";
 
   updateFiles: boolean = true;
-  licenseDriver!: File;
-  proofResidence!: File;
-  imageUrlLicenseDriver: SafeUrl | undefined;
-  imageUrlProofResidence: SafeUrl | undefined;
 
   constructor(private activatedRoute: ActivatedRoute,
     private datePipe: DatePipe,
     private router: Router,
-    private location: Location,
     private applicationService: ApplicationService,
     private companyService: CompanyService,
     private sanitizer: DomSanitizer,
@@ -54,21 +48,15 @@ export class ApplicationInformationComponent implements OnInit {
           }
 
           if (this.application.documents && this.application.documents.length > 0) {
-            let licenseDriverDocument = this.application.documents.find(doc => doc.documentType === 'LicenseDriver');
-            let proofOfResidenceDocument = this.application.documents.find(doc => doc.documentType === 'ProofOfResidence');
-
-            if (licenseDriverDocument) {
-              let imageUrlLicenseDriverString = `data:${licenseDriverDocument.contentType};base64,${licenseDriverDocument.fileData}`;
-              this.imageUrlLicenseDriver = this.sanitizer.bypassSecurityTrustResourceUrl(imageUrlLicenseDriverString);
-              this.licenseDriver = this.fileService.dataURLtoFile(imageUrlLicenseDriverString, 'LicenseDriver.pdf');
-            }
-            if (proofOfResidenceDocument) {
-              let imageUrlProofResidenceString = `data:${proofOfResidenceDocument.contentType};base64,${proofOfResidenceDocument.fileData}`;
-              this.imageUrlProofResidence = this.sanitizer.bypassSecurityTrustResourceUrl(imageUrlProofResidenceString);
-              this.proofResidence = this.fileService.dataURLtoFile(imageUrlProofResidenceString, 'ProofOfResidence.pdf');
-            }
+            this.application.documents.forEach(document =>{
+              if(document.fileData)
+              {
+                let imageUrlString = `data:${document.contentType};base64,${document.fileData}`;
+                document.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(imageUrlString);
+                document.documentFile= this.fileService.dataURLtoFile(imageUrlString, document.documentType+'.pdf');
+              }
+            });
           }
-
         });
     });
   }
@@ -101,18 +89,14 @@ export class ApplicationInformationComponent implements OnInit {
     resubmit.expirationDateUtc = this.application.expirationDateUtc;
     resubmit.tariffKey = this.application.tariffKey;
     resubmit.licensePlate = this.application.licensePlate;
-    resubmit.additionalInput1 = this.application.additionalInput1;
-    resubmit.additionalInput2 = this.application.additionalInput2;
-    resubmit.licenseDriver = this.licenseDriver;
-    resubmit.proofReisdence = this.proofResidence;
+    resubmit.documents = this.application.documents;
+
     this.applicationService.reSubmitApplication(resubmit)
       .subscribe({
         next: (response) => {
           if (response.succeeded) {
             this.router.navigate(['/' + this.company.portalAlias]);
           }
-        },
-        error: (e) => {
         }
       });
   }
@@ -124,34 +108,34 @@ export class ApplicationInformationComponent implements OnInit {
           if (response.succeeded) {
             this.router.navigate(['/' + this.company.portalAlias]);
           }
-        },
-        error: (e) => {
         }
       });
   }
-
-  async onUploadLicenseDriver(event: any) {
-    const result = await this.fileService.onUploadFile(event, this.sanitizer);
-    this.licenseDriver = result.file;
-    this.imageUrlLicenseDriver = result.imageUrl;
-  }
-
-  async onUploadProofResidence(event: any) {
-    const result = await this.fileService.onUploadFile(event, this.sanitizer);
-    this.proofResidence = result.file;
-    this.imageUrlProofResidence = result.imageUrl;
-  }
-
-  onRemoveLicenseDriver(event: any) {
-    this.imageUrlLicenseDriver = this.fileService.onRemoveFile();
-  }
-  
-  onRemoveProofResidence(event: any) {
-    this.imageUrlProofResidence = this.fileService.onRemoveFile();
-  }
-  
+   
   isPdf(file: File): boolean {
     return this.fileService.isPdf(file);
   }
+
+  hasRequiredDocuments(): boolean {
+    return this.application?.documents?.length! > 0;
+  }
   
+  async onUploadFiles(requiredDocument: DocumentViewModel, event: any) {
+    this.application.documents?.forEach(async document =>{
+      if(document.applicationRequiredDocumentationKey === requiredDocument.applicationRequiredDocumentationKey){
+        const result = await this.fileService.onUploadFile(event, this.sanitizer);
+        document.documentFile = result.file;
+        document.imageUrl = result.imageUrl
+      }
+    });
+  }
+
+  onRemoveFiles(requiredDocument: DocumentViewModel) {
+    this.application.documents?.forEach(async document =>{
+      if(document.applicationRequiredDocumentationKey === requiredDocument.applicationRequiredDocumentationKey){
+        document.imageUrl = this.fileService.onRemoveFile();
+      }
+    });
+
+  }
 }

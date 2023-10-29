@@ -99,12 +99,13 @@
                                 </div>
                             </label>
                         </div>                      
-                        <div class="col-12">
+                        <div class="col-12" *ngIf="permit?.permitTypeModel?.requireAdditionalInput1">
                             <label htmlFor="optional1">{{"ClientPermit.OptionalInput" | translate}} 1:
                                 <input type="text" pInputText name="optional1" maxlength="100" formControlName="optional1"/>
+                                <p-message severity="error" text="Input 1 is required"></p-message>
                             </label>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12" *ngIf="permit?.permitTypeModel?.requireAdditionalInput2">
                             <label htmlFor="optional2">{{"ClientPermit.OptionalInput" | translate}} 2:
                                 <input type="text" pInputText name="optional2" maxlength="100" formControlName="optional2"/>
                             </label>
@@ -135,34 +136,31 @@
                         <p-panel [header]="'ClientPermit.Documentation' | translate"  class="line-height-3 m-0">
                             <div class="p-fluid p-formgrid grid">
                                 <div class="col-12">
-                                    <span class="documentation-sub-title">
+                                    <span class="documentation-sub-title" *ngIf="hasRequiredDocuments(); else noDocuments">
                                         {{"ClientPermit.DocumentationApproval" | translate}}
                                     </span>
                                 </div>
-                                <div class="col-12">
-                                    <label htmlFor="driversLicense">{{"ClientPermit.DriversLicense" | translate}}:</label>
+
+                                <ng-template #noDocuments>
+                                    <div>   
+                                      No documents required for this permit.
+                                    </div>
+                                </ng-template>
+
+                                <div class="col-12" 
+                                    *ngFor="let requiredDocument of requiredDocuments"
+                                >
+                                    <label [for]="requiredDocument.documentName"><strong>{{ requiredDocument.documentName}}: </strong></label>
+                                    <span>{{ requiredDocument.documentDescription }}</span>
                                     <p-fileUpload 
                                         #fileUpload 
-                                        name="driversLicense"
+                                        [name]="requiredDocument.documentName??'document'"
                                         skinSimple="true"
                                         [multiple]="false"
                                         [customUpload]="true"
-                                        (uploadHandler)="onUploadLicenseDriver($event)"
+                                        (uploadHandler)="onUploadFiles(requiredDocument, $event)"
                                         [auto]="true"
                                     >
-                                </p-fileUpload>
-                                </div>
-                                <div class="col-12">
-                                    <label htmlFor="proffOfResidence">{{"ClientPermit.ProffOfResidence" | translate}}:</label>
-                                    <p-fileUpload 
-                                        #fileUpload 
-                                        name="proffOfResidence"
-                                        skinSimple="true"
-                                        [multiple]="false"
-                                        [customUpload]="true"
-                                        (uploadHandler)="onUploadProofResidence($event)"
-                                        [auto]="true"
-                                        >
                                     </p-fileUpload>
                                 </div>
                                 <div class="col-12">

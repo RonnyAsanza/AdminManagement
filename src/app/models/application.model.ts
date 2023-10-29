@@ -1,3 +1,5 @@
+import { SafeUrl } from "@angular/platform-browser";
+
 export class Application {
     applicationKey?: number;
     applicationGuid?: string;
@@ -18,17 +20,20 @@ export class Application {
     additionalInput1?: string;
     additionalInput2?: string;
     sostToClient? : number;
-    documents?: Document[];
+    documents?: DocumentViewModel[];
     requestNumber?: number;
   }
 
-  export interface Document {
-    applicationKey: number;
+  export interface DocumentViewModel {
     applicationRequiredDocumentationKey: string;
+    applicationKey: number;
     companyKey: number;
-    contentType: string;
-    dateCreatedUtc: string;
     documentType: string;
-    fileData: string;
+    description: string;
+    contentType?: string;
+    dateCreatedUtc: string;
+    fileData?: string;
+    imageUrl: SafeUrl | undefined;
+    documentFile?: File
   }
   

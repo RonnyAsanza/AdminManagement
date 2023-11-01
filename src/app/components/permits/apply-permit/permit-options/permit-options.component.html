@@ -25,10 +25,11 @@
                                     formControlName="tariff"
                                     name="tariff" 
                                     optionLabel="name" 
-                                    [options]="tariffs" 
+                                    [options]="tariffs!" 
                                     placeholder="Select Tariff" 
                                     (onChange)="onTariffChange($event)"
                                     class="w-full"
+                                    [formControl]="tariffControl" 
                                 >
                                     <ng-template let-option pTemplate="item">
                                         {{option.name}}

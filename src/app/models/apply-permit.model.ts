@@ -1,3 +1,4 @@
+import { PermitCategoryViewModel } from "./permit-category.model";
 import { PermitTypeViewModel } from "./permit-type.model";
 import { RequiredDocumentViewModel } from "./required-document.model";
 
@@ -8,6 +9,7 @@ export class ApplyPermit {
   permitTypeKey?: number;
   name?: string;
   permitTypeModel?: PermitTypeViewModel;
+  permitCategory?: PermitCategoryViewModel;
   zoneTypeKey?: number;
   zoneType?: string;
   tariffKey?: number;
@@ -24,6 +26,4 @@ export class ApplyPermit {
   additionalInput5?: string;
   requiredDocuments?: RequiredDocumentViewModel[]
 
-  //licenseDriver?: File;
-  //proofReisdence?: File;
 }

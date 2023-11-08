@@ -17,4 +17,8 @@ export class PermitTypeService {
 		return this.http.get<PermitsResponse<PermitTypeViewModel[]>>(urlPath);
 	}
 
+	getPermitsTypeByPermitCategory(permitCategoryKey: number): Observable<PermitsResponse<PermitTypeViewModel[]>>{
+		var urlPath = environment.apiPermitsURL + 'PermitType/permit-category/'+permitCategoryKey;
+		return this.http.get<PermitsResponse<PermitTypeViewModel[]>>(urlPath);
+	}
 }

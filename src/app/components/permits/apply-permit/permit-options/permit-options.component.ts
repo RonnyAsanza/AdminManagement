@@ -12,6 +12,8 @@ import { RateEngineService } from 'src/app/services/rate-engine.service';
 import { RateEngineByEndDateBasedRequest, RateEngineByEndDateBasedRResponse } from '../../../../models/external-tariff'
 import { RequiredDocumentService } from 'src/app/services/required-document.service';
 import { RequiredDocumentViewModel } from 'src/app/models/required-document.model';
+import { PermitTypeViewModel } from 'src/app/models/permit-type.model';
+import { PermitTypeService } from 'src/app/services/permitType.service';
 
 @Component({
   selector: 'app-permit-options',
@@ -37,6 +39,7 @@ export class PermitOptionsComponent {
   totalCharge: number = 0;
   cancelNewPermit: boolean = false;
   requiredDocuments: RequiredDocumentViewModel[] = [];
+  permitTypes: PermitTypeViewModel[] = [];
 
   tariffs: Tariff[] =
     [
@@ -52,6 +55,7 @@ export class PermitOptionsComponent {
     private permitService: PermitService,
     private messageService: MessageService,
     private rateEngineService: RateEngineService,
+    private permitTypeService: PermitTypeService,
     private requiredDocumentService: RequiredDocumentService) {
       var endDate = new Date();
       endDate.setHours(this.endHour);
@@ -62,9 +66,18 @@ export class PermitOptionsComponent {
 
       this.permitService.permit.subscribe(permit => {
         if(this.confirmationDialog === false){
+          this.permitTypeService.getPermitsTypeByPermitCategory(permit?.permitCategory?.permitCategoryKey??0)
+          .subscribe({
+            next: (response) => {
+                if (response.succeeded) {
+                  this.permitTypes = response.data!;
+                }
+              }
+            });
+
           this.form = this.fb.group({
             zone: ['', [Validators.required]],
-            permitType: ['', [Validators.required]],
+            permitType: [null, [Validators.required]],
             tariff: [this.tariffs[0], [Validators.required]],
             startDate: [this.minDate, [Validators.required]],
             endDate: [endDate, [Validators.required]],
@@ -80,7 +93,7 @@ export class PermitOptionsComponent {
           });
 
         this.requiredDocumentService.getRequiredDocuments(permit?.companyKey??0, 
-          permit?.permitTypeKey??0, 
+          permit?.permitTypeModel?.permitTypeKey??0, 
           permit?.tariffKey??0, 
           permit?.zoneKey??0)
         .subscribe({
@@ -105,7 +118,7 @@ export class PermitOptionsComponent {
     this.permitService.permit.subscribe(permit => {
       this.form?.patchValue({
         zone: permit.zoneName,
-        permitType: permit.permitTypeModel?.permitTypeEnumValue,
+        permitType: permit.permitTypeModel,
         licensePlate: permit.licensePlate,
         optional1: permit.additionalInput1,
         optional2: permit.additionalInput2,
@@ -158,13 +171,19 @@ export class PermitOptionsComponent {
     this.getPriceRangeEngine()
   }
 
+  onPermitTypeChange(value: any){
+    var permit = this.permitService.getLocalApplyPermit();
+    permit.permitTypeModel = this.form?.value.permitType;
+    this.permitService.setLocalApplyPermit(permit);
+  }
+
   getPriceRangeEngine() {
     this.rateEngineService.getRateEngineByEndDateBased(this.rateEngineRequest)
       .subscribe({
         next: (response) => {
           if (response.succeeded) {
             this.rateEngineResponse = response.data!;
-            const cleanedTotalCharge = this.rateEngineResponse.totalCharge.replace("$", "").trim();
+            const cleanedTotalCharge = this.rateEngineResponse.totalCharge?.replace("$", "")?.trim();
             if (cleanedTotalCharge) {
               this.totalCharge = parseFloat(cleanedTotalCharge);
             } else {

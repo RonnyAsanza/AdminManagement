@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ApplyPermit } from 'src/app/models/apply-permit.model';
 import { Company } from 'src/app/models/company.model';
-import { PermitTypeViewModel } from 'src/app/models/permit-type.model';
+import { PermitCategoryViewModel } from 'src/app/models/permit-category.model';
 import { CompanyService } from 'src/app/services/company.service';
+import { PermitCategoryService } from 'src/app/services/permit-category.service';
 import { PermitService } from 'src/app/services/permit.service';
-import { PermitTypeService } from 'src/app/services/permitType.service';
 
 @Component({
   selector: 'app-select-permittype',
@@ -12,31 +13,36 @@ import { PermitTypeService } from 'src/app/services/permitType.service';
   styleUrls: ['./select-permittype.component.scss']
 })
 export class SelectPermittypeComponent {
-  permitTypes: PermitTypeViewModel[] = [];
+  permitCategories: PermitCategoryViewModel[] = [];
   localCompany: Company = {};
   @Output() permitTypeSelected = new EventEmitter();
 
-  constructor(private permitTypeService: PermitTypeService,
+  constructor(private permitCategoryService: PermitCategoryService,
     private companyService: CompanyService,
-    private permitService: PermitService) { 
+    private permitService: PermitService,
+    private sanitizer: DomSanitizer) { 
       this.localCompany = this.companyService.getLocalCompany();
-      this.permitTypeService.getPermitsTypeByCompanyKey(this.localCompany.companyKey!)
+      this.permitCategoryService.getPermitCategories(this.localCompany.companyKey!)
       .subscribe({
           next: (response) => {
               if(response.succeeded )
               {
-                this.permitTypes = response.data??[];
+                this.permitCategories = response.data??[];
+                this.permitCategories.forEach(permit =>{
+                  if(permit.image)
+                  {
+                    let imageUrlString = `data:png;base64,${permit.image}`;
+                    permit.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(imageUrlString);
+                  }
+                });
               }
-          },
-          error: (e) => {
           }
       });
     }
 
-    onSlectPermitType(permitType: PermitTypeViewModel){
+    onSelectPermitCategory(permitCategory: PermitCategoryViewModel){
       var permit = new ApplyPermit();
-      permit.permitTypeKey = permitType.permitTypeKey;
-      permit.permitTypeModel = permitType;
+      permit.permitCategory = permitCategory;
       permit.companyKey  = this.localCompany.companyKey;
       this.permitService.setLocalApplyPermit(permit);
       this.permitTypeSelected.emit();

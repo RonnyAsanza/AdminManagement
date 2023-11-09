@@ -4,12 +4,13 @@ import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ApplyPermit } from 'src/app/models/apply-permit.model';
 import { Company } from 'src/app/models/company.model';
-import { Tariff } from 'src/app/models/tariff.models';
+import { DayOfTheWeek, Tariff, TariffViewModel } from 'src/app/models/tariff.models';
 import { CompanyService } from 'src/app/services/company.service';
 import { PermitService } from 'src/app/services/permit.service';
 import { DatePipe } from '@angular/common';
 import { RateEngineService } from 'src/app/services/rate-engine.service';
 import { RateEngineByEndDateBasedRequest, RateEngineByEndDateBasedRResponse } from '../../../../models/external-tariff'
+import { TariffService } from 'src/app/services/tariff.service';
 import { RequiredDocumentService } from 'src/app/services/required-document.service';
 import { RequiredDocumentViewModel } from 'src/app/models/required-document.model';
 import { PermitTypeViewModel } from 'src/app/models/permit-type.model';
@@ -38,23 +39,25 @@ export class PermitOptionsComponent {
   rateEngineResponse: RateEngineByEndDateBasedRResponse = new RateEngineByEndDateBasedRResponse();
   totalCharge: number = 0;
   cancelNewPermit: boolean = false;
+  tariff!: TariffViewModel;
+  licenseDriver!: File;
+  proofReisdence!: File;
+  tariffControl = new FormControl<any|null>(null);
+  tariffs: TariffViewModel[] | undefined;
+
+
+
+
   requiredDocuments: RequiredDocumentViewModel[] = [];
   permitTypes: PermitTypeViewModel[] = [];
 
-  tariffs: Tariff[] =
-    [
-      new Tariff(3197, 'Day'),
-      new Tariff(3198, 'Week'),
-      new Tariff(3199, 'Month'),
-      new Tariff(3200, 'Year')
-    ];
-    
   constructor(private companyService: CompanyService,
     private datePipe: DatePipe,
     private router: Router,
     private fb: FormBuilder,
     private permitService: PermitService,
     private messageService: MessageService,
+    private tariffService: TariffService,
     private rateEngineService: RateEngineService,
     private permitTypeService: PermitTypeService,
     private requiredDocumentService: RequiredDocumentService) {
@@ -64,6 +67,25 @@ export class PermitOptionsComponent {
       this.minDate.setHours(this.startHour);
       this.minDate.setMinutes(0);
       this.minEndDate = this.minDate;
+      this.tariffControl.setValue(this.tariff)
+      this.form = this.fb.group({
+        zone: ['', [Validators.required]],
+        permitType: ['', [Validators.required]],
+        tariff: ['', [Validators.required]],
+        startDate: [this.minDate, [Validators.required]],
+        endDate: [endDate, [Validators.required]],
+        licensePlate: [null, [Validators.required, Validators.minLength(3)]],
+        price: [0, [Validators.required, Validators.min(1)]],
+        quantity: [1, [Validators.required]],
+        total: [0, [Validators.min(1)]],
+        driversLicense: [''],
+        proffOfResidence: [''],
+        optional1: [''],
+        optional2: [''],
+        optional3: [''],
+        optional4: [''],
+        optional5: ['']
+      });  
 
       this.permitService.permit.subscribe(permit => {
         if(this.confirmationDialog === false){
@@ -79,7 +101,7 @@ export class PermitOptionsComponent {
           this.form = this.fb.group({
             zone: ['', [Validators.required]],
             permitType: [null, [Validators.required]],
-            tariff: [this.tariffs[0], [Validators.required]],
+            tariff: ['', [Validators.required]],
             startDate: [this.minDate, [Validators.required]],
             endDate: [endDate, [Validators.required]],
             licensePlate: [null, [Validators.required, Validators.minLength(3)]],
@@ -106,7 +128,7 @@ export class PermitOptionsComponent {
           });
         }
       });
-  }
+    }
 
   ngOnInit(): void {
     this.company = this.companyService.getLocalCompany();
@@ -129,14 +151,15 @@ export class PermitOptionsComponent {
       });
       this.permit = permit;
     });
-
+    
     this.rateEngineRequest = {
-      TariffID: this.form?.value.tariff.tariffId,
+      TariffID:  0,
       StartTime: this.datePipe.transform(this.form?.value.startDate, 'yyyy-MM-dd HH:mm') ?? '',
       EndTime: this.datePipe.transform(this.form?.value.endDate, 'yyyy-MM-dd HH:mm') ?? '',
       TCP_Calculate_Add: true
     }
-    this.getPriceRangeEngine();
+    
+    this.setCompanyTariffs()
   }
 
   onUploadFiles(requiredDocument: RequiredDocumentViewModel, event: any) {
@@ -157,11 +180,6 @@ export class PermitOptionsComponent {
     });
   }
 
-  // onChangeStartDate() {
-  //   var startDate = this.form?.value.startDate;
-  //   var tariff = this.form?.value.tariff;
-  //   this.setEndDate(startDate, tariff);
-  // }
 
   onChangeEndDate() {
     this.onChangeDate(false);
@@ -176,7 +194,7 @@ export class PermitOptionsComponent {
   onTariffChange(tariff: any) {
     // var startDate = this.form?.value.tariff;
     // this.setEndDate(startDate, tariff.value);
-    this.rateEngineRequest.TariffID = this.form?.value.tariff.tariffId;
+    this.rateEngineRequest.TariffID = tariff.value.externalTariffId ?? 0;
     this.getPriceRangeEngine()
   }
 
@@ -201,7 +219,7 @@ export class PermitOptionsComponent {
             }
 
             var q = this.getHoursFromRateEngine(this.rateEngineResponse.totalDuration);
-            var quantity = this.form?.value.quantity;
+            var quantity = this.form?.value.quantity ?? 1;
             let price = this.totalCharge;
 
             this.form?.patchValue({
@@ -209,6 +227,14 @@ export class PermitOptionsComponent {
               total: price * quantity,
               quantity: quantity,
               endDate: new Date(this.rateEngineResponse.endTime ?? "")
+            });
+          }
+          else{
+            this.form?.patchValue({
+              price: null,
+              total: "",
+              quantity: quantity,
+              endDate: ""
             });
           }
         },
@@ -228,62 +254,44 @@ export class PermitOptionsComponent {
     });
   }
 
-  // setEndDate(startDate: Date, tariff: Tariff) {
-
-  //   this.rateEngineService.getRateEngineByEndDateBased(this.rateEngineRequest)
-  //     .subscribe({
-  //       next: (response) => {
-  //         if (response.succeeded) {
-  //           this.rateEngineResponse = response.data!;
-  //           this.totalCharge = parseFloat(this.rateEngineResponse.totalCharge.replace("$", "").trim());
-
-  //           var endDate = new Date();
-  //           var quantity = this.form?.value.quantity;
-  //           let price = this.totalCharge;  // Aquí usamos totalCharge
-  //           if (tariff.tariffId == 1) {
-  //             endDate.setDate(startDate.getDate());
-  //           }
-  //           else if (tariff.tariffId == 2) {
-  //             endDate.setDate(startDate.getDate() + (7 * quantity));
-  //           }
-  //           else {
-  //             endDate.setMonth(startDate.getMonth() + quantity);
-  //           }
-  //           price = price * quantity;
-
-  //           endDate.setHours(this.endHour);
-  //           endDate.setMinutes(0);
-
-  //           this.form?.patchValue({
-  //             price: price,
-  //             total: price * quantity,
-  //             endDate: this.datePipe.transform(endDate, 'dd/MMMM/YYYY HH:mm')
-  //           });
-  //         }
-  //       },
-  //       error: (e) => {
-  //       }
-  //     });
-  // }
 
   onChangeQuantity() {
     // var tariff = this.form?.value.tariff;
     var quantity = this.form?.value.quantity;
     var priceTotal = this.totalCharge * quantity;
-    // if (tariff.tariffId == 1) {
-    //   priceTotal = this.totalCharge * quantity;
-    // }
-    // else if (tariff.tariffId == 2) {
-    //   priceTotal = this.totalCharge * quantity;
-    // }
-    // else {
-    //   priceTotal = this.totalCharge * quantity;
-    // }
 
     this.form?.patchValue({
       total: priceTotal
     });
 
+  }
+
+  setCompanyTariffs(){
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+    this.tariffService.getTariffByCompany(this.company.companyKey ?? 0)
+    .subscribe({
+      next: (response) => {
+        if (response.succeeded) {
+          this.tariffs = response.data;
+          this.tariffControl.patchValue(this.tariffs![0]);
+          this.rateEngineRequest.TariffID = this.tariffs![0].externalTariffId ?? 0;
+          this.getPriceRangeEngine()
+        }
+        else {
+          this.messageService.add({
+            key: 'msg',
+            severity: 'error',
+            summary: 'Error',
+            detail: response.message,
+            life: 10000
+          });
+        }
+      },
+      error: (e) => {
+        this.showTariffErrorMessage();
+      }
+    });
   }
 
   onSubmitPermit(): void {

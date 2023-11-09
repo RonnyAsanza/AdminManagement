@@ -15,8 +15,20 @@
                             </label>
                         </div>    
                         <div class="col-12">
-                            <label>{{"ClientPermit.Type" | translate}}*:
-							    <input type="text" readonly pInputText name="permitType" formControlName="permitType"/>
+                            <label>{{"ClientPermit.PermitType" | translate}}*:
+                                <p-dropdown 
+                                    formControlName="permitType"
+                                    name="permitType" 
+                                    optionLabel="name" 
+                                    [options]="permitTypes" 
+                                    placeholder="Select Permit Type" 
+                                    (onChange)="onPermitTypeChange($event)"
+                                    class="w-full"
+                                >
+                                    <ng-template let-option pTemplate="item">
+                                        {{option.name}}
+                                    </ng-template>
+                                </p-dropdown>  
                             </label>
                         </div>    
                         <div class="col-12">
@@ -103,7 +115,7 @@
                         <div class="col-12" *ngIf="permit?.permitTypeModel?.requireAdditionalInput1">
                             <label htmlFor="optional1">{{"ClientPermit.OptionalInput" | translate}} 1:
                                 <input type="text" pInputText name="optional1" maxlength="100" formControlName="optional1"/>
-                                <p-message severity="error" text="Input 1 is required"></p-message>
+                                <!-- <p-message severity="error" text="Input 1 is required"></p-message> -->
                             </label>
                         </div>
                         <div class="col-12" *ngIf="permit?.permitTypeModel?.requireAdditionalInput2">

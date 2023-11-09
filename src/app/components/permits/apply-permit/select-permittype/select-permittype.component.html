@@ -3,41 +3,21 @@
         <ng-container>
             <div class="grid" >
                 <div class="col-12">
-                    <h4>{{"ClientPermit.PermitType" | translate}}</h4>
+                    <h4>{{"PermitCategory.PermitCategory" | translate}}</h4>
                 </div>
             </div>
             <div class="grid center-content" >
                 <div class="col-12 md:col-6 xl:col-3"
-                *ngFor="let permitType of permitTypes"
+                *ngFor="let permitCategory of permitCategories"
                 >
                     <p-card
                         class="card-content"
-                        (click)="onSlectPermitType(permitType)"
+                        (click)="onSelectPermitCategory(permitCategory)"
                     >
-                        <p>{{permitType.name}}</p>
-                        <img src="assets/images/permits/parking.png" alt="{{permitType.name}}" class="permittype-image">
+                        <p>{{permitCategory.name}}</p>
+                        <img *ngIf="permitCategory.image" [src]="permitCategory.imageUrl!" alt="{{permitCategory.name}}" class="permittype-image">
                     </p-card>
-                </div>   
-                <!--
-                <div class="col-12 md:col-6 xl:col-3">
-                    <p-card
-                        class="card-content"
-                        (click)="permitTypeSelected.emit(2)"
-                    >
-                        <p>Parking Lot</p>
-                        <img src="../../../../../assets/images/permits/parking.png" alt="Parking Lot" class="permittype-image">
-                    </p-card>
-                </div> 
-                <div class="col-12 md:col-6 xl:col-3">
-                    <p-card
-                        class="card-content"
-                        (click)="permitTypeSelected.emit(3)"
-                    >
-                        <p>Condo Parking</p>
-                        <img src="../../../../../assets/images/permits/condo.png" alt="Condo Parking" class="permittype-image">
-                    </p-card>
-                </div> 
-                 -->                            
+                </div>                          
             </div>
         </ng-container>
     </div>

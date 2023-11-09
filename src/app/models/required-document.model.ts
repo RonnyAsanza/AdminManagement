@@ -5,6 +5,7 @@ export interface RequiredDocumentViewModel {
     documentKey?: number;
     documentName?: string;
     documentDescription?: string;
+    required?: boolean,
     documentFile?: File
   }
 

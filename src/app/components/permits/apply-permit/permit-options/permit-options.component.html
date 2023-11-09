@@ -170,6 +170,7 @@
                                         skinSimple="true"
                                         [multiple]="false"
                                         [customUpload]="true"
+                                        (onRemove)="onRemoveFile(requiredDocument)"
                                         (uploadHandler)="onUploadFiles(requiredDocument, $event)"
                                         [auto]="true"
                                     >

@@ -48,6 +48,7 @@ export class PermitOptionsComponent {
       new Tariff(3199, 'Month'),
       new Tariff(3200, 'Year')
     ];
+    
   constructor(private companyService: CompanyService,
     private datePipe: DatePipe,
     private router: Router,
@@ -146,6 +147,14 @@ export class PermitOptionsComponent {
         }
     });
     }
+  }
+
+  onRemoveFile(requiredDocument: RequiredDocumentViewModel) {
+    this.requiredDocuments.forEach(item =>{
+        if(item.requiredDocumentKey == requiredDocument.requiredDocumentKey){
+            item.documentFile = undefined
+        }
+    });
   }
 
   // onChangeStartDate() {
@@ -278,6 +287,14 @@ export class PermitOptionsComponent {
   }
 
   onSubmitPermit(): void {
+    this.requiredDocuments.forEach(document =>{
+      if(document.required === true && (document.documentFile === undefined ))
+      {
+        this.messageService.add({ key: 'msg', severity: 'error', summary: 'Error', detail: 'The document - '+document.documentName+' is required.', life: 10000 });
+        return;
+      }
+  });
+
     var permit = this.permitService.getLocalApplyPermit();
     permit.tariffKey = this.form?.value.tariff.tariffId;
     permit.startDateUtc = this.form?.value.startDate;
@@ -330,8 +347,6 @@ export class PermitOptionsComponent {
             var path = (permit.permitTypeModel?.requireApproval === true) ? 'application' : 'permits';
             this.router.navigate(['/' + this.company.portalAlias + '/' + path + '/' + response.data]);
           }
-        },
-        error: (e) => {
         }
       });
   }

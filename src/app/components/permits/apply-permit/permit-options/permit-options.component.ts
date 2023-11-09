@@ -44,10 +44,6 @@ export class PermitOptionsComponent {
   proofReisdence!: File;
   tariffControl = new FormControl<any|null>(null);
   tariffs: TariffViewModel[] | undefined;
-
-
-
-
   requiredDocuments: RequiredDocumentViewModel[] = [];
   permitTypes: PermitTypeViewModel[] = [];
 
@@ -70,7 +66,7 @@ export class PermitOptionsComponent {
       this.tariffControl.setValue(this.tariff)
       this.form = this.fb.group({
         zone: ['', [Validators.required]],
-        permitType: ['', [Validators.required]],
+        permitType: [null, [Validators.required]],
         tariff: ['', [Validators.required]],
         startDate: [this.minDate, [Validators.required]],
         endDate: [endDate, [Validators.required]],

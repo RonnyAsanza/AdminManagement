@@ -176,7 +176,6 @@ export class PermitOptionsComponent {
     });
   }
 
-
   onChangeEndDate() {
     this.onChangeDate(false);
   }
@@ -250,7 +249,6 @@ export class PermitOptionsComponent {
     });
   }
 
-
   onChangeQuantity() {
     // var tariff = this.form?.value.tariff;
     var quantity = this.form?.value.quantity;
@@ -259,7 +257,6 @@ export class PermitOptionsComponent {
     this.form?.patchValue({
       total: priceTotal
     });
-
   }
 
   setCompanyTariffs(){
@@ -291,31 +288,36 @@ export class PermitOptionsComponent {
   }
 
   onSubmitPermit(): void {
-    this.requiredDocuments.forEach(document =>{
+    var validDocuments = true;
+    this.requiredDocuments.some(document =>{
       if(document.required === true && (document.documentFile === undefined ))
       {
+        validDocuments = false;
         this.messageService.add({ key: 'msg', severity: 'error', summary: 'Error', detail: 'The document - '+document.documentName+' is required.', life: 10000 });
         return;
       }
-  });
+    });
 
-    var permit = this.permitService.getLocalApplyPermit();
-    permit.tariffKey = this.form?.value.tariff.tariffId;
-    permit.startDateUtc = this.form?.value.startDate;
-    permit.expirationDateUtc = this.form?.value.endDate;
-    permit.licensePlate = this.form?.value.licensePlate;
-    permit.price = this.form?.value.price;
-    permit.total = this.form?.value.price * this.form?.value.quantity;
-    permit.quantity = this.form?.value.quantity;
-    permit.additionalInput1 = this.form?.value.optional1;
-    permit.additionalInput2 = this.form?.value.optional2;
-    permit.additionalInput3 = this.form?.value.optional3;
-    permit.additionalInput4 = this.form?.value.optional4;
-    permit.additionalInput5 = this.form?.value.optional5;
+    if(validDocuments)
+    {
+      var permit = this.permitService.getLocalApplyPermit();
+      permit.tariffKey = this.form?.value.tariff.tariffId;
+      permit.startDateUtc = this.form?.value.startDate;
+      permit.expirationDateUtc = this.form?.value.endDate;
+      permit.licensePlate = this.form?.value.licensePlate;
+      permit.price = this.form?.value.price;
+      permit.total = this.form?.value.price * this.form?.value.quantity;
+      permit.quantity = this.form?.value.quantity;
+      permit.additionalInput1 = this.form?.value.optional1;
+      permit.additionalInput2 = this.form?.value.optional2;
+      permit.additionalInput3 = this.form?.value.optional3;
+      permit.additionalInput4 = this.form?.value.optional4;
+      permit.additionalInput5 = this.form?.value.optional5;
 
-    this.confirmationDialog = true;
-    this.permitService.setLocalApplyPermit(permit);
-    this.permit = { ...permit };
+      this.confirmationDialog = true;
+      this.permitService.setLocalApplyPermit(permit);
+      this.permit = { ...permit };
+    }
   }
 
   onCancel() {
@@ -341,6 +343,7 @@ export class PermitOptionsComponent {
     permit.startDateUtc = this.datePipe.transform(this.form?.value.startDate, 'yyyy-MM-dd HH:mm') ?? '';
     permit.expirationDateUtc = this.datePipe.transform(this.form?.value.endDate, 'yyyy-MM-dd HH:mm') ?? '';
 
+    permit.permitTypeKey = permit.permitTypeModel?.permitTypeKey;
     this.permitService.setLocalApplyPermit(permit);
 
     this.permitService.applyPermit(permit)

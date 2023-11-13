@@ -6,6 +6,7 @@ import { PermitCategoryViewModel } from 'src/app/models/permit-category.model';
 import { CompanyService } from 'src/app/services/company.service';
 import { PermitCategoryService } from 'src/app/services/permit-category.service';
 import { PermitService } from 'src/app/services/permit.service';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-select-permittype',
@@ -21,22 +22,25 @@ export class SelectPermittypeComponent {
     private companyService: CompanyService,
     private permitService: PermitService,
     private sanitizer: DomSanitizer) { 
-      this.localCompany = this.companyService.getLocalCompany();
-      this.permitCategoryService.getPermitCategories(this.localCompany.companyKey!)
-      .subscribe({
-          next: (response) => {
-              if(response.succeeded )
-              {
-                this.permitCategories = response.data??[];
-                this.permitCategories.forEach(permit =>{
-                  if(permit.image)
-                  {
-                    let imageUrlString = `data:png;base64,${permit.image}`;
-                    permit.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(imageUrlString);
-                  }
-                });
-              }
-          }
+	    from(this.companyService.getLocalCompany())
+      .subscribe(value => {
+        this.localCompany = value;
+        this.permitCategoryService.getPermitCategories(this.localCompany.companyKey!)
+        .subscribe({
+            next: (response) => {
+                if(response.succeeded )
+                {
+                  this.permitCategories = response.data??[];
+                  this.permitCategories.forEach(permit =>{
+                    if(permit.image)
+                    {
+                      let imageUrlString = `data:png;base64,${permit.image}`;
+                      permit.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(imageUrlString);
+                    }
+                  });
+                }
+            }
+        });
       });
     }
 

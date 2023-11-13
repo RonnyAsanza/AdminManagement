@@ -6,6 +6,7 @@ import { ZoneViewModel } from 'src/app/models/zone.model';
 import { CompanyService } from 'src/app/services/company.service';
 import { PermitService } from 'src/app/services/permit.service';
 import { ZoneService } from 'src/app/services/zone.service';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-select-zone',
@@ -24,40 +25,39 @@ export class SelectZoneComponent implements OnInit{
     private companyService: CompanyService,
     private permitService: PermitService,
     private fb: FormBuilder) { 
-      this.localCompany = this.companyService.getLocalCompany();
-      this.zone.getZonesByCompany(this.localCompany.companyKey!)
-      .subscribe({
-          next: (response) => {
-              if(response.succeeded )
-              {
-                this.zones = response.data??[];
-              }
-          },
-          error: (e) => {
-          }
+      from(this.companyService.getLocalCompany())
+      .subscribe(value => {
+        this.localCompany = value;
+        this.zone.getZonesByCompany(this.localCompany.companyKey!)
+        .subscribe({
+            next: (response) => {
+                if(response.succeeded )
+                {
+                  this.zones = response.data??[];
+                }
+            }
+        });
       });
-      
     }
 
-    ngOnInit(): void {
-      this.form = this.fb.group({
-        zone: [null, [Validators.required]]
-      });
-      }
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      zone: [null, [Validators.required]]
+    });
+    }
 
-    onClickNext(form: FormGroup){
+    async onClickNext(form: FormGroup){
       var zone: any = form.value.zone;
       if(zone && zone.name)
       {
-        var permit = this.permitService.getLocalApplyPermit();
+        var permit = await this.permitService.getLocalApplyPermit()
+
           permit.zoneName = zone.name;
           permit.zoneKey = zone.zoneKey;
           permit.zoneType = zone.zoneType;
           permit.zoneTypeKey = zone.zoneTypeKey;
-  
           this.permitService.setLocalApplyPermit(permit);
-          this.goNext.emit();
-        }
-    }
-
+      }
+      this.goNext.emit();
+  }
 }

@@ -8,6 +8,7 @@ import { UnreadMessageViewModel } from '../models/unread-messages.model';
 import { MessageAction, PermitMessagesService } from '../services/permit-messages.service';
 import { Company } from 'src/app/models/company.model';
 import { PermitMessageViewModel } from '../models/permit-messages.model';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-profilemenu',
@@ -23,18 +24,24 @@ export class AppProfileSidebarComponent {
     private router: Router,
     private userService: AuthService,
     private permitMessagesService: PermitMessagesService) {
-    this.user = this.userService.getLocalUser();
-    this.company = this.companyService.getLocalCompany();
-    this.permitMessagesService.GetUnreadMessages(this.user.portalUserKey!)
+    var userPromise = from(this.userService.getLocalUser());
+    userPromise.subscribe(value => {
+      this.user = value;
+      this.permitMessagesService.GetUnreadMessages(this.user.portalUserKey!)
       .subscribe({
         next: (response) => {
           if (response.succeeded) {
             this.messages = response.data!;
           }
-        },
-        error: (e) => {
         }
       });
+    });
+    var companyPromise = from(this.companyService.getLocalCompany());
+    companyPromise.subscribe(value => {
+      this.company = value;
+    });
+
+
   }
 
   get visible(): boolean {

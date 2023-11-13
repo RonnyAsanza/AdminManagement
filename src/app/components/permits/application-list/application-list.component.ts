@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Company } from 'src/app/models/company.model';
 import { CompanyService } from 'src/app/services/company.service';
-import { PermitService } from 'src/app/services/permit.service';
 import { MessageService } from 'primeng/api';
 import { Application } from 'src/app/models/application.model';
 import { ApplicationService } from 'src/app/services/application.service';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-application-list',
@@ -25,8 +25,8 @@ export class ApplicationListComponent implements OnInit {
               private messageService: MessageService,
               private activatedRoute: ActivatedRoute) { }
 
-  ngOnInit(): void {
-    this.company = this.companyService.getLocalCompany();
+  async ngOnInit(): Promise<void> {
+    this.company = await this.companyService.getLocalCompany();
     if(this.company == null)
     {
       this.activatedRoute.params.subscribe(params => {

@@ -16,8 +16,8 @@ export class TranslateService {
               private languageTransService: LanguageTransService) {
   }
 
-  getTranslationsByLanguage(languageCode: string): Promise<TranslationsModel[]> {
-    let localLanguage = this.languageTransService.getLocalLanguage();
+  async getTranslationsByLanguage(languageCode: string): Promise<TranslationsModel[]> {
+    let localLanguage = await this.languageTransService.getLocalLanguage();
     if(localLanguage != null && localLanguage.twoLetterCode == languageCode && this.data.length > 0)
     {
       return new Promise<TranslationsModel[]>(resolve => {
@@ -45,9 +45,10 @@ export class TranslateService {
 
  }
 
- setInitialLanguage(languageCode: string): Promise<TranslationsModel[]> {
-  let localLanguage = this.languageTransService.getLocalLanguage();
-  languageCode = (localLanguage == null)? languageCode: localLanguage.twoLetterCode!;
+ async setInitialLanguage(languageCode: string): Promise<TranslationsModel[]> {
+  let localLanguage = await this.languageTransService.getLocalLanguage();
+  languageCode = (localLanguage?.languageGuid)? languageCode: localLanguage?.twoLetterCode!;
+
   return this.getTranslationsByLanguage(languageCode);
 }
 

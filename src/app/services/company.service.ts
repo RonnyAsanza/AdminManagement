@@ -28,11 +28,8 @@ export class CompanyService {
     this.localStorageService.setItem('company',companyJsonString);
   }
 
-  getLocalCompany(): Company {
-    let companyJsonString = this.localStorageService.getItem('company');
-   if (companyJsonString == 'undefined')
-         return {};
-    return JSON.parse(companyJsonString!);
+  async getLocalCompany(): Promise<Company> {
+    return await this.localStorageService.getObject('company');
   }
 
 }

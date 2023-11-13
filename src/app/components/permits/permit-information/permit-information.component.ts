@@ -15,6 +15,8 @@ import { MonerisReceiptRequest } from 'src/app/models/moneris/moneris-receipt-re
 import { ContactDetails, MonerisPreloadRequest } from 'src/app/models/moneris/moneris-preload-request.model';
 import { PdfService } from 'src/app/services/pdf.service';
 import { MenuItem } from 'primeng/api';
+import { from } from 'rxjs';
+import { PortalUserViewModel } from 'src/app/models/auth/portal-user.model';
 
 declare var monerisCheckout: any;
 
@@ -60,7 +62,10 @@ export class PermitInformationComponent implements OnInit {
 
   ngOnInit(): void {
     this.paymentType = this.paymentTypes[0];
-    this.company = this.companyService.getLocalCompany();
+    var companyPromise = from(this.companyService.getLocalCompany());
+    companyPromise.subscribe(value => {
+      this.company = value;
+    });
     this.activatedRoute.params.subscribe(params => {
       this.permitId = params['permitId'];
       this.OnLoadPermit();
@@ -104,8 +109,6 @@ export class PermitInformationComponent implements OnInit {
           if (response.succeeded) {
             this.router.navigate(['/' + this.company.portalAlias]);
           }
-        },
-        error: (e) => {
         }
       });
   }
@@ -116,11 +119,23 @@ export class PermitInformationComponent implements OnInit {
 
   public MonerisPreloadRequest() {
     var localUser = this.authService.getLocalUser();
+
+    var companyPromise = from(this.companyService.getLocalCompany());
+    companyPromise.subscribe(value => {
+      this.company = value;
+    });
+
     setTimeout(() => {
       var myCheckout = new monerisCheckout();
       myCheckout.setMode(environment.setMode);
       myCheckout.setCheckoutDiv("monerisCheckout");
       //myCheckout.startCheckout('1654707308Bvz0ErV8dOTLdpajRkGgijeJoaLBiT');
+
+      var localUser : PortalUserViewModel = {};
+      var userPromise = from(this.authService.getLocalUser());
+      userPromise.subscribe(value => {
+        this.company = value;
+      });
 
       var contactDetails = {
         first_name: localUser.firstName,

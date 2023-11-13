@@ -12,6 +12,8 @@ import { map, catchError, finalize } from 'rxjs/operators';
 import { LoaderService } from '../services/loader.service';
 import { AuthService } from '../services/auth/auth.service';
 import { LocalStorageService } from '../services/local-storage.service';
+import { from, lastValueFrom } from "rxjs";
+
 @Injectable(
     {
         providedIn: 'root'
@@ -26,91 +28,94 @@ export class HttpConfigInterceptor implements HttpInterceptor {
          this.authService = this.injector.get(AuthService);
          this.localStorageService = this.injector.get(LocalStorageService);
       }
-    // constructor(private loader: LoaderService) { }
-    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+
+    intercept(req: HttpRequest<any>, next: HttpHandler) {
+      return from(this.handle(req, next))
+    }
+  
+    async handle(request: HttpRequest<any>, next: HttpHandler) {
       this.totalRequests++;
       this.loaderService.show();
-      request = this.addAuthToken(request);
+      request = await this.addAuthToken(request);
       if (request.method === 'POST' || request.method === 'PUT') {
 
         if (!this.hasFileInRequestBody(request.body)) {
           request = request.clone({ headers: request.headers.set('Content-Type', 'application/json') });
           request = request.clone({ headers: request.headers.set('accept', '*/*') });
         }
-        
       }
 
       request = request.clone({ headers: request.headers.set('Cache-Control', 'no-cache') });
       request = request.clone({ headers: request.headers.set('Access-Control-Allow-Origin', '*') });
-
-      return next.handle(request)
-      .pipe(
-          map((event: HttpEvent<any>) => {
-                return event;
-          }),
-          catchError((error: HttpErrorResponse) => {
-            switch (error.status) {
-              case 401:
-              case 403:
-                return throwError("Access Denied – You don’t have permission to access");
-              default:
-                return throwError(error.error.message);
-            }
-          }),
-          finalize(() => {
-            this.totalRequests--;
-            if (this.totalRequests == 0) {
-              this.loaderService.hide();
-            }
-          })
+  
+      return await lastValueFrom(next.handle(request)
+          .pipe(
+            map((event: HttpEvent<any>) => {
+                  return event;
+            }),
+            catchError((error: HttpErrorResponse) => {
+              switch (error.status) {
+                case 401:
+                case 403:
+                  return throwError("Access Denied – You don’t have permission to access");
+                default:
+                  return throwError(error.error.message);
+              }
+            }),
+            finalize(() => {
+              this.totalRequests--;
+              if (this.totalRequests == 0) {
+                this.loaderService.hide();
+              }
+            })
+        )
       );
-  }
-    addAuthToken(request: HttpRequest<any>) {
-        var  token: string = this.localStorageService.getItem('token')!;
-        if (!token) {
-          return request;
-        }
+    }
 
-        let tokenExpiration = this.localStorageService.getItem("tokenExpiration")!;
+  async addAuthToken(request: HttpRequest<any>) {
+      var  token = await this.localStorageService.getString('token');
+      if (!token) {
+        return request;
+      }
 
-        if (tokenExpiration) {
-          tokenExpiration = tokenExpiration.replace(/^"|"$/g, '');
+      var tokenExpiration = await this.localStorageService.getString('tokenExpiration');
+      if (tokenExpiration) {
+        tokenExpiration = tokenExpiration.replace(/^"|"$/g, '');
 
-          const tokenExpirationDate = new Date(tokenExpiration);
-          const currentUtcTime = new Date();
+        const tokenExpirationDate = new Date(tokenExpiration);
+        const currentUtcTime = new Date();
 
-          if( currentUtcTime >= tokenExpirationDate) {
-            if (!this.refreshingToken) {
+        if( currentUtcTime >= tokenExpirationDate) {
+          if (!this.refreshingToken) {
+            this.refreshingToken = true;
+              console.log('Token Expired... Initiating Token Refresh');           
+              // Set the flag to indicate that a token refresh is in progress
               this.refreshingToken = true;
-                console.log('Token Expired... Initiating Token Refresh');           
-                // Set the flag to indicate that a token refresh is in progress
-                this.refreshingToken = true;
-                this.authService.refreshToken().subscribe({
-                  next: (response) => {
-                    token = response.token!;
-                    this.localStorageService.setItem('token', token);
-                    this.localStorageService.setItem('tokenExpiration', response.expiration);
-    
-                    this.refreshingToken = false;
-                  },
-                  error: (err) => {
-                    console.log(err);
-                  }
-                });
-            }
-         }  
-
-        }
-       return request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`,
-        },
-       });
-
+              this.authService.refreshToken().subscribe({
+                next: (response) => {
+                  token = response.token!;
+                  this.localStorageService.setItem('token', token!);
+                  this.localStorageService.setItem('tokenExpiration', response.expiration);
+  
+                  this.refreshingToken = false;
+                },
+                error: (err) => {
+                  console.error(err);
+                }
+              });
+          }
+        }  
       }
+      return request.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
+      });
 
-      private hasFileInRequestBody(body: any): boolean {
-        return body instanceof FormData;
-      }
+  }
+
+  private hasFileInRequestBody(body: any): boolean {
+    return body instanceof FormData;
+  }
 
 }

@@ -20,15 +20,11 @@ export class LanguageTransService {
   }
 
   setLocalLanguage(language: LanguageModel) {
-    let languageJsonString = JSON.stringify(language);
-    this.localStorageService.setItem('language',languageJsonString);
+    this.localStorageService.setObject('language',language);
   }
 
-  getLocalLanguage(): LanguageModel {
-    let languageJsonString = this.localStorageService.getItem('language');
-   if (languageJsonString == 'undefined')
-         return {};
-    return JSON.parse(languageJsonString!);
+  async getLocalLanguage(): Promise<any> {
+    var language = await this.localStorageService.getObject('language');
+    return language;
   }
-
 }

@@ -7,6 +7,8 @@ import { LoginRequest } from 'src/app/models/auth/login-request.model';
 import { Company } from 'src/app/models/company.model';
 import { CompanyService } from 'src/app/services/company.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { from } from 'rxjs';
+import { PortalUserViewModel } from 'src/app/models/auth/portal-user.model';
 
 @Component({
 	templateUrl: './login.component.html',
@@ -32,7 +34,12 @@ export class LoginComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		var localCompany = this.companyService.getLocalCompany();
+		var localCompany : Company= {};
+		from(this.companyService.getLocalCompany())
+		.subscribe(value => {
+			localCompany = value;
+		});
+		
 		var companyAlias = "";
 
 		this.activatedRoute.params.subscribe(params => {
@@ -44,7 +51,12 @@ export class LoginComponent implements OnInit {
 		if(!this.company)
 			companyAlias = localCompany?.portalAlias!;
 
-		var user = this.authService.getLocalUser();
+		var user :PortalUserViewModel = {};
+		from(this.authService.getLocalUser())
+		.subscribe(value => {
+		  user = value;
+		});
+
 		if(user?.companyGuid)
 			this.router.navigate(['/'+companyAlias+'/']);
 
@@ -76,24 +88,25 @@ export class LoginComponent implements OnInit {
 	}
 
 	onLoginClick(loginForm: FormGroup){
-	var loginRequest = new LoginRequest(loginForm.value.username, loginForm.value.password, this.company.externalCompanyId!);
-	this.authService.login(loginRequest)
-	.subscribe({
-		next: (response) => {
-			if(response.succeeded ){            
-				this.authService.setLocalUser(response.data!);
-				this.router.navigate(['/'+this.company.portalAlias+'/'], { relativeTo: this.activatedRoute });
-				return;
-			}
-			else{
-				this.messageService.add({
-					key: 'msg',
-					severity: 'error',
-					summary: 'Error',
-					detail: response.message
-					});
+		var loginRequest = new LoginRequest(loginForm.value.username, loginForm.value.password, this.company.externalCompanyId!);
+		this.authService.login(loginRequest)
+		.subscribe({
+			next: (response) => {
+				if(response.succeeded ){            
+					this.authService.setLocalUser(response.data!);
+					console.log(this.company);
+					this.router.navigate(['/'+this.company.portalAlias+'/'], { relativeTo: this.activatedRoute });
+					return;
 				}
-			}
-		});
-	}
+				else{
+					this.messageService.add({
+						key: 'msg',
+						severity: 'error',
+						summary: 'Error',
+						detail: response.message
+						});
+					}
+				}
+			});
+		}
 }

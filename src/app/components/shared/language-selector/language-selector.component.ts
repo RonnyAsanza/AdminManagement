@@ -21,14 +21,14 @@ export class LanguageSelectorComponent implements OnInit {
 
   ngOnInit(): void {
     this.languageTransService.getAllLanguages()
-    .subscribe((response)=>{
+    .subscribe(async (response)=>{
       if(response.succeeded )
        {
           this.languages = response.data??[];
-          var company = this.languageTransService.getLocalLanguage();
-          if(company)
+          var language = await this.languageTransService.getLocalLanguage();
+          if(language?.languageKey)
           {
-            this.selectedLanguage = company;
+            this.selectedLanguage = language;
           }
           else
           {
@@ -53,8 +53,8 @@ export class LanguageSelectorComponent implements OnInit {
     this.filteredLanguages = filtered;
   }
 
-  public onLanguageChanged(language: LanguageModel): void {
-    let localLanguage = this.languageTransService.getLocalLanguage();
+  public async onLanguageChanged(language: LanguageModel): Promise<void> {
+    let localLanguage = await this.languageTransService.getLocalLanguage();
     if(localLanguage.twoLetterCode !== language.twoLetterCode)
     {
       this.translateService.LanguageChanged(language.twoLetterCode!);

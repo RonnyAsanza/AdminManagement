@@ -5,6 +5,7 @@ import { Permit } from 'src/app/models/permit.model';
 import { CompanyService } from 'src/app/services/company.service';
 import { PermitService } from 'src/app/services/permit.service';
 import { MessageService } from 'primeng/api';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-permit-list',
@@ -22,16 +23,16 @@ export class PermitListComponent implements OnInit {
               private messageService: MessageService,
               private activatedRoute: ActivatedRoute) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     //validate company-user
-    this.company = this.companyService.getLocalCompany();
+    this.company = await this.companyService.getLocalCompany();
     if(this.company == null)
     {
       this.activatedRoute.params.subscribe(params => {
         let companyAlias = params['company'];
         this.router.navigate(['/'+companyAlias+'/auth']);
       });
-    }
+    }  
 
     this.permitService.getPermitsByUser()
     .subscribe({
@@ -40,14 +41,6 @@ export class PermitListComponent implements OnInit {
         {
           this.permits = response.data!;
         }
-			},
-			error: (e) => {
-				this.messageService.add({
-					key: 'msg',
-					severity: 'error',
-					summary: 'Error',
-					detail: e	
-				});
 			}
     });
 

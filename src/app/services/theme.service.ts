@@ -36,7 +36,8 @@ export class ThemeService {
         });
     }   
 
-    getStoredTheme(): string {
-        return this.localStorageService.getItem('appTheme') || 'teal';
+    async getStoredTheme(): Promise<string> {
+        var  appTheme = await this.localStorageService.getString('appTheme');
+        return appTheme || 'teal';
     }
 }

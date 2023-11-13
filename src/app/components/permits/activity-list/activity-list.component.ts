@@ -7,6 +7,7 @@ import { PermitService } from 'src/app/services/permit.service';
 import { MessageService } from 'primeng/api';
 import { Application } from 'src/app/models/application.model';
 import { ApplicationService } from 'src/app/services/application.service';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-activity-list',
@@ -30,15 +31,20 @@ export class ActivityListComponent implements OnInit {
               private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
+    console.log("ActivityListComponent");
+
     //validate company-user
-    this.company = this.companyService.getLocalCompany();
-    if(this.company == null)
-    {
-      this.activatedRoute.params.subscribe(params => {
-        let companyAlias = params['company'];
-        this.router.navigate(['/'+companyAlias+'/auth']);
-      });
-    }
+    from(this.companyService.getLocalCompany())
+    .subscribe(value => {
+      this.company = value;
+      if(this.company == null)
+      {
+        this.activatedRoute.params.subscribe(params => {
+          let companyAlias = params['company'];
+          this.router.navigate(['/'+companyAlias+'/auth']);
+        });
+      }
+    });
 
     this.permitService.GetLastPermits(5)
     .subscribe({
@@ -47,14 +53,6 @@ export class ActivityListComponent implements OnInit {
         {
           this.permits = response.data!;
         }
-			},
-			error: (e) => {
-				this.messageService.add({
-					key: 'msg',
-					severity: 'error',
-					summary: 'Error',
-					detail: e	
-				});
 			}
     });
 
@@ -65,14 +63,6 @@ export class ActivityListComponent implements OnInit {
         {
           this.applications = response.data!;
         }
-			},
-			error: (e) => {
-				this.messageService.add({
-					key: 'msg',
-					severity: 'error',
-					summary: 'Error',
-					detail: e	
-				});
 			}
     });
   }

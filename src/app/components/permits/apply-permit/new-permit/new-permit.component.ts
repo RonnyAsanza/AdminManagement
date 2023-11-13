@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Company } from 'src/app/models/company.model';
 import { CompanyService } from 'src/app/services/company.service';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-new-permit',
@@ -22,7 +23,10 @@ export class NewPermitComponent  {
   onGoBack(){
     if(this.selectedIndex === 0)
     {
-      this.company = this.companyService.getLocalCompany();
+	    from(this.companyService.getLocalCompany())
+      .subscribe(value => {
+        this.company = value;
+      });
       this.router.navigate(['/'+this.company.portalAlias+'/']);
     }
      this.selectedIndex--;

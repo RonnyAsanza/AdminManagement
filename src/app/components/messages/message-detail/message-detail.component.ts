@@ -10,7 +10,7 @@ import { CompanyService } from 'src/app/services/company.service';
 import { Company } from 'src/app/models/company.model';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { PortalUserViewModel } from 'src/app/models/auth/portal-user.model';
-
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-message-detail',
@@ -33,7 +33,6 @@ export class MessageDetailComponent implements OnDestroy {
     private messageService: MessageService,
     private companyService: CompanyService,
     private userService: AuthService) {
-
     this.route.paramMap.subscribe(params => {
       var id = params.get('id');
       this.messageId = id!;
@@ -55,8 +54,14 @@ export class MessageDetailComponent implements OnDestroy {
 
   sendMail() {
     if (this.newMail.message) {
-      this.company = this.companyService.getLocalCompany();
-      this.user = this.userService.getLocalUser();
+      from(this.companyService.getLocalCompany())
+      .subscribe(value => {
+        this.company = value;
+      });
+	    from(this.userService.getLocalUser())
+      .subscribe(value => {
+        this.user = value;
+      });
       this.newMail.companyKey = this.user.companyKey;
       this.newMail.portalUserKey = this.user.portalUserKey!;
       this.newMail.userKey = this.user.portalUserStatusKey;

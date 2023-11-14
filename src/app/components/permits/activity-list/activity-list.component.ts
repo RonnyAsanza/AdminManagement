@@ -31,8 +31,6 @@ export class ActivityListComponent implements OnInit {
               private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-    console.log("ActivityListComponent");
-
     //validate company-user
     from(this.companyService.getLocalCompany())
     .subscribe(value => {

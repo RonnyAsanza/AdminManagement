@@ -28,7 +28,7 @@ export class PermitOptionsComponent {
 
   @ViewChildren('buttonEl') buttonEl!: QueryList<ElementRef>;
   permitOptions = new FormControl();
-  form!: FormGroup;
+  form: FormGroup | undefined;
   minDate = new Date();
   minEndDate = new Date();
   company!: Company;
@@ -77,11 +77,11 @@ export class PermitOptionsComponent {
           price: [0, [Validators.required, Validators.min(1)]],
           quantity: [1, [Validators.required]],
           total: [0, [Validators.min(1)]],
-          optional1: ['', permit.permitTypeModel?.requireAdditionalInput1?[Validators.required]:[] ],
-          optional2: ['', permit.permitTypeModel?.requireAdditionalInput2?[Validators.required]:[] ],
-          optional3: ['', permit.permitTypeModel?.requireAdditionalInput3?[Validators.required]:[] ],
-          optional4: ['', permit.permitTypeModel?.requireAdditionalInput4?[Validators.required]:[] ],
-          optional5: ['', permit.permitTypeModel?.requireAdditionalInput5?[Validators.required]:[] ],
+          optional1: ['', permit?.permitTypeModel?.requireAdditionalInput1?[Validators.required]:[] ],
+          optional2: ['', permit?.permitTypeModel?.requireAdditionalInput2?[Validators.required]:[] ],
+          optional3: ['', permit?.permitTypeModel?.requireAdditionalInput3?[Validators.required]:[] ],
+          optional4: ['', permit?.permitTypeModel?.requireAdditionalInput4?[Validators.required]:[] ],
+          optional5: ['', permit?.permitTypeModel?.requireAdditionalInput5?[Validators.required]:[] ],
         });
       });
     }
@@ -103,11 +103,11 @@ export class PermitOptionsComponent {
       });
       this.permit = permit;
 
-      this.setOptionalValidators('optional1', permit.permitTypeModel?.requireAdditionalInput1!);
-      this.setOptionalValidators('optional2', permit.permitTypeModel?.requireAdditionalInput2!);
-      this.setOptionalValidators('optional3', permit.permitTypeModel?.requireAdditionalInput3!);
-      this.setOptionalValidators('optional4', permit.permitTypeModel?.requireAdditionalInput4!);
-      this.setOptionalValidators('optional5', permit.permitTypeModel?.requireAdditionalInput5!);
+      this.setOptionalValidators('optional1', permit?.permitTypeModel?.requireAdditionalInput1!);
+      this.setOptionalValidators('optional2', permit?.permitTypeModel?.requireAdditionalInput2!);
+      this.setOptionalValidators('optional3', permit?.permitTypeModel?.requireAdditionalInput3!);
+      this.setOptionalValidators('optional4', permit?.permitTypeModel?.requireAdditionalInput4!);
+      this.setOptionalValidators('optional5', permit?.permitTypeModel?.requireAdditionalInput5!);
 
       this.permitTypeService.getPermitsTypeByPermitCategory(permit?.permitCategory?.permitCategoryKey??0)
       .subscribe({
@@ -151,7 +151,7 @@ export class PermitOptionsComponent {
   }
 
   private setOptionalValidators(controlName: string, isRequired: boolean): void {
-    const control = this.form.get(controlName);
+    const control = this.form?.get(controlName);
     if (control) {
       const validators = isRequired ? [Validators.required] : [];
       control.setValidators(validators);
@@ -406,7 +406,7 @@ export class PermitOptionsComponent {
   get f(): {
     [key: string]: AbstractControl
   } {
-      return this.form.controls;
+      return this.form!.controls;
   }
 
 hasRequiredDocuments(): boolean {

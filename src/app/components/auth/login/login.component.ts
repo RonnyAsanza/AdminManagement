@@ -94,7 +94,6 @@ export class LoginComponent implements OnInit {
 			next: (response) => {
 				if(response.succeeded ){            
 					this.authService.setLocalUser(response.data!);
-					console.log(this.company);
 					this.router.navigate(['/'+this.company.portalAlias+'/'], { relativeTo: this.activatedRoute });
 					return;
 				}

@@ -53,8 +53,8 @@
                 <span class="w-full mt-4" align="center">
                     <a routerLink= "/{{this.company?.portalAlias}}/auth/register" >Not a user? Sign up</a>
                 </span>
-                <span class="w-full mt-4" align="center">
-                    <a href="">Looking for another company?</a>                
+                <span class="w-full mt-4" align="center" (click)="onLookingAnotherCompany()">
+                    <a href="">Looking for another company?</a>
                 </span>
             </div>
         </div>

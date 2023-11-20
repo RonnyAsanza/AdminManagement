@@ -9,6 +9,7 @@ import { CompanyService } from 'src/app/services/company.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { from } from 'rxjs';
 import { PortalUserViewModel } from 'src/app/models/auth/portal-user.model';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
 
 @Component({
 	templateUrl: './login.component.html',
@@ -27,6 +28,7 @@ export class LoginComponent implements OnInit {
 		private companyService: CompanyService,
         private messageService: MessageService,
 		private router: Router,
+		private localStorageService: LocalStorageService,
 		private activatedRoute: ActivatedRoute) {}
 
 	get dark(): boolean {
@@ -107,5 +109,10 @@ export class LoginComponent implements OnInit {
 					}
 				}
 			});
-		}
+	}
+
+	onLookingAnotherCompany(){
+		this.localStorageService.clear();
+		this.router.navigate(['/']);
+	}
 }

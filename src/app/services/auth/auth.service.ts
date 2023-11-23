@@ -26,8 +26,8 @@ export class AuthService {
     return this.http.post<PermitsResponse<PortalUserViewModel>>(urlPath, loginRequest);
   }
 
-  logout() {
-    var company = this.companyService.getLocalCompany();
+  async logout() {
+    var company = await this.companyService.getLocalCompany();
     this.localStorageService.clear();
     this.router.navigate(['/'+company.portalAlias+'/auth']);
   }
@@ -48,15 +48,8 @@ export class AuthService {
     this.localStorageService.setItem('user',userJsonString);
   }
 
-  getLocalToken(): string {
-    return this.localStorageService.getItem('token')!;
-  }
-
-  getLocalUser(): PortalUserViewModel {
-    let userJsonString = this.localStorageService.getItem('user');
-   if (userJsonString == 'undefined')
-         return {};
-    return JSON.parse(userJsonString!);
+  async getLocalUser(): Promise<PortalUserViewModel> {
+    return await this.localStorageService.getObject('user');
   }
 
   createPortalUser(portalUser: PortalUser): Observable<PermitsResponse<number>>{
@@ -82,5 +75,4 @@ export class AuthService {
     var urlPath = environment.apiPermitsURL + 'PortalUser/'+ portalUserKey + '/change-password';
     return this.http.put<PermitsResponse<number>>(urlPath, changePassword);
   }
-
 }

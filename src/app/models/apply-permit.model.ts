@@ -1,6 +1,7 @@
 import { PermitCategoryViewModel } from "./permit-category.model";
 import { PermitTypeViewModel } from "./permit-type.model";
 import { RequiredDocumentViewModel } from "./required-document.model";
+import { TariffViewModel } from "./tariff.models";
 
 export class ApplyPermit {
   companyKey?: number;
@@ -9,6 +10,7 @@ export class ApplyPermit {
   permitTypeKey?: number;
   name?: string;
   permitTypeModel?: PermitTypeViewModel;
+  tariffModel?: TariffViewModel;
   permitCategory?: PermitCategoryViewModel;
   zoneTypeKey?: number;
   zoneType?: string;
@@ -25,5 +27,4 @@ export class ApplyPermit {
   additionalInput4?: string;
   additionalInput5?: string;
   requiredDocuments?: RequiredDocumentViewModel[]
-
 }

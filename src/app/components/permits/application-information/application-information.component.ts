@@ -8,6 +8,7 @@ import { Application, DocumentViewModel } from 'src/app/models/application.model
 import { DomSanitizer } from '@angular/platform-browser';
 import { ReSubmitApplication } from 'src/app/models/resubmit-application.model';
 import { FileService } from 'src/app/services/file.service';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-application-information',
@@ -32,8 +33,9 @@ export class ApplicationInformationComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private fileService: FileService) { }
 
-  ngOnInit(): void {
-    this.company = this.companyService.getLocalCompany();
+  async ngOnInit(): Promise<void> {
+    this.company = await this.companyService.getLocalCompany();
+    
     this.activatedRoute.params.subscribe(params => {
       this.applicationId = params['applicationId'];
       this.applicationService.getApplicationbyId(this.applicationId)

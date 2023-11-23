@@ -11,12 +11,7 @@ export class AppSidebarComponent {
     timeout: any = null;
     company!: Company;
     @ViewChild('menuContainer') menuContainer!: ElementRef;
-    constructor(public layoutService: LayoutService, public el: ElementRef,
-        private companyService: CompanyService,
-        ) {
-            this.company = this.companyService.getLocalCompany();
-        }
-    
+    constructor(public layoutService: LayoutService, public el: ElementRef) { }
 
     onMouseEnter() {
         if (!this.layoutService.state.anchored) {
@@ -25,8 +20,6 @@ export class AppSidebarComponent {
                 this.timeout = null;
             }
             this.layoutService.state.sidebarActive = true;
-           
-    
         }
     }
 
@@ -41,7 +34,4 @@ export class AppSidebarComponent {
     anchor() {
         this.layoutService.state.anchored = !this.layoutService.state.anchored;
     }
-
-
-
 }

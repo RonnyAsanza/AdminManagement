@@ -10,9 +10,9 @@ export class AppComponent implements OnInit {
 
     constructor(private primengConfig: PrimeNGConfig, private themeService: ThemeService) { }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         this.primengConfig.ripple = true;
-        const storedTheme = this.themeService.getStoredTheme();
+        const storedTheme = await this.themeService.getStoredTheme();
         if (storedTheme) {
             this.themeService.changeTheme(storedTheme);
         }

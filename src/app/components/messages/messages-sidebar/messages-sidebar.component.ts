@@ -7,6 +7,7 @@ import { PermitMessageViewModel } from 'src/app/models/permit-messages.model';
 import { CompanyService } from 'src/app/services/company.service';
 import { PermitMessagesService } from 'src/app/services/permit-messages.service';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { from } from 'rxjs';
 
 @Component({
     selector: 'app-messages-sidebar',
@@ -83,14 +84,17 @@ export class MessagesSidebarComponent {
     }
 
     updateSidebar() {
-        this.company = this.companyService.getLocalCompany();
-        this.items = [
-            { label: this.translate.transform('ClientPermit.Inbox'), icon: 'pi pi-inbox', badge: this.badgeValues.inbox, routerLink: this.company.portalAlias + '/messages/inbox' },
-            { label: this.translate.transform('ClientPermit.Starred'), icon: 'pi pi-star', badge: this.badgeValues.starred, routerLink: this.company.portalAlias + '/messages/starred' },
-            { label: this.translate.transform('ClientPermit.Sent'), icon: 'pi pi-send', badge: this.badgeValues.sent, routerLink: this.company.portalAlias + '/messages/sent' },
-            { label: this.translate.transform('ClientPermit.Archived'), icon: 'pi pi-book', badge: this.badgeValues.archived, routerLink: this.company.portalAlias + '/messages/archived' },
-            { label: this.translate.transform('ClientPermit.Trash'), icon: 'pi pi-trash', badge: this.badgeValues.trash, routerLink: this.company.portalAlias + '/messages/trash' },
-        ];
+	    from(this.companyService.getLocalCompany())
+        .subscribe(value => {
+            this.company = value;
+            this.items = [
+                { label: this.translate.transform('ClientPermit.Inbox'), icon: 'pi pi-inbox', badge: this.badgeValues.inbox, routerLink: this.company.portalAlias + '/messages/inbox' },
+                { label: this.translate.transform('ClientPermit.Starred'), icon: 'pi pi-star', badge: this.badgeValues.starred, routerLink: this.company.portalAlias + '/messages/starred' },
+                { label: this.translate.transform('ClientPermit.Sent'), icon: 'pi pi-send', badge: this.badgeValues.sent, routerLink: this.company.portalAlias + '/messages/sent' },
+                { label: this.translate.transform('ClientPermit.Archived'), icon: 'pi pi-book', badge: this.badgeValues.archived, routerLink: this.company.portalAlias + '/messages/archived' },
+                { label: this.translate.transform('ClientPermit.Trash'), icon: 'pi pi-trash', badge: this.badgeValues.trash, routerLink: this.company.portalAlias + '/messages/trash' },
+            ];
+        });
     }
 
     ngOnDestroy() {

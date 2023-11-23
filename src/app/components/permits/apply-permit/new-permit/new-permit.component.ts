@@ -8,6 +8,7 @@ import { PermitService } from 'src/app/services/permit.service';
 import { SelectZoneComponent } from '../select-zone/select-zone.component';
 import { SelectPermittypeComponent } from '../select-permittype/select-permittype.component';
 import { PermitOptionsComponent } from '../permit-options/permit-options.component';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-new-permit',
@@ -47,7 +48,10 @@ export class NewPermitComponent {
     }
 
     if(categoryFlag && this.selectedIndex == 1){
-      this.company = this.companyService.getLocalCompany();
+	    from(this.companyService.getLocalCompany())
+      .subscribe(value => {
+        this.company = value;
+      });
       this.router.navigate(['/'+this.company.portalAlias+'/']);
       return;
     }

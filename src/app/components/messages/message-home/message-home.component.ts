@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { PortalUserViewModel } from 'src/app/models/auth/portal-user.model';
 import { PermitMessageViewModel } from 'src/app/models/permit-messages.model';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { PermitMessagesService } from 'src/app/services/permit-messages.service';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-message-home',
@@ -12,22 +13,23 @@ import { PermitMessagesService } from 'src/app/services/permit-messages.service'
   providers: [MessageService]
 
 })
-export class MessageHomeComponent {
+export class MessageHomeComponent implements OnInit {
   mails: PermitMessageViewModel[] = [];
   user!: PortalUserViewModel;
 
   constructor(
     private userService: AuthService,
     private mailService: PermitMessagesService) {
-    this.user = this.userService.getLocalUser();
+  }
+
+  async ngOnInit(): Promise<void> {
+    this.user = await this.userService.getLocalUser()
     this.mailService.getAllMessages(this.user.portalUserKey!)
-      .subscribe({
-        next: (response) => {
-          this.mails = response.data!;
-          this.mailService.updateMails(this.mails);
-        },
-        error: (e) => {
-        }
-      });
+    .subscribe({
+      next: (response) => {
+        this.mails = response.data!;
+        this.mailService.updateMails(this.mails);
+      }
+    });
   }
 }

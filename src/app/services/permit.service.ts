@@ -23,23 +23,14 @@ export class PermitService {
 
     const formData: FormData = new FormData();
     formData.append('companyKey', applyPermit.companyKey?.toString() || '');
-    formData.append('zoneName', applyPermit.zoneName || '');
     formData.append('zoneKey', applyPermit.zoneKey?.toString() || '');
     formData.append('permitTypeKey', applyPermit.permitTypeKey?.toString() || '');
-    // Append other properties to formData as needed
-
-    formData.append('name', applyPermit.name || '');
     formData.append('zoneTypeKey', applyPermit.zoneTypeKey?.toString() || '');
-    formData.append('zoneType', applyPermit.zoneType || '');
     formData.append('tariffKey', applyPermit.tariffKey?.toString() || '');
-    // Append other properties to formData as needed
-
     formData.append('startDateUtc', applyPermit.startDateUtc?.toString() || '');
     formData.append('expirationDateUtc', applyPermit.expirationDateUtc || '');
     formData.append('licensePlate', applyPermit.licensePlate || '');
     formData.append('quantity', applyPermit.quantity?.toString() || '');
-    // Append other properties to formData as needed
-
     formData.append('price', applyPermit.price?.toString() || '');
     formData.append('total', applyPermit.total?.toString() || '');
     formData.append('additionalInput1', applyPermit.additionalInput1 || '');
@@ -92,11 +83,8 @@ export class PermitService {
     this.permitSource.next(applyPermit);
   }
 
-  getLocalApplyPermit(): ApplyPermit {
-    let permitJsonString = this.localStorageService.getItem('applyPermit');
-    if (!permitJsonString)
-          return {};
-    return JSON.parse(permitJsonString);
+  async getLocalApplyPermit(): Promise<ApplyPermit> {
+    return await this.localStorageService.getObject('applyPermit');
   }
   
   updatePermitLicensePlate(permitKey: number, licensePlate: string): Observable<PermitsResponse<number>>{

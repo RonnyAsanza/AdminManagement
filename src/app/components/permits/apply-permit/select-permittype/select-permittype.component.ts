@@ -10,6 +10,7 @@ import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { ApiErrorViewModel } from 'src/app/models/api-error.model';
 import { TranslateService } from 'src/app/services/translate.service';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-select-permittype',
@@ -27,43 +28,47 @@ export class SelectPermittypeComponent implements OnInit{
     private router: Router, private translate: TranslateService) { }
 
     ngOnInit(){
-      this.localCompany = this.companyService.getLocalCompany();
-
-      this.permitCategoryService.getPermitCategories(this.localCompany.companyKey!)
-      .subscribe({
-        next: (response) => {
-          if(response.succeeded )
-          {
-            if(response.data == null || response.data == undefined)
+      from(this.companyService.getLocalCompany())
+      .subscribe(value => {
+        this.localCompany = value;
+        this.permitCategoryService.getPermitCategories(this.localCompany.companyKey!)
+        .subscribe({
+          next: (response) => {
+            if(response.succeeded )
             {
-              this.permitService.displayError(this.translate.data.find(translation => translation.labelCode == 'ClientPermit.NoCategories')?.textValue || 'ClientPermit.NoCategories')
-              this.router.navigate(['/'+this.localCompany.portalAlias+'/permit-home']);
+              if(response.data == null || response.data == undefined)
+              {
+                this.permitService.displayError(this.translate.data.find(translation => translation.labelCode == 'ClientPermit.NoCategories')?.textValue || 'ClientPermit.NoCategories')
+                this.router.navigate(['/'+this.localCompany.portalAlias+'/permit-home']);
+              } 
+              else 
+              {
+                this.permitCategories = response.data as PermitCategoryViewModel[];
+                this.permitCategories.forEach(permit =>{
+                  if(permit.image)
+                  {
+                    let imageUrlString = `data:png;base64,${permit.image}`;
+                    permit.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(imageUrlString);
+                  }
+                });
+                
+                if(this.permitCategories.length == 1)
+                {
+                  this.setPermitType.emit()
+                  this.onSelectPermitCategory(this.permitCategories[0]);
+                }
+              }
             } 
             else 
             {
-              this.permitCategories = response.data as PermitCategoryViewModel[];
-              this.permitCategories.forEach(permit =>{
-                if(permit.image)
-                {
-                  let imageUrlString = `data:png;base64,${permit.image}`;
-                  permit.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(imageUrlString);
-                }
-              });
-              
-              if(this.permitCategories.length == 1)
-              {
-                this.setPermitType.emit()
-                this.onSelectPermitCategory(this.permitCategories[0]);
-              }
+              var error = response.data as ApiErrorViewModel;
+              this.showException(error);
             }
-          } 
-          else 
-          {
-            var error = response.data as ApiErrorViewModel;
-            this.showException(error);
           }
-        }
+        });
       });
+
+     
     }
 
     onSelectPermitCategory(permitCategory: PermitCategoryViewModel){

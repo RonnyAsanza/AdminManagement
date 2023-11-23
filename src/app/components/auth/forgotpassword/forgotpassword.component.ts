@@ -6,6 +6,7 @@ import { CompanyService } from 'src/app/services/company.service';
 import { MessageService } from 'primeng/api';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { from } from 'rxjs';
 
 @Component({
     templateUrl: './forgotpassword.component.html',
@@ -29,7 +30,11 @@ export class ForgotPasswordComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		var localCompany = this.companyService.getLocalCompany();
+		var localCompany: Company = {};
+		from(this.companyService.getLocalCompany())
+		.subscribe(value => {
+			localCompany = value;
+		});
 		var companyAlias = "";
 
 		this.activatedRoute.params.subscribe(params => {

@@ -9,6 +9,7 @@ import { ZoneService } from 'src/app/services/zone.service';
 import { Router } from '@angular/router';
 import { TranslateService } from 'src/app/services/translate.service';
 import { ApiErrorViewModel } from 'src/app/models/api-error.model';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-select-zone',
@@ -39,43 +40,58 @@ export class SelectZoneComponent implements OnInit{
         zone: [null, [Validators.required]]
       });
 
-      this.localCompany = this.companyService.getLocalCompany();
-      this.zone.getZonesByCompany(this.localCompany.companyKey!)
-      .subscribe({
-        next: (response) => {
-          if(response.succeeded )
-          {
+      from(this.companyService.getLocalCompany())
+      .subscribe(value => {
+        this.localCompany = value;
+        this.zone.getZonesByCompany(this.localCompany.companyKey!)
+        .subscribe({
+          next: (response) => {
+            if(response.succeeded )
+            {
 
-            if(response.data == null || response.data == undefined){
-              this.permitService.displayError(this.translate.data.find(translation => translation.labelCode == 'ClientPermit.NoZones')?.textValue || 'ClientPermit.NoZones')
-              this.router.navigate(['/'+this.localCompany.portalAlias+'/permit-home']);
-            } else {
-              var data = response.data as ZoneViewModel[];
-              this.zones = response.data as ZoneViewModel[];
-            
-              if(data.length == 1 && this.permitTypeFlag){
-                this.goNext.emit();
-                this.setLocalZone(this.zones[0]);
-              }
+              if(response.data == null || response.data == undefined){
+                this.permitService.displayError(this.translate.data.find(translation => translation.labelCode == 'ClientPermit.NoZones')?.textValue || 'ClientPermit.NoZones')
+                this.router.navigate(['/'+this.localCompany.portalAlias+'/permit-home']);
+              } else {
+                var data = response.data as ZoneViewModel[];
+                this.zones = response.data as ZoneViewModel[];
+              
+                if(data.length == 1 && this.permitTypeFlag){
+                  this.goNext.emit();
+                  this.setLocalZone(this.zones[0]);
+                }
 
-              if(data?.length == 1){
-                this.setZone.emit();
-                this.setLocalZone(this.zones[0]);
+                if(data?.length == 1){
+                  this.setZone.emit();
+                  this.setLocalZone(this.zones[0]);
+                }
               }
             }
+            else{
+              var error = response.data as ApiErrorViewModel;
+              this.showException(error);
+            }
           }
-          else{
-            var error = response.data as ApiErrorViewModel;
-            this.showException(error);
-          }
-        }
+        });
       });
+      
     }
 
-    onClickNext(form: FormGroup){
+    async onClickNext(form: FormGroup){
       var zone: any = form.value.zone;
       if(zone && zone.name)
       {
+        var permit = await this.permitService.getLocalApplyPermit()
+
+          permit.zoneName = zone.name;
+          permit.zoneKey = zone.zoneKey;
+          permit.zoneType = zone.zoneType;
+          permit.zoneTypeKey = zone.zoneTypeKey;
+          this.permitService.setLocalApplyPermit(permit);
+      }
+      this.goNext.emit();
+  }
+}
         this.setLocalZone(zone);
         this.goNext.emit();
       }

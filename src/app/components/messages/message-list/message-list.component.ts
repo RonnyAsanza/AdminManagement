@@ -8,6 +8,7 @@ import { PermitMessageViewModel } from 'src/app/models/permit-messages.model';
 import { CompanyService } from 'src/app/services/company.service';
 import { MessageAction, PermitMessagesService } from 'src/app/services/permit-messages.service';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { from } from 'rxjs';
 
 @Component({
     selector: 'app-message-list',
@@ -50,7 +51,10 @@ export class MessageListComponent implements OnInit {
 
 
     onGoToApplication(applicationKey: string) {
-        this.company = this.companyService.getLocalCompany();
+	    from(this.companyService.getLocalCompany())
+        .subscribe(value => {
+            this.company = value;
+        });
         this.router.navigate(['/' + this.company.portalAlias + '/application/' + applicationKey]);
     }
 
@@ -63,7 +67,10 @@ export class MessageListComponent implements OnInit {
                 }
             });
 
-        this.company = this.companyService.getLocalCompany();
+            from(this.companyService.getLocalCompany())
+            .subscribe(value => {
+              this.company = value;
+            });
         this.router.navigate(['/' + this.company.portalAlias + '/messages/detail/' + mail.permitMessageKey]);
     }
 

@@ -4,6 +4,7 @@ import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Company } from 'src/app/models/company.model';
 import { CompanyService } from 'src/app/services/company.service';
+import { LoaderService } from 'src/app/services/loader.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { ThemeService } from 'src/app/services/theme.service';
 
@@ -22,16 +23,25 @@ export class CompanyListComponent implements OnInit {
     private router: Router,
     private companyService: CompanyService,
     private localStorageService: LocalStorageService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private loaderService: LoaderService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.loaderService.show();
+    var company = await this.companyService.getLocalCompany();
+    if(company != null)
+    {
+        this.router.navigate(['/'+company.portalAlias+'/']);
+    }
+    this.loaderService.hide();
+
     this.companyService.getAllCompanies()
     .subscribe((response)=>{
       if(response.succeeded )
-       {
+      {
           this.companies = response.data!;
-       }
+      }
       }
     );
   }

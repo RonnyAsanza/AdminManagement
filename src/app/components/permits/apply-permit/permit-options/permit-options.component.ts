@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ApplyPermit } from 'src/app/models/apply-permit.model';
 import { Company } from 'src/app/models/company.model';
-import { DayOfTheWeek, Tariff, TariffViewModel } from 'src/app/models/tariff.models';
+import { TariffViewModel } from 'src/app/models/tariff.models';
 import { CompanyService } from 'src/app/services/company.service';
 import { PermitService } from 'src/app/services/permit.service';
 import { DatePipe } from '@angular/common';
@@ -15,6 +15,7 @@ import { RequiredDocumentService } from 'src/app/services/required-document.serv
 import { RequiredDocumentViewModel } from 'src/app/models/required-document.model';
 import { PermitTypeViewModel } from 'src/app/models/permit-type.model';
 import { PermitTypeService } from 'src/app/services/permitType.service';
+import { from } from 'rxjs';
 import { TranslateService } from 'src/app/services/translate.service';
 
 @Component({
@@ -28,7 +29,7 @@ export class PermitOptionsComponent {
   @Input() indexView: number = 0;
   @ViewChildren('buttonEl') buttonEl!: QueryList<ElementRef>;
   permitOptions = new FormControl();
-  form!: FormGroup;
+  form: FormGroup | undefined;
   minDate = new Date();
   minEndDate = new Date();
   company!: Company;
@@ -45,8 +46,9 @@ export class PermitOptionsComponent {
   proofReisdence!: File;
   tariffControl = new FormControl<any|null>(null);
   permitTypeControl = new FormControl();
-  tariffs: TariffViewModel[] | undefined;
+  tariffs: TariffViewModel[] = [];
   requiredDocuments: RequiredDocumentViewModel[] = [];
+  localRequiredDocuments: RequiredDocumentViewModel[] = [];
   permitTypes: PermitTypeViewModel[] = [];
   permitType!: PermitTypeViewModel;
   isCalendarDisabled: boolean = false;
@@ -70,82 +72,32 @@ export class PermitOptionsComponent {
       this.minDate.setHours(this.startHour);
       this.minDate.setMinutes(0);
       this.minEndDate = this.minDate;
-      this.tariffControl.setValue(this.tariff)
       this.permitTypeControl.setValue(this.permitType)
-      this.form = this.fb.group({
-        zone: ['', [Validators.required]],
-        permitType: [null, [Validators.required]],
-        tariff: ['', [Validators.required]],
-        startDate: [null, [Validators.required]],
-        endDate: [{value: '', disabled: true}, [Validators.required]],
-        licensePlate: [null, [Validators.required, Validators.minLength(3)]],
-        price: [0, [Validators.required, Validators.min(1)]],
-        quantity: [1, [Validators.required]],
-        total: [0, [Validators.min(1)]],
-        driversLicense: [''],
-        proffOfResidence: [''],
-        optional1: [''],
-        optional2: [''],
-        optional3: [''],
-        optional4: [''],
-        optional5: ['']
-      });  
 
-      this.permitService.permit.subscribe(permit => {
-        if(this.confirmationDialog === false){
-          this.permitTypeService.getPermitsTypeByPermitCategory(permit?.permitCategory?.permitCategoryKey??0)
-          .subscribe({
-            next: (response) => {
-                if (response.succeeded) {
-                  if(response.data != undefined && response.data?.length !== 0){
-                    this.permitTypes = response.data!;
-                  }else{
-                    if(this.indexView === 2){
-                      this.indexView = 0;
-                      this.permitService.displayError(this.translate.data.find(translation => translation.labelCode == 'ClientPermit.NoPermitTypes')?.textValue || 'ClientPermit.NoPermitTypes')
-                      this.router.navigate(['/'+this.localCompany.portalAlias+'/permit-home']);
-                    }
-                  }
-                }
-
-              }
-            });
-
-          this.form = this.fb.group({
-            zone: ['', [Validators.required]],
-            permitType: [null, [Validators.required]],
-            tariff: ['', [Validators.required]],
-            startDate: [new Date(), [Validators.required]],
-            endDate: [{value: '', disabled: true}, [Validators.required]],
-            licensePlate: [null, [Validators.required, Validators.minLength(3)]],
-            price: [0, [Validators.required, Validators.min(1)]],
-            quantity: [1, [Validators.required]],
-            total: [0, [Validators.min(1)]],
-            optional1: ['', permit.permitTypeModel?.requireAdditionalInput1?[Validators.required]:[] ],
-            optional2: ['', permit.permitTypeModel?.requireAdditionalInput2?[Validators.required]:[] ],
-            optional3: ['', permit.permitTypeModel?.requireAdditionalInput3?[Validators.required]:[] ],
-            optional4: ['', permit.permitTypeModel?.requireAdditionalInput4?[Validators.required]:[] ],
-            optional5: ['', permit.permitTypeModel?.requireAdditionalInput5?[Validators.required]:[] ],
-          });
-
-          this.requiredDocumentService.getRequiredDocuments(permit?.companyKey??0, 
-            permit?.permitTypeModel?.permitTypeKey??0, 
-            permit?.tariffKey??0, 
-            permit?.zoneKey??0)
-          .subscribe({
-            next: (response) => {
-                if (response.succeeded) {
-                  this.requiredDocuments = response.data!;
-                }
-              }
-          });
-        }
+      from(this.permitService.getLocalApplyPermit())
+      .subscribe(permit => {
+        this.form = this.fb.group({
+          zone: ['', [Validators.required]],
+          permitType: [null, [Validators.required]],
+          tariff: [null, [Validators.required]],
+          startDate: [null, [Validators.required]],
+          endDate: [{value: '', disabled: true}, [Validators.required]],
+          licensePlate: [null, [Validators.required, Validators.minLength(3)]],
+          price: [0, [Validators.required, Validators.min(1)]],
+          quantity: [1, [Validators.required]],
+          total: [0, [Validators.min(1)]],
+          optional1: ['', permit?.permitTypeModel?.requireAdditionalInput1?[Validators.required]:[] ],
+          optional2: ['', permit?.permitTypeModel?.requireAdditionalInput2?[Validators.required]:[] ],
+          optional3: ['', permit?.permitTypeModel?.requireAdditionalInput3?[Validators.required]:[] ],
+          optional4: ['', permit?.permitTypeModel?.requireAdditionalInput4?[Validators.required]:[] ],
+          optional5: ['', permit?.permitTypeModel?.requireAdditionalInput5?[Validators.required]:[] ],
+        });
       });
     }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.company = await this.companyService.getLocalCompany();
 
-    this.company = this.companyService.getLocalCompany();
     var endDate = new Date();
     endDate.setHours(this.endHour);
     endDate.setMinutes(0);
@@ -156,14 +108,51 @@ export class PermitOptionsComponent {
       this.form?.patchValue({
         zone: permit.zoneName,
         permitType: permit.permitTypeModel,
-        licensePlate: permit.licensePlate,
-        optional1: permit.additionalInput1,
-        optional2: permit.additionalInput2,
-        optional3: permit.additionalInput3,
-        optional4: permit.additionalInput4,
-        optional5: permit.additionalInput5
+        tariff: permit.tariffModel
       });
       this.permit = permit;
+
+      this.setOptionalValidators('optional1', permit?.permitTypeModel?.requireAdditionalInput1!);
+      this.setOptionalValidators('optional2', permit?.permitTypeModel?.requireAdditionalInput2!);
+      this.setOptionalValidators('optional3', permit?.permitTypeModel?.requireAdditionalInput3!);
+      this.setOptionalValidators('optional4', permit?.permitTypeModel?.requireAdditionalInput4!);
+      this.setOptionalValidators('optional5', permit?.permitTypeModel?.requireAdditionalInput5!);
+
+      this.permitTypeService.getPermitsTypeByPermitCategory(permit?.permitCategory?.permitCategoryKey??0)
+      .subscribe({
+        next: (response) => {
+            if(response.data != undefined && response.data?.length !== 0){
+              this.permitTypes = response.data!;
+            }else{
+              if(this.indexView === 2){
+                this.indexView = 0;
+                this.permitService.displayError(this.translate.data.find(translation => translation.labelCode == 'ClientPermit.NoPermitTypes')?.textValue || 'ClientPermit.NoPermitTypes')
+                this.router.navigate(['/'+this.localCompany.portalAlias+'/permit-home']);
+              }
+            }
+          }
+        });
+
+      this.requiredDocumentService.getRequiredDocuments(permit?.companyKey??0, 
+        permit?.permitTypeModel?.permitTypeKey??0, 
+        permit?.tariffKey??0, 
+        permit?.zoneKey??0)
+      .subscribe({
+        next: (response) => {
+            if (response.succeeded) {
+              this.requiredDocuments = response.data!;
+              
+              this.requiredDocuments.forEach((document) => {
+                const matchingDocument = this.localRequiredDocuments.find(
+                  (requiredDocument) => requiredDocument.requiredDocumentKey === document.requiredDocumentKey
+                );
+                if (matchingDocument) {
+                  document.documentFile = matchingDocument.documentFile;
+                }
+              });
+            }
+          }
+        });    
     });
     
     this.rateEngineRequest = {
@@ -179,14 +168,24 @@ export class PermitOptionsComponent {
     this.setCompanyTariffs()
   }
 
+  private setOptionalValidators(controlName: string, isRequired: boolean): void {
+    const control = this.form?.get(controlName);
+    if (control) {
+      const validators = isRequired ? [Validators.required] : [];
+      control.setValidators(validators);
+      control.updateValueAndValidity();
+    }
+  }
+
   onUploadFiles(requiredDocument: RequiredDocumentViewModel, event: any) {
     for (let file of event.files) {
       this.requiredDocuments.forEach(item =>{
         if(item.requiredDocumentKey == requiredDocument.requiredDocumentKey){
             item.documentFile = file
         }
-    });
+     });
     }
+    this.localRequiredDocuments = this.requiredDocuments;
   }
 
   onRemoveFile(requiredDocument: RequiredDocumentViewModel) {
@@ -195,6 +194,7 @@ export class PermitOptionsComponent {
             item.documentFile = undefined
         }
     });
+    this.localRequiredDocuments = this.requiredDocuments;
   }
 
   onChangeEndDate() {
@@ -206,16 +206,20 @@ export class PermitOptionsComponent {
     this.onChangeDate(true);
   }
 
-  onTariffChange(tariff: any) {
+  async onTariffChange(tariff: any) {
+    this.permit = await this.permitService.getLocalApplyPermit();
+    this.permit.tariffModel = this.form?.value.tariff;
+    this.permitService.setLocalApplyPermit(this.permit);
+
     this.rateEngineRequest.TariffID = tariff.value.externalTariffId ?? 0;
     this.form.patchValue({tariff: tariff})
     this.tariff = tariff;
   }
 
-  onPermitTypeChange(value: any){
-    var permit = this.permitService.getLocalApplyPermit();
-    permit.permitTypeModel = this.form?.value.permitType;
-    this.permitService.setLocalApplyPermit(permit);
+  async onPermitTypeChange(value: any){
+    this.permit = await this.permitService.getLocalApplyPermit();
+    this.permit.permitTypeModel = this.form?.value.permitType;
+    this.permitService.setLocalApplyPermit(this.permit);
     this.setCompanyTariffs()
   }
 
@@ -277,13 +281,11 @@ export class PermitOptionsComponent {
     this.tariffService.getAvailableTariff(this.permit?.companyKey??0, this.permit?.permitTypeModel?.permitTypeKey??0, this.permit?.zoneKey??0)
     .subscribe({
       next: (response) => {
-        if (response.succeeded && response.data?.length !== 0) {
+        if (response.succeeded) {
           this.tariffs = response.data;
-          this.tariff = this.tariffs![0];
           this.tariffControl.patchValue(this.tariffs![0]);
-          this.form?.patchValue({ tariff: this.tariffs![0] });
-          this.rateEngineRequest.TariffID = this.tariffs![0].externalTariffId!;
-          this.getPriceRangeEngine();
+          this.rateEngineRequest.TariffID = this.tariffs![0].externalTariffId ?? 0;
+          this.getPriceRangeEngine()
         }
         else {
           if(this.indexView === 2){
@@ -307,7 +309,7 @@ export class PermitOptionsComponent {
     });
   }
 
-  onSubmitPermit(): void {
+  async onSubmitPermit(): Promise<void> {
     var validDocuments = true;
     this.requiredDocuments.some(document =>{
       if(document.required === true && (document.documentFile === undefined ))
@@ -318,9 +320,11 @@ export class PermitOptionsComponent {
       }
     });
 
+    console.log(this.requiredDocuments)
+
     if(validDocuments)
     {
-      var permit = this.permitService.getLocalApplyPermit();
+      var permit = await this.permitService.getLocalApplyPermit();
       permit.tariffKey = this.form?.value.tariff.tariffId;
       permit.startDateUtc = this.form?.value.startDate;
       permit.expirationDateUtc = this.form?.value.endDate;
@@ -351,7 +355,7 @@ export class PermitOptionsComponent {
   }
 
   async savePermit() {
-    var permit = this.permitService.getLocalApplyPermit();
+    var permit = await this.permitService.getLocalApplyPermit();
     this.hideDialog();
 
     permit.requiredDocuments = this.requiredDocuments;
@@ -420,7 +424,7 @@ export class PermitOptionsComponent {
   get f(): {
     [key: string]: AbstractControl
   } {
-      return this.form.controls;
+      return this.form!.controls;
   }
 
 hasRequiredDocuments(): boolean {

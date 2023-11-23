@@ -7,6 +7,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { Router } from '@angular/router';
 import { PortalUser } from 'src/app/models/portal-user.model';
 import { MessageService } from 'primeng/api';
+import { from } from 'rxjs';
 
 @Component({
 	templateUrl: './register.component.html',
@@ -32,7 +33,10 @@ export class RegisterComponent {
 	}
 
 	ngOnInit(): void {
-		this.company = this.companyService.getLocalCompany();
+		from(this.companyService.getLocalCompany())
+		.subscribe(value => {
+		  this.company = value;
+		});
 		this.form = this.fb.group({
 		  username: ['', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]],
 		  password: ['', [Validators.required, Validators.minLength(3)]],

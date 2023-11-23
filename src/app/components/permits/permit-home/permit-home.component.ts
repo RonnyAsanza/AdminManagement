@@ -7,6 +7,7 @@ import { MessageService } from 'primeng/api';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { PermitService } from 'src/app/services/permit.service';
 import { Subscription } from 'rxjs';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-permit-home',
@@ -54,14 +55,17 @@ export class PermitHomeComponent implements OnInit{
       ];
     this.activeItem = this.items[0];
 
-    this.company = this.companyService.getLocalCompany();
-    if(this.company == null)
-    {
-      this.activatedRoute.params.subscribe(params => {
-        let companyAlias = params['company'];
-        this.router.navigate(['/'+companyAlias+'/auth']);
-      });
-    }
+    from(this.companyService.getLocalCompany())
+    .subscribe(value => {
+      this.company = value;
+      if(this.company == null)
+      {
+        this.activatedRoute.params.subscribe(params => {
+          let companyAlias = params['company'];
+          this.router.navigate(['/'+companyAlias+'/auth']);
+        });
+      }
+    });
 
     this.activatedRoute.params.subscribe(params => {
       let index = parseInt(params['tabIndex'], 10);

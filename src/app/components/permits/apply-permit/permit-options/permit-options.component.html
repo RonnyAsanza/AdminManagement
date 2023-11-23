@@ -6,7 +6,7 @@
                     <h4>{{"ClientPermit.PermitOptionsStatus" | translate}}: {{"ClientPermit.New" | translate}}</h4>
                 </div>
             </div>
-            <form class="form-options" [formGroup]="form">
+            <form *ngIf="form" class="form-options" [formGroup]="form!">
                 <div class="p-fluid p-formgrid grid" >
                     <div class="col-12 xl:col-6">
                         <div class="col-12">
@@ -38,11 +38,10 @@
                                     formControlName="tariff"
                                     name="tariff" 
                                     optionLabel="name" 
-                                    [options]="tariffs!" 
+                                    [options]="tariffs" 
                                     placeholder="Select Tariff" 
                                     (onChange)="onTariffChange($event)"
                                     class="w-full"
-                                    [formControl]="tariffControl" 
                                 >
                                     <ng-template let-option pTemplate="item">
                                         {{option.name}}

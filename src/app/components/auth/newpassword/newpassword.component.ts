@@ -7,6 +7,7 @@ import { MessageService } from 'primeng/api';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ChangePasswordViewModel } from 'src/app/models/auth/change-password.model';
+import { from } from 'rxjs';
 
 @Component({
 	templateUrl: './newpassword.component.html',
@@ -36,7 +37,10 @@ export class NewPasswordComponent implements OnInit {
 
 
 	ngOnInit(): void {
-		this.company = this.companyService.getLocalCompany();
+		from(this.companyService.getLocalCompany())
+		.subscribe(value => {
+		  this.company = value;
+		});
 
 		this.form = this.fb.group({
 			password: ['', [Validators.required, Validators.minLength(3)]],

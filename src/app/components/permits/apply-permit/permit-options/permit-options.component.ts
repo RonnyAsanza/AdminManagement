@@ -72,7 +72,7 @@ export class PermitOptionsComponent {
       this.minDate.setHours(this.startHour);
       this.minDate.setMinutes(0);
       this.minEndDate = this.minDate;
-      this.permitTypeControl.setValue(this.permitType)
+      this.permitTypeControl.setValue(null)
 
       from(this.permitService.getLocalApplyPermit())
       .subscribe(permit => {
@@ -112,10 +112,9 @@ export class PermitOptionsComponent {
         return;
       }
         
-      
+      console.log(permit);
       this.form?.patchValue({
         zone: this.permit.zoneName ?? permit.zoneName,
-        permitType: permit.permitTypeModel,
         tariff: permit.tariffModel
       });
       

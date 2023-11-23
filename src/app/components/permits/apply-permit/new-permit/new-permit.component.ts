@@ -1,8 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { ApplyPermit } from 'src/app/models/apply-permit.model';
 import { Company } from 'src/app/models/company.model';
 import { CompanyService } from 'src/app/services/company.service';
+import { PermitService } from 'src/app/services/permit.service';
+import { SelectZoneComponent } from '../select-zone/select-zone.component';
+import { SelectPermittypeComponent } from '../select-permittype/select-permittype.component';
+import { PermitOptionsComponent } from '../permit-options/permit-options.component';
 
 @Component({
   selector: 'app-new-permit',
@@ -10,22 +15,44 @@ import { CompanyService } from 'src/app/services/company.service';
   styleUrls: ['./new-permit.component.scss'],
   providers: [MessageService]
 })
-export class NewPermitComponent  {
+export class NewPermitComponent {
+  @ViewChild(SelectZoneComponent) selectZoneComponent: SelectZoneComponent | undefined;
+  @ViewChild(SelectPermittypeComponent) permitCategory: SelectPermittypeComponent | undefined; 
+  @ViewChild(PermitOptionsComponent) permitOptions: PermitOptionsComponent | undefined; 
+
   selectedIndex: number = 0;
   disablePagination: boolean = true;
   company!: Company;
+  permit!: ApplyPermit;
+  zoneFlag: Boolean = false;
 
   constructor(
-    private router: Router,
-    private companyService: CompanyService) { }
+  private router: Router,
+  private companyService: CompanyService,
+  private permitService: PermitService,
+  private messageService: MessageService) {
+  }
 
-  onGoBack(){
-    if(this.selectedIndex === 0)
-    {
+  onGoBack() : void{
+    var categoryFlag = this.selectZoneComponent?.permitTypeFlag
+    if(this.selectedIndex === 0 || categoryFlag && this.zoneFlag){
       this.company = this.companyService.getLocalCompany();
       this.router.navigate(['/'+this.company.portalAlias+'/']);
+      return;
     }
-     this.selectedIndex--;
+
+    if(this.zoneFlag && this.selectedIndex == 2){
+      this.selectedIndex = 0;
+      return;
+    }
+
+    if(categoryFlag && this.selectedIndex == 1){
+      this.company = this.companyService.getLocalCompany();
+      this.router.navigate(['/'+this.company.portalAlias+'/']);
+      return;
+    }
+
+    this.selectedIndex--;
   }
 
   onGoNext(){
@@ -33,6 +60,23 @@ export class NewPermitComponent  {
   }
 
   onSelectPermitType() {
-    this.selectedIndex = 1;
+    this.selectedIndex++;
+    if(this.zoneFlag){
+      this.selectedIndex++;
+    }
+  }
+
+  setPermitType() {
+    this.selectZoneComponent?.setPermitType();
+  }
+
+  setZone(){
+    this.zoneFlag = true;
+  }
+
+  onTabChange(event: any): void {
+    if (event.index === 2) {
+      this.permitOptions?.showErrors('');
+    }
   }
 }

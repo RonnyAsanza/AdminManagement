@@ -5,6 +5,8 @@ import { Company } from 'src/app/models/company.model';
 import { CompanyService } from 'src/app/services/company.service';
 import { MessageService } from 'primeng/api';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { PermitService } from 'src/app/services/permit.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-permit-home',
@@ -13,15 +15,21 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
   providers: [MessageService, TranslatePipe]
 
 })
-export class PermitHomeComponent implements OnInit {
+export class PermitHomeComponent implements OnInit{
   company!: Company;
   items!: MenuItem[];
   activeItem!: MenuItem;
   tabIndex: number = 0;
+  errorMessageSubscription: Subscription | undefined;
+
   constructor(private companyService: CompanyService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private translate: TranslatePipe) { }
+    private translate: TranslatePipe,
+    private messageService: MessageService,
+    private permitService: PermitService,
+    ) {
+    }
 
   ngOnInit(): void { 
     this.items = [
@@ -60,9 +68,35 @@ export class PermitHomeComponent implements OnInit {
       if (!isNaN(index)) 
         this.tabIndex = index;
     });
+
+    this.errorMessageSubscription = this.permitService.errorMessage$.subscribe((message) => {
+      if (message) {
+        this.showErrorMessage(message);
+      }
+    });
   }
 
   onClickNewPermit(){
     this.router.navigate(['/'+this.company.portalAlias+'/new-permit']);
+  }
+
+  async showErrorMessage(errorMessage: string){
+    setTimeout(() => {
+      this.messageService.add({
+        key: 'msg',
+        severity: 'error',
+        summary: 'Error',
+        detail: errorMessage,
+        life: 10000
+      });
+      this.permitService.clearError();
+    })
+  }
+
+  ngOnDestroy(): void {
+    // Unsubscribe from the errorMessage$ observable when the component is destroyed
+    if (this.errorMessageSubscription) {
+      this.errorMessageSubscription.unsubscribe();
+    }
   }
 }

@@ -24,6 +24,7 @@
                                     placeholder="Select Permit Type" 
                                     (onChange)="onPermitTypeChange($event)"
                                     class="w-full"
+                                    [formControl]="permitTypeControl"
                                 >
                                     <ng-template let-option pTemplate="item">
                                         {{option.name}}
@@ -66,9 +67,9 @@
                         <div class="col-12">
                             <label>{{"ClientPermit.EndDate" | translate}}*:
                                 <p-calendar [showIcon]="true"
-                                            [touchUI]="true" 
+                                            [touchUI]="false" 
                                             [showButtonBar]="true"
-                                            [minDate]="minEndDate"
+                                            [minDate]="minEndDate" 
                                             formControlName="endDate"
                                             dateFormat="yy-MM-dd"
                                             [showTime]="true"
@@ -96,7 +97,6 @@
                                 <p-inputNumber 
                                     formControlName="quantity" 
                                     [min]=1 
-                                    [readonly]="permit?.permitTypeModel?.permitTypeEnum! === 0"
                                     (onInput)="onChangeQuantity()"
                                     [showButtons]="true" 
                                     inputId="quantity"> 

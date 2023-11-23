@@ -1,6 +1,5 @@
 <div class="grid">
     <div class="col-12 sm:px-2 md:px-6 xl:px-8">
-        <p-toast></p-toast>
         <ng-container>
             <div class="grid" >
                 <div class="col-12">
@@ -10,23 +9,24 @@
                 </div>
                 <div class="mb-4 col-12">
                     <p-tabView
-                        [(activeIndex)]="selectedIndex"
+                        [(activeIndex)]="selectedIndex" 
+                        (tabChange)="onTabChange($event)"
                     >
                         <p-tabPanel
                         >
                             <app-select-permittype
-                                (permitTypeSelected)="onSelectPermitType()"
+                                (permitTypeSelected)="onSelectPermitType()" (setPermitType)="setPermitType()"
                             >
                             </app-select-permittype>
                         </p-tabPanel>
                         <p-tabPanel>
                             <app-select-zone
-                                (goNext)="onGoNext()"
+                                (goNext)="onGoNext()" (setZone) = "setZone()"
                             >
                             </app-select-zone>
                         </p-tabPanel>
                         <p-tabPanel>
-                            <app-permit-options
+                            <app-permit-options [indexView] = "selectedIndex" 
                             >
                             </app-permit-options>
                         </p-tabPanel>

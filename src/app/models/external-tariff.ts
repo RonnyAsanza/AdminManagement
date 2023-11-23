@@ -2,6 +2,7 @@ export class RateEngineByEndDateBasedRequest {
   TariffID: number = 1;
   StartTime: string = '';
   EndTime: string = '';
+  Quantity: number = 1;
   TCP_Calculate_Add: boolean = false;
 }
 

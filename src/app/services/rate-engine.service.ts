@@ -18,7 +18,6 @@ export class RateEngineService {
   constructor(private http: HttpClient) { }
 
   getRateEngineByEndDateBased(rateEngineRequest: RateEngineByEndDateBasedRequest): Observable<PermitsResponse<RateEngineByEndDateBasedRResponse>>{
-
     let params = new HttpParams()
       .set('TariffID', rateEngineRequest.TariffID)
       .set('StartTime', rateEngineRequest.StartTime?.toString()!)
@@ -36,6 +35,18 @@ export class RateEngineService {
       .set('startDate', startDate)
     var urlPath = environment.apiPermitsURL + 'ExternalTariff/rate-engine/site-tariff';
     var response = this.http.get<PermitsResponse<TariffViewModel[]>>(urlPath, { params: params });
+    return response;
+  } 
+
+  getRateEngineByQuantityBased(rateEngineRequest: RateEngineByEndDateBasedRequest): Observable<PermitsResponse<RateEngineByEndDateBasedRResponse>>{
+    let params = new HttpParams()
+      .set('TariffID', rateEngineRequest.TariffID)
+      .set('StartTime', rateEngineRequest.StartTime?.toString()!)
+      .set('Quantity', rateEngineRequest.Quantity)
+      .set('TCP_Calculate_Add', rateEngineRequest.TCP_Calculate_Add);
+  
+    var urlPath = environment.apiPermitsURL + 'ExternalTariff/rate-engine/quantity-based';
+    var response = this.http.get<PermitsResponse<RateEngineByEndDateBasedRResponse>>(urlPath, { params: params });
     return response;
   } 
 }

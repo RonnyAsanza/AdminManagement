@@ -7,6 +7,7 @@ import { Permit } from '../models/permit.model';
 import { PermitsResponse } from './permits-response.model';
 import { ApplyPermit } from '../models/apply-permit.model';
 import { LocalStorageService } from './local-storage.service';
+import { Subject } from 'rxjs';
 
 
 @Injectable({
@@ -101,6 +102,16 @@ export class PermitService {
   updatePermitLicensePlate(permitKey: number, licensePlate: string): Observable<PermitsResponse<number>>{
     var urlPath = environment.apiPermitsURL + 'Permit/'+permitKey+'/license-plate/'+licensePlate;
     return this.http.put<PermitsResponse<number>>(urlPath, null);
+  }
+  private errorMessageSubject = new BehaviorSubject<string | null>(null);
+  errorMessage$ = this.errorMessageSubject.asObservable();
+
+  displayError(message: string) {
+    this.errorMessageSubject.next(message);
+  }
+
+  clearError(){
+    this.errorMessageSubject.next(null);
   }
 
 }

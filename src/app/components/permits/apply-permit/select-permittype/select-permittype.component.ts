@@ -43,7 +43,7 @@ export class SelectPermittypeComponent implements OnInit{
               } 
               else 
               {
-                this.permitCategories = response.data as PermitCategoryViewModel[];
+                this.permitCategories = response.data as PermitCategoryViewModel[] ?? [];
                 this.permitCategories.forEach(permit =>{
                   if(permit.image)
                   {
@@ -54,8 +54,8 @@ export class SelectPermittypeComponent implements OnInit{
                 
                 if(this.permitCategories.length == 1)
                 {
-                  this.setPermitType.emit()
                   this.onSelectPermitCategory(this.permitCategories[0]);
+                  this.setPermitType.emit()
                 }
               }
             } 
@@ -71,8 +71,8 @@ export class SelectPermittypeComponent implements OnInit{
      
     }
 
-    onSelectPermitCategory(permitCategory: PermitCategoryViewModel){
-      var permit = this.permitService.getLocalApplyPermit();
+    async onSelectPermitCategory(permitCategory: PermitCategoryViewModel){
+      var permit = await this.permitService.getLocalApplyPermit() ?? ApplyPermit; 
       permit.permitCategory = permitCategory;
       permit.companyKey  = this.localCompany.companyKey;
       this.permitService.setLocalApplyPermit(permit);

@@ -48,14 +48,12 @@ export class SelectZoneComponent implements OnInit{
           next: (response) => {
             if(response.succeeded )
             {
-
               if(response.data == null || response.data == undefined){
                 this.permitService.displayError(this.translate.data.find(translation => translation.labelCode == 'ClientPermit.NoZones')?.textValue || 'ClientPermit.NoZones')
                 this.router.navigate(['/'+this.localCompany.portalAlias+'/permit-home']);
               } else {
                 var data = response.data as ZoneViewModel[];
                 this.zones = response.data as ZoneViewModel[];
-              
                 if(data.length == 1 && this.permitTypeFlag){
                   this.goNext.emit();
                   this.setLocalZone(this.zones[0]);
@@ -81,17 +79,6 @@ export class SelectZoneComponent implements OnInit{
       var zone: any = form.value.zone;
       if(zone && zone.name)
       {
-        var permit = await this.permitService.getLocalApplyPermit()
-
-          permit.zoneName = zone.name;
-          permit.zoneKey = zone.zoneKey;
-          permit.zoneType = zone.zoneType;
-          permit.zoneTypeKey = zone.zoneTypeKey;
-          this.permitService.setLocalApplyPermit(permit);
-      }
-      this.goNext.emit();
-  }
-}
         this.setLocalZone(zone);
         this.goNext.emit();
       }
@@ -101,8 +88,8 @@ export class SelectZoneComponent implements OnInit{
       this.permitTypeFlag = true;
     }
 
-    setLocalZone(zone: ZoneViewModel){
-      var permit = this.permitService.getLocalApplyPermit();
+    async setLocalZone(zone: ZoneViewModel){
+      var permit = await this.permitService.getLocalApplyPermit();
       permit.zoneName = zone.name;
       permit.zoneKey = zone.zoneKey;
       permit.zoneType = zone.zoneTypeName;

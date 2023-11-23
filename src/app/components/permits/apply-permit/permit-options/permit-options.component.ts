@@ -80,7 +80,7 @@ export class PermitOptionsComponent {
           zone: ['', [Validators.required]],
           permitType: [null, [Validators.required]],
           tariff: [null, [Validators.required]],
-          startDate: [null, [Validators.required]],
+          startDate: [new Date(), [Validators.required]],
           endDate: [{value: '', disabled: true}, [Validators.required]],
           licensePlate: [null, [Validators.required, Validators.minLength(3)]],
           price: [0, [Validators.required, Validators.min(1)]],
@@ -97,19 +97,28 @@ export class PermitOptionsComponent {
 
   async ngOnInit(): Promise<void> {
     this.company = await this.companyService.getLocalCompany();
-
+    var per = await this.permitService.getLocalApplyPermit();
     var endDate = new Date();
     endDate.setHours(this.endHour);
     endDate.setMinutes(0);
     this.minDate.setHours(this.startHour);
     this.minDate.setMinutes(0);
     this.minEndDate = this.minDate;
-    this.permitService.permit.subscribe(permit => {
+    this.permit = await this.permitService.getLocalApplyPermit();
+    this.permitService.permit.subscribe(async permit => {
+
+      if( Object.keys(permit).length === 0){
+        this.permit = permit;
+        return;
+      }
+        
+      
       this.form?.patchValue({
-        zone: permit.zoneName,
+        zone: this.permit.zoneName ?? permit.zoneName,
         permitType: permit.permitTypeModel,
         tariff: permit.tariffModel
       });
+      
       this.permit = permit;
 
       this.setOptionalValidators('optional1', permit?.permitTypeModel?.requireAdditionalInput1!);
@@ -117,7 +126,6 @@ export class PermitOptionsComponent {
       this.setOptionalValidators('optional3', permit?.permitTypeModel?.requireAdditionalInput3!);
       this.setOptionalValidators('optional4', permit?.permitTypeModel?.requireAdditionalInput4!);
       this.setOptionalValidators('optional5', permit?.permitTypeModel?.requireAdditionalInput5!);
-
       this.permitTypeService.getPermitsTypeByPermitCategory(permit?.permitCategory?.permitCategoryKey??0)
       .subscribe({
         next: (response) => {
@@ -162,9 +170,7 @@ export class PermitOptionsComponent {
       Quantity: 1,
       TCP_Calculate_Add: true
     }
-    var permit = this.permitService.getLocalApplyPermit();
-    permit.permitTypeModel = this.permitType;
-    this.permitService.setLocalApplyPermit(permit);
+    
     this.setCompanyTariffs()
   }
 
@@ -208,17 +214,18 @@ export class PermitOptionsComponent {
 
   async onTariffChange(tariff: any) {
     this.permit = await this.permitService.getLocalApplyPermit();
-    this.permit.tariffModel = this.form?.value.tariff;
+    this.permit.tariffModel = tariff.value;
     this.permitService.setLocalApplyPermit(this.permit);
 
     this.rateEngineRequest.TariffID = tariff.value.externalTariffId ?? 0;
-    this.form.patchValue({tariff: tariff})
+    this.form?.patchValue({tariff: tariff})
     this.tariff = tariff;
+    this.tariffControl = tariff.value;
   }
 
   async onPermitTypeChange(value: any){
     this.permit = await this.permitService.getLocalApplyPermit();
-    this.permit.permitTypeModel = this.form?.value.permitType;
+    this.permit.permitTypeModel = value.value;
     this.permitService.setLocalApplyPermit(this.permit);
     this.setCompanyTariffs()
   }
@@ -281,7 +288,7 @@ export class PermitOptionsComponent {
     this.tariffService.getAvailableTariff(this.permit?.companyKey??0, this.permit?.permitTypeModel?.permitTypeKey??0, this.permit?.zoneKey??0)
     .subscribe({
       next: (response) => {
-        if (response.succeeded) {
+        if (response.succeeded && response.data !== undefined && response.data.length > 0) {
           this.tariffs = response.data;
           this.tariffControl.patchValue(this.tariffs![0]);
           this.rateEngineRequest.TariffID = this.tariffs![0].externalTariffId ?? 0;
@@ -289,7 +296,7 @@ export class PermitOptionsComponent {
         }
         else {
           if(this.indexView === 2){
-            this.tariffs = undefined;
+            this.tariffs = [];
             this.indexView = 0;
             this.permitService.displayError(this.translate.data.find(translation => translation.labelCode == 'ClientPermit.NoTariffs')?.textValue || 'ClientPermit.NoTariffs')
             this.router.navigate(['/'+this.localCompany.portalAlias+'/permit-home']);
@@ -319,8 +326,6 @@ export class PermitOptionsComponent {
         return;
       }
     });
-
-    console.log(this.requiredDocuments)
 
     if(validDocuments)
     {

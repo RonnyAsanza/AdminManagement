@@ -29,16 +29,17 @@ export class NewPermitComponent {
 
   constructor(
   private router: Router,
-  private companyService: CompanyService,
-  private permitService: PermitService,
-  private messageService: MessageService) {
+  private companyService: CompanyService) {
   }
 
   onGoBack() : void{
     var categoryFlag = this.selectZoneComponent?.permitTypeFlag
     if(this.selectedIndex === 0 || categoryFlag && this.zoneFlag){
-      this.company = this.companyService.getLocalCompany();
-      this.router.navigate(['/'+this.company.portalAlias+'/']);
+      from(this.companyService.getLocalCompany())
+      .subscribe(value => {
+        this.company = value;
+        this.router.navigate(['/'+this.company.portalAlias+'/']);
+      });
       return;
     }
 
@@ -51,8 +52,8 @@ export class NewPermitComponent {
 	    from(this.companyService.getLocalCompany())
       .subscribe(value => {
         this.company = value;
+        this.router.navigate(['/'+this.company.portalAlias+'/']);
       });
-      this.router.navigate(['/'+this.company.portalAlias+'/']);
       return;
     }
 

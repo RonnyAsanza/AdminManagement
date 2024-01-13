@@ -8,6 +8,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { PermitService } from 'src/app/services/permit.service';
 import { Subscription } from 'rxjs';
 import { from } from 'rxjs';
+import { MenuService } from 'src/app/layout/app.menu.service';
 
 @Component({
   selector: 'app-permit-home',
@@ -22,6 +23,7 @@ export class PermitHomeComponent implements OnInit{
   activeItem!: MenuItem;
   tabIndex: number = 0;
   errorMessageSubscription: Subscription | undefined;
+  routerChangeSubscription: Subscription | undefined;
 
   constructor(private companyService: CompanyService,
     private router: Router,
@@ -29,32 +31,25 @@ export class PermitHomeComponent implements OnInit{
     private translate: TranslatePipe,
     private messageService: MessageService,
     private permitService: PermitService,
+    private menuService: MenuService
     ) {
     }
 
   ngOnInit(): void { 
-    this.items = [
-      {
-          label: this.translate.transform('ClientPermit.Activity'), icon: 'pi pi-fw pi-home',
-          command: (event: any) => {
-            this.tabIndex = 0;
-          }
-      },
-      {
-          label: this.translate.transform('ClientPermit.Applications'), icon: 'pi pi-fw pi-pencil',
-          command: (event: any) => {
-          this.tabIndex = 1;
-        }
-      },
-      {
-          label: this.translate.transform('ClientPermit.Permits'), icon: 'pi pi-fw pi-calendar',
-          command: (event: any) => {
-          this.tabIndex = 2;
-        }
-      }
-      ];
+    this.items = this.getDefaultTabItems();
     this.activeItem = this.items[0];
 
+    
+    this.getLocalCompanyAndNavigate();
+    this.subscribeToRouterChanges();
+    this.subscribeToErrorMessages();
+  }
+
+  onClickNewPermit(): void{
+    this.router.navigate(['/'+this.company.portalAlias+'/new-permit']);
+  }
+
+  getLocalCompanyAndNavigate(): void {
     from(this.companyService.getLocalCompany())
     .subscribe(value => {
       this.company = value;
@@ -66,25 +61,39 @@ export class PermitHomeComponent implements OnInit{
         });
       }
     });
+  }
 
-    this.activatedRoute.params.subscribe(params => {
-      let index = parseInt(params['tabIndex'], 10);
-      if (!isNaN(index)) 
-        this.tabIndex = index;
-    });
+  notifyMenuChange(notifyConfig:{key: string, routeEvent: boolean} ): void {
+    this.menuService.onMenuStateChange(notifyConfig);
+  }
 
-    this.errorMessageSubscription = this.permitService.errorMessage$.subscribe((message) => {
-      if (message) {
-        this.showErrorMessage(message);
+  getDefaultTabItems(): MenuItem[]{
+    return [
+      {
+          label: this.translate.transform('ClientPermit.Activity'), icon: 'pi pi-fw pi-home',
+          command: (event: any) => {
+            this.tabIndex = 0;
+            this.notifyMenuChange({key: `0-${this.tabIndex}`, routeEvent: true })
+          }
+      },
+      {
+          label: this.translate.transform('ClientPermit.Applications'), icon: 'pi pi-fw pi-pencil',
+          command: (event: any) => {
+          this.tabIndex = 1;
+          this.notifyMenuChange({key: `0-${this.tabIndex}`,  routeEvent: true})
+        }
+      },
+      {
+          label: this.translate.transform('ClientPermit.Permits'), icon: 'pi pi-fw pi-calendar',
+          command: (event: any) => {
+          this.tabIndex = 2;
+          this.notifyMenuChange({key: `0-${this.tabIndex}`, routeEvent: true})
+        }
       }
-    });
+    ];
   }
 
-  onClickNewPermit(){
-    this.router.navigate(['/'+this.company.portalAlias+'/new-permit']);
-  }
-
-  async showErrorMessage(errorMessage: string){
+  async showErrorMessage(errorMessage: string): Promise<void>{
     setTimeout(() => {
       this.messageService.add({
         key: 'msg',
@@ -97,10 +106,30 @@ export class PermitHomeComponent implements OnInit{
     })
   }
 
+  subscribeToRouterChanges():void {
+    this.routerChangeSubscription = this.activatedRoute.params.subscribe(params => {
+      let index = parseInt(params['tabIndex'], 10);
+      if (!isNaN(index)) 
+        this.tabIndex = index;
+        this.activeItem = this.items[this.tabIndex];
+    });
+  }
+
+  subscribeToErrorMessages():void {
+    this.errorMessageSubscription = this.permitService.errorMessage$.subscribe((message) => {
+      if (message) {
+        this.showErrorMessage(message);
+      }
+    });
+  }
+
   ngOnDestroy(): void {
     // Unsubscribe from the errorMessage$ observable when the component is destroyed
     if (this.errorMessageSubscription) {
       this.errorMessageSubscription.unsubscribe();
+    }
+    if (this.routerChangeSubscription) {
+      this.routerChangeSubscription.unsubscribe();
     }
   }
 }

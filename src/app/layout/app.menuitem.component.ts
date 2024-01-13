@@ -34,7 +34,7 @@ import {DomHandler} from 'primeng/dom';
         *ngIf="item.routerLink && !item.items && item.visible !== false"
         (click)="itemClick($event)"
         (mouseenter)="onMouseEnter()"
-        [ngClass]="item.class"
+        [ngClass]="active ? item.class + ' active-route' : item.class"
         [routerLink]="item.routerLink"
         routerLinkActive="active-route"
         [routerLinkActiveOptions]="item.routerLinkActiveOptions || { paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' }"
@@ -106,7 +106,7 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
             Promise.resolve(null).then(() => {
                 if (value.routeEvent) {
                     this.active = (value.key === this.key || value.key.startsWith(this.key + '-')) ? true : false;
-                }
+                } 
                 else {
                     if (value.key !== this.key && !value.key.startsWith(this.key + '-')) {
                         this.active = false;
@@ -217,7 +217,6 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
                 this.layoutService.state.menuHoverActive = false;
             }
         }
-
         this.menuService.onMenuStateChange({key: this.key});
     }
 

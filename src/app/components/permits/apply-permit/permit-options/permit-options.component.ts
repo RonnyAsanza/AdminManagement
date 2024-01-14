@@ -97,24 +97,18 @@ export class PermitOptionsComponent {
 
   async ngOnInit(): Promise<void> {
     this.company = await this.companyService.getLocalCompany();
-    var per = await this.permitService.getLocalApplyPermit();
+
     var endDate = new Date();
     endDate.setHours(this.endHour);
     endDate.setMinutes(0);
     this.minDate.setHours(this.startHour);
     this.minDate.setMinutes(0);
     this.minEndDate = this.minDate;
-    this.permit = await this.permitService.getLocalApplyPermit();
-    this.permitService.permit.subscribe(async permit => {
 
-      if( Object.keys(permit).length === 0){
-        this.permit = permit;
-        return;
-      }
-        
-      console.log(permit);
+    this.permitService.permit.subscribe(async permit => {
       this.form?.patchValue({
-        zone: this.permit.zoneName ?? permit.zoneName,
+        zone: permit.zoneName,
+        permitType: permit.permitTypeModel,
         tariff: permit.tariffModel
       });
       

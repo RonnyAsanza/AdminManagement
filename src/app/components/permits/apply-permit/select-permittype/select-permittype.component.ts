@@ -72,8 +72,7 @@ export class SelectPermittypeComponent implements OnInit{
     }
 
     async onSelectPermitCategory(permitCategory: PermitCategoryViewModel){
-      console.log(permitCategory)
-      var permit = await this.permitService.getLocalApplyPermit() ?? ApplyPermit; 
+      var permit = new ApplyPermit();
       permit.permitCategory = permitCategory;
       permit.companyKey  = this.localCompany.companyKey;
       this.permitService.setLocalApplyPermit(permit);

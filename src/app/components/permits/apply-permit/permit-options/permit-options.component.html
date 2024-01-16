@@ -24,7 +24,6 @@
                                     placeholder="Select Permit Type" 
                                     (onChange)="onPermitTypeChange($event)"
                                     class="w-full"
-                                    [formControl]="permitTypeControl"
                                 >
                                     <ng-template let-option pTemplate="item">
                                         {{option.name}}
@@ -42,7 +41,6 @@
                                     placeholder="Select Tariff" 
                                     (onChange)="onTariffChange($event)"
                                     class="w-full"
-                                    [formControl]="tariffControl" 
                                 >
                                     <ng-template let-option pTemplate="item">
                                         {{option.name}}

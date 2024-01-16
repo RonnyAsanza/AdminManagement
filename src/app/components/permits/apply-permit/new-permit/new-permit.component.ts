@@ -81,7 +81,7 @@ export class NewPermitComponent {
 
   onTabChange(event: any): void {
     if (event.index === 2) {
-      this.permitOptions?.showErrors('');
+      //this.permitOptions?.showErrors('');
     }
   }
 }

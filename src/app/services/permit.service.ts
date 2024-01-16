@@ -78,7 +78,6 @@ export class PermitService {
   }
 
   setLocalApplyPermit(applyPermit: ApplyPermit): void {
-    console.log(applyPermit);
     let companyJsonString = JSON.stringify(applyPermit);
     this.localStorageService.setItem('applyPermit',companyJsonString);
     this.permitSource.next(applyPermit);

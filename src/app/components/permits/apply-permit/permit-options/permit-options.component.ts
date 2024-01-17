@@ -47,6 +47,8 @@ export class PermitOptionsComponent {
   requiredDocuments: RequiredDocumentViewModel[] = [];
   localRequiredDocuments: RequiredDocumentViewModel[] = [];
   permitTypes: PermitTypeViewModel[] = [];
+  tariffControl = new FormControl<any|null>(null);
+  permitTypeControl = new FormControl();
 
   constructor(private companyService: CompanyService,
     private datePipe: DatePipe,
@@ -72,7 +74,7 @@ export class PermitOptionsComponent {
           permitType: [null, [Validators.required]],
           tariff: [null, [Validators.required]],
           startDate: [this.minDate, [Validators.required]],
-          endDate: [endDate, [Validators.required]],
+          endDate: [{value: '', disabled: true}, [Validators.required]],
           licensePlate: [null, [Validators.required, Validators.minLength(3)]],
           price: [0, [Validators.required, Validators.min(1)]],
           quantity: [1, [Validators.required]],
@@ -191,22 +193,23 @@ export class PermitOptionsComponent {
   }
 
   async onTariffChange(tariff: any) {
+    console.log(tariff);
     this.permit = await this.permitService.getLocalApplyPermit();
-    this.permit.tariffModel = this.form?.value.tariff;
+    this.permit.tariffModel = tariff.value;
     this.permitService.setLocalApplyPermit(this.permit);
-
     this.rateEngineRequest.TariffID = tariff.value.externalTariffId ?? 0;
     this.getPriceRangeEngine()
   }
 
   async onPermitTypeChange(value: any){
     this.permit = await this.permitService.getLocalApplyPermit();
-    this.permit.permitTypeModel = this.form?.value.permitType;
+    this.permit.permitTypeModel = value.value;
     this.permitService.setLocalApplyPermit(this.permit);
+    this.setCompanyTariffs()
   }
 
   getPriceRangeEngine() {
-    this.rateEngineService.getRateEngineByEndDateBased(this.rateEngineRequest)
+    this.rateEngineService.getRateEngineByQuantityBased(this.rateEngineRequest)
       .subscribe({
         next: (response) => {
           if (response.succeeded) {
@@ -221,14 +224,16 @@ export class PermitOptionsComponent {
 
             var q = this.getHoursFromRateEngine(this.rateEngineResponse.totalDuration);
             var quantity = this.form?.value.quantity ?? 1;
-            let price = this.totalCharge;
+            let total = this.totalCharge;
 
             this.form?.patchValue({
-              price: price,
-              total: price * quantity,
+              price: total/quantity,
+              total: total,
               quantity: quantity,
               endDate: new Date(this.rateEngineResponse.endTime ?? "")
             });
+
+            console.log(this.form)
           }
           else{
             this.form?.patchValue({
@@ -256,30 +261,22 @@ export class PermitOptionsComponent {
   }
 
   onChangeQuantity() {
-    // var tariff = this.form?.value.tariff;
-    var quantity = this.form?.value.quantity;
-    var priceTotal = this.totalCharge * quantity;
-
-    this.form?.patchValue({
-      total: priceTotal
-    });
+    this.rateEngineRequest.Quantity = this.form?.value.quantity;
+    this.getPriceRangeEngine();
   }
 
   setCompanyTariffs(){
-    this.tariffService.getTariffByCompany(this.company.companyKey ?? 0)
+    this.tariffService.getAvailableTariff(this.permit?.companyKey??0, this.permit?.permitTypeModel?.permitTypeKey??0, this.permit?.zoneKey??0)
     .subscribe({
       next: (response) => {
-        if (response.succeeded) {
-          this.tariffs = response.data!;
+        if (response.succeeded && response.data !== undefined && response.data.length > 0) {
+          this.tariffs = response.data;
+          //this.tariffControl.patchValue(this.tariffs![0]);
+          this.rateEngineRequest.TariffID = this.tariffs![0].externalTariffId ?? 0;
+          this.getPriceRangeEngine()
         }
         else {
-          this.messageService.add({
-            key: 'msg',
-            severity: 'error',
-            summary: 'Error',
-            detail: response.message,
-            life: 10000
-          });
+          this.tariffs = [];
         }
       },
       error: (e) => {
@@ -303,7 +300,10 @@ export class PermitOptionsComponent {
 
     if(validDocuments)
     {
+      this.form?.controls['endDate'].enable();
+      
       var permit = await this.permitService.getLocalApplyPermit();
+      
       permit.tariffKey = this.form?.value.tariff.tariffId;
       permit.startDateUtc = this.form?.value.startDate;
       permit.expirationDateUtc = this.form?.value.endDate;
@@ -333,6 +333,7 @@ export class PermitOptionsComponent {
   }
 
   hideDialog() {
+    this.form?.controls['endDate'].disable();
     this.confirmationDialog = false;
     this.permit = {};
   }
@@ -352,6 +353,7 @@ export class PermitOptionsComponent {
     this.permitService.applyPermit(permit)
       .subscribe({
         next: (response) => {
+          console.log(response)
           if (response.succeeded) {
             this.hideDialog();
             var path = (permit.permitTypeModel?.requireApproval === true) ? 'application' : 'permits';

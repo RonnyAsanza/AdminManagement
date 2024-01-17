@@ -47,8 +47,7 @@ export class PermitOptionsComponent {
   requiredDocuments: RequiredDocumentViewModel[] = [];
   localRequiredDocuments: RequiredDocumentViewModel[] = [];
   permitTypes: PermitTypeViewModel[] = [];
-  tariffControl = new FormControl<any|null>(null);
-  permitTypeControl = new FormControl();
+
 
   constructor(private companyService: CompanyService,
     private datePipe: DatePipe,
@@ -104,7 +103,6 @@ export class PermitOptionsComponent {
         tariff: permit.tariffModel
       });
       this.permit = permit;
-
       this.setOptionalValidators('optional1', permit?.permitTypeModel?.requireAdditionalInput1!);
       this.setOptionalValidators('optional2', permit?.permitTypeModel?.requireAdditionalInput2!);
       this.setOptionalValidators('optional3', permit?.permitTypeModel?.requireAdditionalInput3!);
@@ -149,8 +147,6 @@ export class PermitOptionsComponent {
       Quantity: 1,
       TCP_Calculate_Add: true
     }
-    
-    this.setCompanyTariffs()
   }
 
   private setOptionalValidators(controlName: string, isRequired: boolean): void {
@@ -193,7 +189,6 @@ export class PermitOptionsComponent {
   }
 
   async onTariffChange(tariff: any) {
-    console.log(tariff);
     this.permit = await this.permitService.getLocalApplyPermit();
     this.permit.tariffModel = tariff.value;
     this.permitService.setLocalApplyPermit(this.permit);
@@ -205,7 +200,8 @@ export class PermitOptionsComponent {
     this.permit = await this.permitService.getLocalApplyPermit();
     this.permit.permitTypeModel = value.value;
     this.permitService.setLocalApplyPermit(this.permit);
-    this.setCompanyTariffs()
+    this.form?.controls['permitType'].markAsPristine();
+    this.getCompanyTariffs()
   }
 
   getPriceRangeEngine() {
@@ -222,7 +218,6 @@ export class PermitOptionsComponent {
               this.showTariffErrorMessage();
             }
 
-            var q = this.getHoursFromRateEngine(this.rateEngineResponse.totalDuration);
             var quantity = this.form?.value.quantity ?? 1;
             let total = this.totalCharge;
 
@@ -232,8 +227,6 @@ export class PermitOptionsComponent {
               quantity: quantity,
               endDate: new Date(this.rateEngineResponse.endTime ?? "")
             });
-
-            console.log(this.form)
           }
           else{
             this.form?.patchValue({
@@ -265,18 +258,27 @@ export class PermitOptionsComponent {
     this.getPriceRangeEngine();
   }
 
-  setCompanyTariffs(){
+  getCompanyTariffs(){
     this.tariffService.getAvailableTariff(this.permit?.companyKey??0, this.permit?.permitTypeModel?.permitTypeKey??0, this.permit?.zoneKey??0)
     .subscribe({
-      next: (response) => {
+      next: async (response) => {
         if (response.succeeded && response.data !== undefined && response.data.length > 0) {
           this.tariffs = response.data;
-          //this.tariffControl.patchValue(this.tariffs![0]);
           this.rateEngineRequest.TariffID = this.tariffs![0].externalTariffId ?? 0;
           this.getPriceRangeEngine()
         }
         else {
+          this.messageService.add({
+            key: 'msg',
+            severity: 'warn',
+            summary: 'Error',
+            detail: 'No tariffs Found! select a different permit type or zone',
+            life: 10000
+          });
           this.tariffs = [];
+          this.permit = await this.permitService.getLocalApplyPermit();
+          this.permit.permitTypeModel = undefined;
+          this.permitService.setLocalApplyPermit(this.permit);
         }
       },
       error: (e) => {
@@ -296,17 +298,13 @@ export class PermitOptionsComponent {
       }
     });
 
-    console.log(this.requiredDocuments)
-
     if(validDocuments)
-    {
-      this.form?.controls['endDate'].enable();
-      
+    { 
       var permit = await this.permitService.getLocalApplyPermit();
       
       permit.tariffKey = this.form?.value.tariff.tariffId;
       permit.startDateUtc = this.form?.value.startDate;
-      permit.expirationDateUtc = this.form?.value.endDate;
+      permit.expirationDateUtc = this.form?.getRawValue().endDate;
       permit.licensePlate = this.form?.value.licensePlate;
       permit.price = this.form?.value.price;
       permit.total = this.form?.value.price * this.form?.value.quantity;

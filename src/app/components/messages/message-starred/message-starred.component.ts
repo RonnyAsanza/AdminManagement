@@ -15,6 +15,7 @@ export class MessageStarredComponent {
   constructor( private mailService: PermitMessagesService) {
       this.subscription = this.mailService.mails$.subscribe(data => {
         this.mails = data.filter(d => d.isStarred);
+        this.mails = this.mailService.sortMessages(this.mails);   
       });
   }
 

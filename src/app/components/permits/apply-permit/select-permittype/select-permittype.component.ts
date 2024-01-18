@@ -38,7 +38,14 @@ export class SelectPermittypeComponent implements OnInit{
             {
               if(response.data == null || response.data == undefined)
               {
-                this.permitService.displayError(this.translate.data.find(translation => translation.labelCode == 'ClientPermit.NoCategories')?.textValue || 'ClientPermit.NoCategories')
+                var message = (this.translate.data.find(translation => translation.labelCode == 'ClientPermit.NoCategories')?.textValue || 'ClientPermit.NoCategories')
+                this.messageService.add({
+                  key: 'msg',
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: message,
+                  life: 5000
+                });
                 this.router.navigate(['/'+this.localCompany.portalAlias+'/permit-home']);
               } 
               else 

@@ -14,9 +14,33 @@
         </div>
     </div>
     <div class="surface-border border-1 border-round p-4">
-            <div class="text-900 font-semibold text-lg mb-3">Application # {{mail.applicationKey}}</div>
-            <p class="line-height-3 mt-0 mb-3" [innerHTML]="mail.message"></p>
-            <p-editor [style]="{'height':'250px'}" [(ngModel)]="newMail.message"></p-editor>
+            <div class="text-900 font-semibold text-lg mb-3">Application # {{mail.requestNumber}}</div>
+
+            <div class="chat-messages">
+                <div *ngFor="let message of messages" class="message-container"
+                     [ngClass]="{'system-message': message.senderType === 'System', 'user-message': message.senderType === 'PortalUser'}">
+                  <div class="message-header">
+                    <span class="message-date">{{ message.dateCreatedUtc | date:'short' }}</span>
+                  </div>
+                  <span class="message-detail" [innerHTML]="message.message"></span>
+                </div>
+            </div>
+
+            <p-editor [(ngModel)]="newMessage.message" [style]="{'height':'7rem'}">
+                <ng-template pTemplate="header">
+                    <span class="ql-formats">
+                        <button type="button" class="ql-bold" aria-label="Bold"></button>
+                        <button type="button" class="ql-italic" aria-label="Italic"></button>
+                        <button type="button" class="ql-underline" aria-label="Underline"></button>
+                        <button type="button" class="ql-strike" aria-label="strike"></button> 
+                    </span>
+                    <span class="ql-formats">
+                        <button type="button" class="ql-link" aria-label="Insert Link"></button>
+                        <button type="button" class="ql-image" aria-label="Insert Image"></button>
+                    </span>
+                </ng-template>
+            </p-editor>
+
             <div class="flex column-gap-3 justify-content-end mt-3">
                 <button pButton pRipple type="button" class="p-button-outlined" icon="pi pi-image"></button>
                 <button pButton pRipple type="button" class="p-button-outlined" icon="pi pi-paperclip"></button>

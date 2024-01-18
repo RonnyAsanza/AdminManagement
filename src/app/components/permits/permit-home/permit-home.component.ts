@@ -5,7 +5,6 @@ import { Company } from 'src/app/models/company.model';
 import { CompanyService } from 'src/app/services/company.service';
 import { MessageService } from 'primeng/api';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
-import { PermitService } from 'src/app/services/permit.service';
 import { Subscription } from 'rxjs';
 import { from } from 'rxjs';
 import { MenuService } from 'src/app/layout/app.menu.service';
@@ -22,7 +21,6 @@ export class PermitHomeComponent implements OnInit{
   items!: MenuItem[];
   activeItem!: MenuItem;
   tabIndex: number = 0;
-  errorMessageSubscription: Subscription | undefined;
   routerChangeSubscription: Subscription | undefined;
 
   constructor(private companyService: CompanyService,
@@ -30,7 +28,6 @@ export class PermitHomeComponent implements OnInit{
     private activatedRoute: ActivatedRoute,
     private translate: TranslatePipe,
     private messageService: MessageService,
-    private permitService: PermitService,
     private menuService: MenuService
     ) {
     }
@@ -39,10 +36,8 @@ export class PermitHomeComponent implements OnInit{
     this.items = this.getDefaultTabItems();
     this.activeItem = this.items[0];
 
-    
     this.getLocalCompanyAndNavigate();
     this.subscribeToRouterChanges();
-    this.subscribeToErrorMessages();
   }
 
   onClickNewPermit(): void{
@@ -100,9 +95,8 @@ export class PermitHomeComponent implements OnInit{
         severity: 'error',
         summary: 'Error',
         detail: errorMessage,
-        life: 10000
+        life: 5000
       });
-      this.permitService.clearError();
     })
   }
 
@@ -115,19 +109,7 @@ export class PermitHomeComponent implements OnInit{
     });
   }
 
-  subscribeToErrorMessages():void {
-    this.errorMessageSubscription = this.permitService.errorMessage$.subscribe((message) => {
-      if (message) {
-        this.showErrorMessage(message);
-      }
-    });
-  }
-
   ngOnDestroy(): void {
-    // Unsubscribe from the errorMessage$ observable when the component is destroyed
-    if (this.errorMessageSubscription) {
-      this.errorMessageSubscription.unsubscribe();
-    }
     if (this.routerChangeSubscription) {
       this.routerChangeSubscription.unsubscribe();
     }

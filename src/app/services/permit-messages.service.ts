@@ -7,6 +7,7 @@ import { UnreadMessageViewModel } from '../models/unread-messages.model';
 import { PermitMessageViewModel } from '../models/permit-messages.model';
 import { BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { aC } from '@fullcalendar/core/internal-common';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,6 @@ export class PermitMessagesService {
     return this.http.put<PermitsResponse<boolean>>(urlPath, permitMessageViewModels);
   }
 
-  // --- Utils
   updateMails(data: PermitMessageViewModel[]) {
     this._mails = data;
     this.mails.next(data);
@@ -52,11 +52,15 @@ export class PermitMessagesService {
     this.mails.next(this._mails);
   }
 
-  updateEmail(updatedEmail: PermitMessageViewModel) {
+  updateEmail(updatedEmail: PermitMessageViewModel, isDeleted: boolean) {
     const index = this._mails.findIndex(mail => mail.permitMessageKey === updatedEmail.permitMessageKey);
-
     if (index !== -1) {
       this._mails[index] = updatedEmail;
+      if (isDeleted) {
+        this._mails.splice(index, 1);
+      } else {
+        this._mails[index] = updatedEmail;
+      }
       this.mails.next(this._mails);
     }
   }
@@ -72,16 +76,31 @@ export class PermitMessagesService {
     );
   }
 
-  updateAndRefreshEmail(mail: PermitMessageViewModel, action: MessageAction): Observable<PermitsResponse<boolean>> {
-    return this.updateAndRefreshEmails([mail], action);
+  updateAndRefreshEmail(message: PermitMessageViewModel, action: MessageAction): Observable<PermitsResponse<boolean>> {
+    return this.updateAndRefreshEmails([message], action);
   }
 
-  updateAndRefreshEmails(mails: PermitMessageViewModel[], action: MessageAction): Observable<PermitsResponse<boolean>> {
-    const ids = mails.map(mail => mail.permitMessageKey!).filter(Boolean) as string[];
-    mails.forEach(mail => {
+  updateMessagesByApplication(mail: PermitMessageViewModel, action: MessageAction): Observable<PermitsResponse<boolean>> {
+    var messages = this._mails
+      .filter(d => d.applicationKey === mail.applicationKey);
+    return this.updateAndRefreshEmails(messages, action);
+  }
+
+  updateMessagesByApplications(applicationKeys: string[], action: MessageAction): Observable<PermitsResponse<boolean>> {
+    var messages = this._mails
+      .filter(d => applicationKeys.includes(d.applicationKey!));
+    return this.updateAndRefreshEmails(messages, action);
+  }
+
+  updateAndRefreshEmails(messages: PermitMessageViewModel[], action: MessageAction): Observable<PermitsResponse<boolean>> {
+    console.log("updateAndRefreshEmails", action);
+    messages.forEach(mail => {
       switch (action) {
         case MessageAction.IsReaded:
           mail.isReaded = true;
+          break;
+        case MessageAction.UnTrash:
+          mail.isInTrash = false;
           break;
         case MessageAction.IsStarred:
           mail.isStarred = !mail.isStarred;
@@ -93,23 +112,48 @@ export class PermitMessagesService {
           mail.isStarred = false;
           mail.isDeleted = false;
           break;
-        case MessageAction.IsDeleted:
-          mail.isDeleted = !mail.isDeleted;
+        case MessageAction.isInTrash:
+          mail.isInTrash = true;
           mail.isArchived = false;
           mail.isStarred = false;
           break;
+        case MessageAction.isInTrash:
+            mail.isInTrash = !mail.isInTrash;
+            mail.isArchived = false;
+            mail.isStarred = false;
+            break;
+        case MessageAction.IsDeleted:
+            mail.isInTrash = true;
+            mail.isDeleted = true;
+            mail.isArchived = false;
+            mail.isStarred = false;
+            break;
       }
     });
-    return this.updateMessages(mails).pipe(
+    return this.updateMessages(messages).pipe(
       tap((response: PermitsResponse<boolean>) => {
         if (response && response.data) {
-          mails.forEach(mail => {
-            this.updateEmail(mail);
-          });
+          messages.forEach(mail => {
+                this.updateEmail(mail, (action === MessageAction.IsDeleted));
+              });
         }
       })
     );
   }
+
+  sortMessages(messages: PermitMessageViewModel[]){
+    return messages.sort((a, b) => {
+      const dateA = a.dateCreatedUtc ? new Date(a.dateCreatedUtc) : new Date(8640000000000000);
+      const dateB = b.dateCreatedUtc ? new Date(b.dateCreatedUtc) : new Date(8640000000000000);
+      return dateB.getTime() - dateA.getTime();
+    })
+    .reduce<PermitMessageViewModel[]>((result, message) => {
+      if (!result.some(m => m.applicationKey === message.applicationKey)) {
+        result.push(message);
+      }
+      return result;
+    }, []);
+  } 
 }
 
 export enum MessageAction {
@@ -117,6 +161,8 @@ export enum MessageAction {
   IsStarred,
   IsArchived,
   IsDeleted,
+  isInTrash,
+  UnTrash
 }
 
 export enum SenderType {

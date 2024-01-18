@@ -27,7 +27,7 @@ export class MessageListComponent implements OnInit {
 
     constructor(private router: Router,
         private companyService: CompanyService,
-        private mailService: PermitMessagesService,
+        private permitMessagesService: PermitMessagesService,
         private messageService: MessageService,
         private translate: TranslatePipe) {
     }
@@ -49,34 +49,27 @@ export class MessageListComponent implements OnInit {
         }
     }
 
-
     onGoToApplication(applicationKey: string) {
 	    from(this.companyService.getLocalCompany())
         .subscribe(value => {
             this.company = value;
+            this.router.navigate(['/' + this.company.portalAlias + '/application/' + applicationKey]);
         });
-        this.router.navigate(['/' + this.company.portalAlias + '/application/' + applicationKey]);
     }
 
     onRowSelect(mail: PermitMessageViewModel) {
-        this.mailService.updateAndRefreshEmail(mail, MessageAction.IsReaded)
-            .subscribe({
-                next: (response) => {
-                },
-                error: (e) => {
-                }
-            });
+        this.permitMessagesService.updateMessagesByApplication(mail, MessageAction.IsReaded)
+            .subscribe();
 
-            from(this.companyService.getLocalCompany())
-            .subscribe(value => {
-              this.company = value;
-            });
-        this.router.navigate(['/' + this.company.portalAlias + '/messages/detail/' + mail.permitMessageKey]);
+        from(this.companyService.getLocalCompany())
+        .subscribe(value => {
+            this.company = value;
+            this.router.navigate(['/' + this.company.portalAlias + '/messages/detail/' + mail.permitMessageKey]);
+        });       
     }
 
     onStar(event: Event, mail: PermitMessageViewModel) {
-
-        this.mailService.updateAndRefreshEmail(mail, MessageAction.IsStarred)
+        this.permitMessagesService.updateMessagesByApplication(mail, MessageAction.IsStarred)
             .subscribe({
                 next: (response) => {
                     this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Mail Star', life: 3000 });
@@ -88,99 +81,83 @@ export class MessageListComponent implements OnInit {
         event.stopPropagation();
     }
 
-    
-
     onArchive(event: Event, mail: PermitMessageViewModel) {
-
-        this.mailService.updateAndRefreshEmail(mail, MessageAction.IsArchived)
+        this.permitMessagesService.updateMessagesByApplication(mail, MessageAction.IsArchived)
             .subscribe({
                 next: (response) => {
                     this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Mail archived', life: 3000 });
                 },
-                error: (e) => {
-                }
             });
 
         event.stopPropagation();
     }
 
     onDelete(event: Event, mail: PermitMessageViewModel) {
-
-        this.mailService.updateAndRefreshEmail(mail, MessageAction.IsDeleted)
+        this.permitMessagesService.updateMessagesByApplication(mail, MessageAction.IsDeleted)
             .subscribe({
                 next: (response) => {
                     this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Mail deleted', life: 3000 });
                 },
-                error: (e) => {
-                }
             });
         event.stopPropagation();
     }
 
     onTrash(event: Event, mail: PermitMessageViewModel) {
-
-        this.mailService.updateAndRefreshEmail(mail, MessageAction.IsDeleted)
+        this.permitMessagesService.updateMessagesByApplication(mail, mail.isInTrash? MessageAction.IsDeleted : MessageAction.isInTrash)
             .subscribe({
                 next: (response) => {
                     this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Mail deleted', life: 3000 });
                 },
-                error: (e) => {
-                }
             });
+        event.stopPropagation();
+    }
 
+    onUnTrash(event: Event, mail: PermitMessageViewModel) {
+        console.log("onUnTrash", mail);
+        this.permitMessagesService.updateMessagesByApplication(mail, MessageAction.UnTrash)
+            .subscribe({
+                next: (response) => {
+                    this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Mail deleted', life: 3000 });
+                },
+            });
         event.stopPropagation();
     }
 
     onDeleteMultiple() {
         if (this.selectedMails && this.selectedMails.length > 0) {
-            this.mailService.updateAndRefreshEmails(this.selectedMails, MessageAction.IsDeleted)
+            const applicationskeys = new Set<string>();
+            this.selectedMails.forEach(message => {
+                applicationskeys.add(message.applicationKey!);
+              });
+            this.permitMessagesService.updateMessagesByApplications(Array.from(applicationskeys), this.selectedMails[0].isInTrash? MessageAction.IsDeleted: MessageAction.isInTrash)
                 .subscribe({
                     next: (response) => {
                         this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Mails deleted', life: 3000 });
                     },
-                    error: (e) => {
-                    }
                 });
         }
     }
 
     onArchiveMultiple() {
-
         if (this.selectedMails && this.selectedMails.length > 0) {
-            this.mailService.updateAndRefreshEmails(this.selectedMails, MessageAction.IsArchived)
+            const applicationskeys = new Set<string>();
+            this.selectedMails.forEach(message => {
+                applicationskeys.add(message.applicationKey!);
+              });
+            this.permitMessagesService.updateMessagesByApplications(Array.from(applicationskeys), MessageAction.IsArchived)
                 .subscribe({
                     next: (response) => {
-                        this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Moved to archive', life: 3000 });
+                        this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Messages Archived!', life: 3000 });
                     },
-                    error: (e) => {
-                    }
                 });
         }
     }
 
     onReply(event: Event, mail: PermitMessageViewModel) {
-
         this.onRowSelect(mail);
-
-        // event.stopPropagation();
-        // this.mail = mail;
-        // this.dialogVisible = true;
     }
 
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
-    }
-
-    onSpamMultiple() {
-        /*   if (this.selectedMails && this.selectedMails.length > 0) {
-               this.mailService.onSpamMultiple(this.selectedMails);
-               this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Moved to spam', life: 3000 });
-           }
-         */
-    }
-
-    onBookmark(event: Event, id: number) {
-        /* event.stopPropagation();
-         this.mailService.onBookmark(id);*/
     }
 }

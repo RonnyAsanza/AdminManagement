@@ -65,7 +65,7 @@
                     (touchend)="$event.stopPropagation()"
                 ></p-tableCheckbox>
             </td>
-            <td *ngIf="!mail.isDeleted" style="width: 4rem">
+            <td *ngIf="!mail.isInTrash" style="width: 4rem">
                 <span
                     (click)="onStar($event, mail)"
                     (touchend)="onStar($event, mail)"
@@ -80,10 +80,10 @@
                     ></i>
                 </span>
             </td>
-            <td *ngIf="mail.isDeleted" style="width: 4rem">
+            <td *ngIf="mail.isInTrash" style="width: 4rem">
                 <span
-                    (click)="onDelete($event, mail)"
-                    (touchend)="onDelete($event, mail)"
+                    (click)="onUnTrash($event, mail)"
+                    (touchend)="onUnTrash($event, mail)"
                     class="cursor-pointer"
                 >
                     <i class="pi pi-undo text-xl"></i>
@@ -100,7 +100,7 @@
                     class="cursor-pointer link-style"
                 >
                     {{ "ClientPermit.Application" | translate }} #
-                    {{ mail.applicationKey }}
+                    {{ mail.requestNumber }}
                 </span>
             </td>
             <td
@@ -115,15 +115,15 @@
                 [ngClass]="{ 'font-semibold': !mail.isReaded }"
                 class="font-semibold"
             >
-                <span [class]="'font-semibold ' + 'messages-badge '+ mail.messageType.toLowerCase()">{{ mail.messageType }}</span>
+                <span [class]="'font-semibold ' + 'messages-badge '+ mail.messageType?.toLowerCase()">{{ mail.messageType }}</span>
             </td>
             <td style="min-width: 12rem">
                 <span
                     [ngClass]="{ 'font-semibold': !mail.isReaded }"
                     class="white-space-nowrap overflow-hidden text-overflow-ellipsis block"
                     style="max-width: 30rem"
+                    [innerHTML]="mail.message"
                 >
-                    {{ mail.message }}
                 </span>
             </td>
             <td style="min-width: 10rem">

@@ -12,9 +12,10 @@ export class MessageSentComponent {
   mails: PermitMessageViewModel[] = [];
   subscription: Subscription;
 
-  constructor(private mailService: PermitMessagesService) {
-    this.subscription = this.mailService.mails$.subscribe(data => {
-      this.mails = data.filter(d => d.senderType == "PortalUser");
+  constructor(private permitMessagesService: PermitMessagesService) {
+    this.subscription = this.permitMessagesService.mails$.subscribe(data => {
+      this.mails = data.filter(d => !d.isInTrash && d.senderType == "PortalUser");
+      this.mails = permitMessagesService.sortMessages(this.mails);
     });
   }
 

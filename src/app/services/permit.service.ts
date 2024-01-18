@@ -2,13 +2,11 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { Observable } from 'rxjs/internal/Observable';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Permit } from '../models/permit.model';
 import { PermitsResponse } from './permits-response.model';
 import { ApplyPermit } from '../models/apply-permit.model';
 import { LocalStorageService } from './local-storage.service';
-import { Subject } from 'rxjs';
-
 
 @Injectable({
   providedIn: 'root'
@@ -91,15 +89,4 @@ export class PermitService {
     var urlPath = environment.apiPermitsURL + 'Permit/'+permitKey+'/license-plate/'+licensePlate;
     return this.http.put<PermitsResponse<number>>(urlPath, null);
   }
-  private errorMessageSubject = new BehaviorSubject<string | null>(null);
-  errorMessage$ = this.errorMessageSubject.asObservable();
-
-  displayError(message: string) {
-    this.errorMessageSubject.next(message);
-  }
-
-  clearError(){
-    this.errorMessageSubject.next(null);
-  }
-
 }

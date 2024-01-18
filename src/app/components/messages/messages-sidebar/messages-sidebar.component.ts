@@ -26,10 +26,10 @@ export class MessagesSidebarComponent {
     url: string = '';
     constructor(private router: Router,
         private companyService: CompanyService,
-        private mailService: PermitMessagesService,
+        private permitMessagesService: PermitMessagesService,
         private translate: TranslatePipe) {
-        this.mailSubscription = this.mailService.mails$.subscribe(data => this.getBadgeValues(data));
-
+        this.mailSubscription = this.permitMessagesService
+            .mails$.subscribe(data => this.getBadgeValues(data));
         this.routeSubscription = this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((params: any) => {
             this.url = params.url;
         });
@@ -44,8 +44,6 @@ export class MessagesSidebarComponent {
     getBadgeValues(data: PermitMessageViewModel[]) {
         let inbox = [],
             starred = [],
-            spam = [],
-            important = [],
             archived = [],
             trash = [],
             sent = []
@@ -53,31 +51,35 @@ export class MessagesSidebarComponent {
         for (let i = 0; i < data.length; i++) {
             let mail = data[i];
 
-            if (!mail.isArchived && !mail.isDeleted && !mail.isReaded && !mail.hasOwnProperty('sent') && mail.senderType != 'PortalUser') {
+            if (!mail.isArchived && !mail.isInTrash && !mail.isReaded && !mail.hasOwnProperty('sent') && mail.senderType != 'PortalUser') {
                 inbox.push(mail);
             }
-            if (mail.isStarred && !mail.isArchived && !mail.isDeleted) {
+            if (mail.isStarred && !mail.isArchived && !mail.isInTrash) {
                 starred.push(mail);
             }
-            if (mail.isArchived && !mail.isDeleted) {
+            if (mail.isArchived && !mail.isInTrash) {
                 archived.push(mail);
             }
-            if (mail.isDeleted) {
+            if (mail.isInTrash) {
                 trash.push(mail);
             }
-            if (mail.senderType == 'PortalUser' && !mail.isArchived && !mail.isDeleted && !mail.isStarred) {
+            if (mail.senderType == 'PortalUser' && !mail.isArchived && !mail.isInTrash && !mail.isStarred && !mail.isReaded) {
                 sent.push(mail);
             }
         }
 
+        archived = this.permitMessagesService.sortMessages(archived);
+        starred = this.permitMessagesService.sortMessages(starred);
+        inbox = this.permitMessagesService.sortMessages(inbox);
+        sent = this.permitMessagesService.sortMessages(sent);
+        trash = this.permitMessagesService.sortMessages(trash);
+
         this.badgeValues = {
             inbox: inbox.length,
             starred: starred.length,
-            spam: spam.length,
-            important: important.length,
             archived: archived.length,
             trash: trash.length,
-            sent: sent.length
+            sent: 0
         };
 
         this.updateSidebar();

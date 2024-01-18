@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import { PortalUserViewModel } from 'src/app/models/auth/portal-user.model';
 import { PermitMessageViewModel } from 'src/app/models/permit-messages.model';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { PermitMessagesService } from 'src/app/services/permit-messages.service';
 import { Subscription } from 'rxjs';
 
@@ -15,11 +13,11 @@ export class MessageInboxComponent {
   subscription: Subscription;
 
   constructor(
-    private userService: AuthService, 
     private mailService: PermitMessagesService,) {
       this.subscription = this.mailService.mails$.subscribe(data => {
-        this.mails = data.filter(d => !d.isArchived && !d.isDeleted && !d.hasOwnProperty('sent') && d.senderType != "PortalUser");
-    });
+        this.mails = data.filter(d => !d.isArchived && !d.isInTrash && !d.hasOwnProperty('sent') && d.senderType != "PortalUser");
+        this.mails = this.mailService.sortMessages(this.mails);   
+      });
   }
 
   ngOnDestroy() {

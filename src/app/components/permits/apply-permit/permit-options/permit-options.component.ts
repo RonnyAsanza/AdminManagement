@@ -1,4 +1,4 @@
-import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
+import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -22,11 +22,9 @@ import { from } from 'rxjs';
   templateUrl: './permit-options.component.html',
   styleUrls: ['./permit-options.component.scss'],
   providers: [MessageService, DatePipe],
-
 })
-export class PermitOptionsComponent {
 
-  @ViewChildren('buttonEl') buttonEl!: QueryList<ElementRef>;
+export class PermitOptionsComponent {
   permitOptions = new FormControl();
   form: FormGroup | undefined;
   minDate = new Date();
@@ -48,7 +46,6 @@ export class PermitOptionsComponent {
   localRequiredDocuments: RequiredDocumentViewModel[] = [];
   permitTypes: PermitTypeViewModel[] = [];
 
-
   constructor(private companyService: CompanyService,
     private datePipe: DatePipe,
     private router: Router,
@@ -59,33 +56,37 @@ export class PermitOptionsComponent {
     private rateEngineService: RateEngineService,
     private permitTypeService: PermitTypeService,
     private requiredDocumentService: RequiredDocumentService) {
-      var endDate = new Date();
-      endDate.setHours(this.endHour);
-      endDate.setMinutes(0);
-      this.minDate.setHours(this.startHour);
-      this.minDate.setMinutes(0);
-      this.minEndDate = this.minDate;
-
-      from(this.permitService.getLocalApplyPermit())
-      .subscribe(permit => {
-        this.form = this.fb.group({
-          zone: ['', [Validators.required]],
-          permitType: [null, [Validators.required]],
-          tariff: [null, [Validators.required]],
-          startDate: [this.minDate, [Validators.required]],
-          endDate: [{value: '', disabled: true}, [Validators.required]],
-          licensePlate: [null, [Validators.required, Validators.minLength(3)]],
-          price: [0, [Validators.required, Validators.min(1)]],
-          quantity: [1, [Validators.required]],
-          total: [0, [Validators.min(1)]],
-          optional1: ['', permit?.permitTypeModel?.requireAdditionalInput1?[Validators.required]:[] ],
-          optional2: ['', permit?.permitTypeModel?.requireAdditionalInput2?[Validators.required]:[] ],
-          optional3: ['', permit?.permitTypeModel?.requireAdditionalInput3?[Validators.required]:[] ],
-          optional4: ['', permit?.permitTypeModel?.requireAdditionalInput4?[Validators.required]:[] ],
-          optional5: ['', permit?.permitTypeModel?.requireAdditionalInput5?[Validators.required]:[] ],
-        });
-      });
+      this.initializeForm();
     }
+  
+  private initializeForm(): void {
+    var endDate = new Date();
+    endDate.setHours(this.endHour);
+    endDate.setMinutes(0);
+    this.minDate.setHours(this.startHour);
+    this.minDate.setMinutes(0);
+    this.minEndDate = this.minDate;
+
+    from(this.permitService.getLocalApplyPermit())
+    .subscribe(permit => {
+      this.form = this.fb.group({
+        zone: ['', [Validators.required]],
+        permitType: [null, [Validators.required]],
+        tariff: [null, [Validators.required]],
+        startDate: [this.minDate, [Validators.required]],
+        endDate: [{value: '', disabled: true}, [Validators.required]],
+        licensePlate: [null, [Validators.required, Validators.minLength(3)]],
+        price: [0, [Validators.required, Validators.min(1)]],
+        quantity: [1, [Validators.required]],
+        total: [0, [Validators.min(1)]],
+        optional1: ['', permit?.permitTypeModel?.requireAdditionalInput1?[Validators.required]:[] ],
+        optional2: ['', permit?.permitTypeModel?.requireAdditionalInput2?[Validators.required]:[] ],
+        optional3: ['', permit?.permitTypeModel?.requireAdditionalInput3?[Validators.required]:[] ],
+        optional4: ['', permit?.permitTypeModel?.requireAdditionalInput4?[Validators.required]:[] ],
+        optional5: ['', permit?.permitTypeModel?.requireAdditionalInput5?[Validators.required]:[] ],
+      });
+    });
+  }
 
   async ngOnInit(): Promise<void> {
     this.company = await this.companyService.getLocalCompany();
@@ -183,7 +184,6 @@ export class PermitOptionsComponent {
   }
 
   onChangeStartDate(){
-
     this.minEndDate = this.form?.value.startDate;
     this.onChangeDate(true);
   }
@@ -249,7 +249,7 @@ export class PermitOptionsComponent {
       severity: 'error',
       summary: 'Error',
       detail: 'Service not available at this time, try later in a few minutes.',
-      life: 10000
+      life: 5000
     });
   }
 
@@ -273,7 +273,7 @@ export class PermitOptionsComponent {
             severity: 'warn',
             summary: 'Error',
             detail: 'No tariffs Found! select a different permit type or zone',
-            life: 10000
+            life: 5000
           });
           this.tariffs = [];
           this.permit = await this.permitService.getLocalApplyPermit();
@@ -293,7 +293,7 @@ export class PermitOptionsComponent {
       if(document.required === true && (document.documentFile === undefined ))
       {
         validDocuments = false;
-        this.messageService.add({ key: 'msg', severity: 'error', summary: 'Error', detail: 'The document - '+document.documentName+' is required.', life: 10000 });
+        this.messageService.add({ key: 'msg', severity: 'error', summary: 'Error', detail: 'The document - '+document.documentName+' is required.', life: 5000 });
         return;
       }
     });
@@ -321,17 +321,12 @@ export class PermitOptionsComponent {
     }
   }
 
-  onCancel() {
-    console.log('cancel');
-  }
-
   confirmCancel(){
     this.cancelNewPermit = false;
     this.router.navigate(['/' + this.company.portalAlias]);
   }
 
   hideDialog() {
-    this.form?.controls['endDate'].disable();
     this.confirmationDialog = false;
     this.permit = {};
   }
@@ -341,17 +336,14 @@ export class PermitOptionsComponent {
     this.hideDialog();
 
     permit.requiredDocuments = this.requiredDocuments;
-
     permit.startDateUtc = this.datePipe.transform(this.form?.value.startDate, 'yyyy-MM-dd HH:mm') ?? '';
-    permit.expirationDateUtc = this.datePipe.transform(this.form?.value.endDate, 'yyyy-MM-dd HH:mm') ?? '';
-
+    permit.expirationDateUtc = this.datePipe.transform(this.form?.getRawValue().endDate, 'yyyy-MM-dd HH:mm') ?? '';
     permit.permitTypeKey = permit.permitTypeModel?.permitTypeKey;
     this.permitService.setLocalApplyPermit(permit);
 
     this.permitService.applyPermit(permit)
       .subscribe({
         next: (response) => {
-          console.log(response)
           if (response.succeeded) {
             this.hideDialog();
             var path = (permit.permitTypeModel?.requireApproval === true) ? 'application' : 'permits';
@@ -410,8 +402,8 @@ export class PermitOptionsComponent {
       return this.form!.controls;
   }
 
-hasRequiredDocuments(): boolean {
-  return this.requiredDocuments.length > 0;
-}
+  hasRequiredDocuments(): boolean {
+    return this.requiredDocuments.length > 0;
+  }
 
 }

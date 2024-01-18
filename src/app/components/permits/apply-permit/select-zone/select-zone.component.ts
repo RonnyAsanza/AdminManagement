@@ -49,7 +49,14 @@ export class SelectZoneComponent implements OnInit{
             if(response.succeeded )
             {
               if(response.data == null || response.data == undefined){
-                this.permitService.displayError(this.translate.data.find(translation => translation.labelCode == 'ClientPermit.NoZones')?.textValue || 'ClientPermit.NoZones')
+                var message = (this.translate.data.find(translation => translation.labelCode == 'ClientPermit.NoZones')?.textValue || 'ClientPermit.NoZones')
+                this.messageService.add({
+                  key: 'msg',
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: message,
+                  life: 5000
+                });
                 this.router.navigate(['/'+this.localCompany.portalAlias+'/permit-home']);
               } else {
                 var data = response.data as ZoneViewModel[];

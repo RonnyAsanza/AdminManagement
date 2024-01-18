@@ -15,6 +15,7 @@ export class MessageArchivedComponent {
   constructor(private mailService: PermitMessagesService) {
     this.subscription = this.mailService.mails$.subscribe(data => {
       this.mails = data.filter(d => d.isArchived);
+      this.mails = this.mailService.sortMessages(this.mails);   
     });
   }
 

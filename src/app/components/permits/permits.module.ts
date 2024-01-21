@@ -25,6 +25,8 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { ImageModule } from 'primeng/image';
 import { TranslationsModule } from '../shared/translations.module';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { MultiSelectModule } from 'primeng/multiselect';
+
 
 @NgModule({
   imports: [
@@ -49,7 +51,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
     FileUploadModule,
     ImageModule,
     TranslationsModule,
-    InputNumberModule
+    InputNumberModule,
+    MultiSelectModule
   ],
   declarations: [
     PermitListComponent,

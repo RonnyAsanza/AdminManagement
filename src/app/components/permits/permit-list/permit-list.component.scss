@@ -20,6 +20,27 @@
           padding: 0;
         }
      }
+     .p-multiselect {
+        width: 50%;
+      }
+        /* Adjust the frame width at different screen widths */
+        @media (max-width: 576px) {
+          .p-multiselect {
+            width: 100%; /* Set the aspect ratio of the frame for smaller screens */
+          }
+        }
+        
+        @media (min-width: 768px) {
+          .p-multiselect {
+            width: 50%; /* Set the aspect ratio of the frame for medium screens */
+          }
+        }
+        
+        @media (min-width: 992px) {
+          .p-multiselect {
+            width: 50%; /* Set the aspect ratio of the frame for larger screens */
+          }
+        }
     }
   
   .footer-buttons {

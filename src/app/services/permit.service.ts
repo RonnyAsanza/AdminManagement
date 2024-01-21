@@ -7,6 +7,7 @@ import { Permit } from '../models/permit.model';
 import { PermitsResponse } from './permits-response.model';
 import { ApplyPermit } from '../models/apply-permit.model';
 import { LocalStorageService } from './local-storage.service';
+import { PermitStatusViewModel } from '../models/permit-status.model';
 
 @Injectable({
   providedIn: 'root'
@@ -89,4 +90,10 @@ export class PermitService {
     var urlPath = environment.apiPermitsURL + 'Permit/'+permitKey+'/license-plate/'+licensePlate;
     return this.http.put<PermitsResponse<number>>(urlPath, null);
   }
+
+  getPermitStatus(): Observable<PermitsResponse<PermitStatusViewModel[]>>{
+		var urlPath = environment.apiPermitsURL + 'PermitStatus';
+		return this.http.get<PermitsResponse<PermitStatusViewModel[]>>(urlPath);
+	}
+
 }

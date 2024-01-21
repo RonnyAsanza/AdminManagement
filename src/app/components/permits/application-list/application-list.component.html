@@ -2,7 +2,26 @@
     <div class="col-12">
         <p-toast></p-toast>
         <ng-container>
-            <div class="grid" >
+            <div class="grid">
+                <div class="col-12">
+                    <div>
+                        <p-panel header="Filters">
+                            <p-multiSelect class="multiselect-container" [options]="status" [(ngModel)]="selectedStatus" placeholder="{{ 'Applications.Status' | translate }}" optionLabel="name" (onChange)="filterApplicationStatus()">
+                                <ng-template let-value pTemplate="selectedItems">
+                                    <div class="inline-flex align-items-center gap-2 px-1" *ngFor="let item of value">
+                                        <span [ngClass]="'applications-badge ' + item.code.toLowerCase()"> {{"ApplicationStatus."+item?.code | translate}}, </span>
+                                    </div>  
+                                    <div *ngIf="!value || value.length === 0">{{ 'Applications.Status' | translate }}</div>
+                                </ng-template>
+                                <ng-template let-item pTemplate="item">
+                                    <div class="flex align-items-center gap-2">
+                                        <span [ngClass]="'applications-badge ' + item.code.toLowerCase()"> {{ "ApplicationStatus."+item?.code | translate}} </span>
+                                    </div>
+                                </ng-template>
+                            </p-multiSelect>
+                        </p-panel>
+                    </div>
+                </div>
                 <div class="col-12 sm:col-6 lg:col-6 xl:col-4"
                 *ngFor="let application of applications"
                 >

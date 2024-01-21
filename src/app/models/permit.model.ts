@@ -23,4 +23,3 @@ export class Permit {
     monerisReceipt?: ReceiptViewModel;
     requestNumber?: number;
   }
-  

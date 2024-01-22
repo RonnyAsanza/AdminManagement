@@ -4,7 +4,7 @@ import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs/internal/Observable';
 import { PermitsResponse } from '../permits-response.model';
 import { LoginRequest } from 'src/app/models/auth/login-request.model';
-import { PortalUserViewModel } from 'src/app/models/auth/portal-user.model';
+import { PortalUserViewModel, TokenViewModel } from 'src/app/models/auth/portal-user.model';
 import { PortalUser } from 'src/app/models/portal-user.model';
 import { LocalStorageService } from '../local-storage.service';
 import { CompanyService } from '../company.service';
@@ -32,9 +32,15 @@ export class AuthService {
     this.router.navigate(['/'+company.portalAlias+'/auth']);
   }
 
-  refreshToken() {
+  refreshToken(user: PortalUserViewModel): Observable<PermitsResponse<TokenViewModel>> {
+    console.log('refreshToken', user);
     var urlPath = environment.apiPermitsURL + 'Login/refresh-token';
-    return  this.http.post<any>(urlPath, null)
+    let body = {
+      accessToken: user.token,
+      refreshToken: user.refreshToken,
+    };
+    console.log("refreshToken", body);
+    return this.http.post<PermitsResponse<TokenViewModel>>(urlPath, body);
 }
 
   setLocalToken(token: string): void {
@@ -43,8 +49,6 @@ export class AuthService {
 
   setLocalUser(user: PortalUserViewModel) {
     let userJsonString = JSON.stringify(user);
-    this.setLocalToken(user.token!);
-    this.localStorageService.setItem('tokenExpiration', JSON.stringify(user.expiration));
     this.localStorageService.setItem('user',userJsonString);
   }
 

@@ -45,6 +45,11 @@ export class AppMenuComponent implements OnInit {
                             label: 'Messages',
                             icon: 'pi pi-fw pi-user',
                             routerLink: ['/'+this.company.portalAlias+'/messages']
+                        },
+                        {
+                            label: 'Apply for new Permit',
+                            icon: 'pi pi-plus-circle',
+                            routerLink: ['/'+this.company.portalAlias+'/new-permit']
                         }
                     ]
                 }

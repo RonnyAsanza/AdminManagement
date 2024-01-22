@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 
 import {  Observable, throwError } from 'rxjs';
-import { map, catchError, finalize } from 'rxjs/operators';
+import { map, catchError, finalize, switchMap, mergeMap } from 'rxjs/operators';
 import { LoaderService } from '../services/loader.service';
 import { AuthService } from '../services/auth/auth.service';
 import { LocalStorageService } from '../services/local-storage.service';
@@ -33,7 +33,7 @@ export class HttpConfigInterceptor implements HttpInterceptor {
       return from(this.handle(req, next))
     }
   
-    async handle(request: HttpRequest<any>, next: HttpHandler) {
+    async handle(request: HttpRequest<any>, next: HttpHandler): Promise<HttpEvent<any>> {
       this.totalRequests++;
       this.loaderService.show();
       request = await this.addAuthToken(request);
@@ -57,7 +57,7 @@ export class HttpConfigInterceptor implements HttpInterceptor {
               switch (error.status) {
                 case 401:
                 case 403:
-                  return throwError("Access Denied – You don’t have permission to access");
+                  return this.handleUnauthorizedError(request, next);
                 default:
                   return throwError(error.error.message);
               }
@@ -73,47 +73,51 @@ export class HttpConfigInterceptor implements HttpInterceptor {
     }
 
   async addAuthToken(request: HttpRequest<any>) {
-      var  token = await this.localStorageService.getString('token');
-      if (!token) {
+      var user = await this.authService.getLocalUser();
+      if (!user?.token) {
         return request;
       }
-
-      var tokenExpiration = await this.localStorageService.getString('tokenExpiration');
-      if (tokenExpiration) {
-        tokenExpiration = tokenExpiration.replace(/^"|"$/g, '');
-
-        const tokenExpirationDate = new Date(tokenExpiration);
-        const currentUtcTime = new Date();
-
-        if( currentUtcTime >= tokenExpirationDate) {
-          if (!this.refreshingToken) {
-            this.refreshingToken = true;
-              console.log('Token Expired... Initiating Token Refresh');           
-              // Set the flag to indicate that a token refresh is in progress
-              this.refreshingToken = true;
-              this.authService.refreshToken().subscribe({
-                next: (response) => {
-                  token = response.token!;
-                  this.localStorageService.setItem('token', token!);
-                  this.localStorageService.setItem('tokenExpiration', response.expiration);
-  
-                  this.refreshingToken = false;
-                },
-                error: (err) => {
-                  console.error(err);
-                }
-              });
-          }
-        }  
-      }
       return request.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`,
-      },
+        setHeaders: {
+          Authorization: `Bearer ${user.token}`,
+        },
       });
-
   }
 
+  private handleUnauthorizedError(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    return from(this.authService.getLocalUser()).pipe(
+      mergeMap(user => {
+        if (user !== null && user.token !== null) {
+          if (!this.refreshingToken) {
+              this.refreshingToken = true;
+              return this.authService.refreshToken(user).pipe(
+              mergeMap(async (response) => {
+                if(response.succeeded ){  
+                  user.token = response.data?.accessToken;
+                  user.refreshToken = response.data?.refreshToken;
+                  this.authService.setLocalUser(user);
+                }
+                const updatedRequest = this.addAuthToken(request);
+                this.refreshingToken = false;
+                return lastValueFrom(next.handle(await updatedRequest));
+              }),
+              catchError((err) => {
+                console.error(err);
+                return throwError('Access Denied – You don’t have permission to access');
+              })
+            );
+          }
+          else
+          {
+            return lastValueFrom(next.handle(request));
+          }
+        } else {
+          return throwError(() => new Error('Access Denied – You don’t have permission to access'));
+        }
+      })
+    );
+  }
+  
   private hasFileInRequestBody(body: any): boolean {
     return body instanceof FormData;
   }

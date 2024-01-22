@@ -118,8 +118,6 @@ export class PermitInformationComponent implements OnInit {
   }
 
   public MonerisPreloadRequest() {
-    var localUser = this.authService.getLocalUser();
-
     var companyPromise = from(this.companyService.getLocalCompany());
     companyPromise.subscribe(value => {
       this.company = value;

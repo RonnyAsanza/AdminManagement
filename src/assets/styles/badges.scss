@@ -159,15 +159,20 @@
     }
 
     /* Archived - Brown */
-    .archived {
+    &.archived {
         color: #a52a2a;
         background-color: #d2691e; /* Chocolate background color */
     }
 
     /* Payment Accepted - Dark Blue */
-    .payment-accepted {
+    &.payment-accepted {
         color: #00008b;
         background-color: #add8e6; /* Light blue background color */
+    }
+
+    &.new {
+        color: #007bff;
+        background-color: #cce5ff; /* Light blue background color */
     }
 
 }
@@ -199,8 +204,8 @@
 
     /* Incomplete - Yellow */
     &.incomplete {
-        color: #ffff00;
-        background-color: #fffae6; /* Light yellow background color */
+        color: #666; /* Darker text color for better contrast */
+        background-color: #fff7db;
     }
 
     /* Cancelled - Dark Red */

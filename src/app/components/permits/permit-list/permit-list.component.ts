@@ -5,7 +5,7 @@ import { Permit } from 'src/app/models/permit.model';
 import { CompanyService } from 'src/app/services/company.service';
 import { PermitService } from 'src/app/services/permit.service';
 import { MessageService } from 'primeng/api';
-import { from } from 'rxjs';
+import { PermitStatusEnum, PermitStatusViewModel } from '../../../models/permit-status.model';
 
 @Component({
   selector: 'app-permit-list',
@@ -16,15 +16,19 @@ import { from } from 'rxjs';
 export class PermitListComponent implements OnInit {
   company!: Company;
   permits!: Permit[];
+  allPermits!: Permit[];
   itemEditing!: string | null;
-  constructor(private companyService: CompanyService,
-              private router: Router,
-              private permitService: PermitService,
-              private messageService: MessageService,
-              private activatedRoute: ActivatedRoute) { }
+  
+  selectedStatus!: PermitStatusViewModel[];
+  status: PermitStatusViewModel[] = [];
+  constructor(
+    private companyService: CompanyService,
+    private router: Router,
+    private permitService: PermitService,
+    private activatedRoute: ActivatedRoute
+  ) { }
 
   async ngOnInit(): Promise<void> {
-    //validate company-user
     this.company = await this.companyService.getLocalCompany();
     if(this.company == null)
     {
@@ -32,18 +36,60 @@ export class PermitListComponent implements OnInit {
         let companyAlias = params['company'];
         this.router.navigate(['/'+companyAlias+'/auth']);
       });
-    }  
+    }
 
-    this.permitService.getPermitsByUser()
+    this.getPermitsStatus();
+    await this.getPermitsByUser();
+  }
+
+  async getPermitsByUser(): Promise<void> {
+    await new Promise<void>((resolve, reject) => {
+      this.permitService.getPermitsByUser()
+      .subscribe({
+        next: (response) => {
+          if(response.succeeded )
+          {
+            this.allPermits = response.data!;
+            this.filterPermitStatus();
+            resolve();
+          }
+        },
+        error: (e) => {
+          reject(e);
+        }
+      });
+    });
+  }
+
+  setDefaultFilters(): void {
+    this.selectedStatus = this.status.filter(status => status.code === PermitStatusEnum.paymentPending
+      || status.code === PermitStatusEnum.paymentAccepted
+      || status.code === PermitStatusEnum.paymentFailed
+      || status.code === PermitStatusEnum.active);
+  }
+  
+  filterPermitStatus(): void {
+    this.permits = this.selectedStatus && this.selectedStatus.length > 0 ? this.allPermits.filter(permit => 
+      this.selectedStatus.some(status => 
+        permit.permitStatusCode === status.code
+      )
+    ) : this.allPermits;
+  }
+
+  getPermitsStatus(): void {
+    this.permitService.getPermitStatus()
     .subscribe({
-			next: (response) => {
+      next: (response) => {
         if(response.succeeded )
         {
-          this.permits = response.data!;
+          this.status = response.data??[];
+          this.setDefaultFilters();
         }
-			}
+      },
+      error: (e) => {
+        console.log(e)
+      }
     });
-
   }
 
   onViewPermit(permitId: any){
@@ -53,9 +99,7 @@ export class PermitListComponent implements OnInit {
   onEditPermit(permitGuid: any) {
     if(this.itemEditing)
     {
-
       this.itemEditing = null;
-
     }
     else
       this.itemEditing = permitGuid;

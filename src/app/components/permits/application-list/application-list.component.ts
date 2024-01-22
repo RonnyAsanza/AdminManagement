@@ -5,7 +5,7 @@ import { CompanyService } from 'src/app/services/company.service';
 import { MessageService } from 'primeng/api';
 import { Application } from 'src/app/models/application.model';
 import { ApplicationService } from 'src/app/services/application.service';
-import { from } from 'rxjs';
+import { ApplicationStatusViewModel, ApplicationStatusEnum } from '../../../models/application-status.model';
 
 @Component({
   selector: 'app-application-list',
@@ -13,17 +13,23 @@ import { from } from 'rxjs';
   styleUrls: ['./application-list.component.scss'],
   providers: [MessageService]
 })
+
 export class ApplicationListComponent implements OnInit {
   company!: Company;
   applications!: Application[];
+  allApplications!: Application[];
 
   itemEditing!: string | null;
 
+  selectedStatus!: ApplicationStatusViewModel[];
+  status: ApplicationStatusViewModel[] = [];
   constructor(private companyService: CompanyService,
               private router: Router,
               private applicationService: ApplicationService,
               private messageService: MessageService,
-              private activatedRoute: ActivatedRoute) { }
+              private activatedRoute: ActivatedRoute) { 
+                
+              }
 
   async ngOnInit(): Promise<void> {
     this.company = await this.companyService.getLocalCompany();
@@ -35,23 +41,76 @@ export class ApplicationListComponent implements OnInit {
       });
     }
 
-    this.applicationService.getApplicationsByUser()
+    this.getApplicationStatus();
+    await this.getApplicationsByUser();
+  }
+
+  async getApplicationsByUser(): Promise<void> {
+    await new Promise<void>((resolve, reject) => {
+      this.applicationService.getApplicationsByUser()
+      .subscribe({
+        next: (response) => {
+          if(response.succeeded )
+          {
+            this.allApplications = response.data!;
+            this.filterApplicationStatus();
+            resolve();
+          }
+        },
+        error: (e) => {
+          this.messageService.add({
+            key: 'msg',
+            severity: 'error',
+            summary: 'Error',
+            detail: e	
+          });
+          reject(e);
+        }
+      });
+    });
+  }
+
+  setDefaultFilters(): void {
+    this.selectedStatus = this.status.filter(status => status.code === ApplicationStatusEnum.approved 
+      || status.code === ApplicationStatusEnum.requestReady
+      || status.code === ApplicationStatusEnum.incomplete
+      || status.code === ApplicationStatusEnum.resubmission);
+  }
+
+  filterApplicationStatus(): void {
+    this.applications = this.selectedStatus && this.selectedStatus.length > 0 ? this.allApplications.filter(application => 
+      this.selectedStatus.some(status => 
+        application.applicationStatusCode === status.code
+      )
+    ) : this.allApplications;
+  }
+
+  getApplicationStatus(): void {
+    this.applicationService.getApplicationStatus()
     .subscribe({
-			next: (response) => {
+      next: (response) => {
         if(response.succeeded )
         {
-          this.applications = response.data!;
+          this.status = response.data??[];
+          //this.deleteNoAllowStatus();
+          this.setDefaultFilters();
         }
-			},
-			error: (e) => {
-				this.messageService.add({
-					key: 'msg',
-					severity: 'error',
-					summary: 'Error',
-					detail: e	
-				});
-			}
+      },
+      error: (e) => {
+        console.log(e)
+      }
     });
+  }
+
+  deleteNoAllowStatus(){
+    this.status = this.status.map((item, index) => {
+      return {
+        ...item,
+        disabled: item.code == ApplicationStatusEnum.requestReady || item.code == ApplicationStatusEnum.cancelled || item.code == ApplicationStatusEnum.new || item.code == ApplicationStatusEnum.deleted || item.code == ApplicationStatusEnum.complete || item.code == ApplicationStatusEnum.resubmission ? true : false
+      }
+    }).filter(
+      item => !item.disabled
+    );
   }
 
   onViewApplication(applicationId: any){

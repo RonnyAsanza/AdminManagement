@@ -6,7 +6,7 @@
                     <h4>{{"ClientPermit.ApplicationInformation" | translate}}</h4>
                 </div>
             </div>-->
-            <div class="col-12">
+            <div class="col-12" *ngIf="application?.requestNumber">
                 <p-fieldset class="line-height-3 m-0 bg-color py-0">
                     <ng-template pTemplate="header">
                         <div [class]="'card p-0 border-round applications-badge ' + application?.applicationStatusCode?.toLowerCase()">

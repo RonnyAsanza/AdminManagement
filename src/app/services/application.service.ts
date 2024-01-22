@@ -5,12 +5,19 @@ import { HttpClient } from '@angular/common/http';
 import { PermitsResponse } from './permits-response.model';
 import { Application } from '../models/application.model';
 import { ReSubmitApplication } from '../models/resubmit-application.model';
+import { ApplicationStatusViewModel } from '../models/application-status.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApplicationService {
   constructor(private http: HttpClient) { }
+
+  getApplicationStatus(): Observable<PermitsResponse<ApplicationStatusViewModel[]>>{
+		var urlPath = environment.apiPermitsURL + 'ApplicationStatus';
+		return this.http.get<PermitsResponse<ApplicationStatusViewModel[]>>(urlPath);
+	}
+
 
   getApplicationbyId(applicationKey: string): Observable<PermitsResponse<Application>>{
     var urlPath = environment.apiPermitsURL + 'Application/'+applicationKey;

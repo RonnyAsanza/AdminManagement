@@ -2,9 +2,51 @@
     <div class="col-12">
         <p-toast></p-toast>
         <ng-container>
-            <div class="grid" >
+            <div class="grid">
+                <div class="col-12">
+                    <div>
+                        <p-panel header="Filters">
+                            <div class="grid">
+                                <div class="col-12 xl:col-6">
+                                    <p-multiSelect 
+                                        #multiSelect  
+                                        display="chip" 
+                                        class="multiselect-container" 
+                                        [options]="status" 
+                                        [(ngModel)]="selectedStatus" 
+                                        placeholder="{{ 'Applications.Status' | translate }}" 
+                                        optionLabel="name" 
+                                        (onChange)="filterApplicationStatus()"
+                                    >
+                                        <ng-template let-value pTemplate="selectedItems">
+                                            <div *ngFor="let item of value; let i = index" class="p-multiselect-token">
+                                                <span
+                                                    [ngClass]="'p-multiselect-token-label applications-badge ' + item.code.toLowerCase()"
+                                                >
+                                                    {{"ApplicationStatus."+item?.code | translate}}
+                                                </span>
+                                                <span
+                                                    *ngIf="!multiSelect.disabled"
+                                                    class="p-multiselect-token-icon pi pi-times-circle"
+                                                    (click)="multiSelect.removeChip(item, $event)"
+                                                >
+                                                </span>
+                                            </div>  
+                                            <div *ngIf="!value || value.length === 0">{{ 'Applications.Status' | translate }}</div>
+                                        </ng-template>
+                                        <ng-template let-item pTemplate="item">
+                                            <div class="flex align-items-center gap-2">
+                                                <span [ngClass]="'applications-badge ' + item.code.toLowerCase()"> {{ "ApplicationStatus."+item?.code | translate}} </span>
+                                            </div>
+                                        </ng-template>
+                                    </p-multiSelect>
+                                </div>
+                            </div>
+                        </p-panel>
+                    </div>
+                </div>
                 <div class="col-12 sm:col-6 lg:col-6 xl:col-4"
-                *ngFor="let application of applications"
+                    *ngFor="let application of applications"
                 >
                     <p-card
                     >

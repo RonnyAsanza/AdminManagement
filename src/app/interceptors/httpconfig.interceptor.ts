@@ -13,6 +13,7 @@ import { LoaderService } from '../services/loader.service';
 import { AuthService } from '../services/auth/auth.service';
 import { LocalStorageService } from '../services/local-storage.service';
 import { from, lastValueFrom } from "rxjs";
+import { CompanyService } from '../services/company.service';
 
 @Injectable(
     {
@@ -23,9 +24,11 @@ export class HttpConfigInterceptor implements HttpInterceptor {
     private totalRequests = 0;
     private refreshingToken = false;
     private authService: AuthService;
+    private companyService: CompanyService;
     private localStorageService: LocalStorageService;
     constructor(private injector: Injector, private loaderService: LoaderService) {
          this.authService = this.injector.get(AuthService);
+         this.companyService = this.injector.get(CompanyService);
          this.localStorageService = this.injector.get(LocalStorageService);
       }
 
@@ -73,13 +76,16 @@ export class HttpConfigInterceptor implements HttpInterceptor {
     }
 
   async addAuthToken(request: HttpRequest<any>) {
-      var user = await this.authService.getLocalUser();
+      const user = await this.authService.getLocalUser();
+      const userCompany = await this.companyService.getLocalCompany();
       if (!user?.token) {
         return request;
       }
+      const timeZone = userCompany?.defaultTimeZone || 'UTC';
       return request.clone({
         setHeaders: {
           Authorization: `Bearer ${user.token}`,
+          TimeZone: timeZone,
         },
       });
   }

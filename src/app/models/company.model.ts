@@ -6,4 +6,5 @@ export class Company {
     notes?: string;
     companyLogo?: string;
     companyImage?: string;
+    defaultTimeZone?: string;
 }

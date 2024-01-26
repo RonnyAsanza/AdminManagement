@@ -3,6 +3,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppLayoutModule } from './layout/app.layout.module';
+import { CompanyModule } from './components/company/company.module';
 
 @NgModule({
     declarations: [
@@ -10,7 +11,8 @@ import { AppLayoutModule } from './layout/app.layout.module';
     ],
     imports: [
         AppRoutingModule,
-        AppLayoutModule
+        AppLayoutModule,
+        CompanyModule,
     ],
     providers: [
         { provide: LocationStrategy, useClass: HashLocationStrategy }

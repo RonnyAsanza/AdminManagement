@@ -14,7 +14,7 @@ export class RequiredDocumentService {
 	constructor(private http: HttpClient) { }
 
 	getRequiredDocuments(companyKey: number, permitTypeKey: number, tariffKey: number, zoneKey: number): Observable<PermitsResponse<RequiredDocumentViewModel[]>>{
-        if ( companyKey === 0 || permitTypeKey === 0 || zoneKey === 0) {
+        if ( companyKey === 0 || permitTypeKey === 0 || zoneKey === 0 || tariffKey === 0) {
             return of({} as PermitsResponse<RequiredDocumentViewModel[]>);
         }
 

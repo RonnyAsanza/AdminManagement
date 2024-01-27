@@ -110,15 +110,18 @@ export class PermitOptionsComponent {
       this.setOptionalValidators('optional4', permit?.permitTypeModel?.requireAdditionalInput4!);
       this.setOptionalValidators('optional5', permit?.permitTypeModel?.requireAdditionalInput5!);
 
-      this.permitTypeService.getPermitsTypeByPermitCategory(permit?.permitCategory?.permitCategoryKey??0)
-      .subscribe({
-        next: (response) => {
-            if (response.succeeded) {
-              this.permitTypes = response.data!;
+      if(permit?.zoneKey)
+      {
+        this.permitTypeService.getPermitsTypeByPermitCategory(permit?.permitCategory?.permitCategoryKey??0)
+        .subscribe({
+          next: (response) => {
+              if (response.succeeded) {
+                this.permitTypes = response.data!;
+              }
             }
-          }
-        });
-
+          });
+      }
+      
       this.requiredDocumentService.getRequiredDocuments(permit?.companyKey??0, 
         permit?.permitTypeModel?.permitTypeKey??0, 
         permit?.tariffKey??0, 
@@ -138,7 +141,7 @@ export class PermitOptionsComponent {
               });
             }
           }
-        });    
+        });   
     });
     
     this.rateEngineRequest = {
@@ -347,6 +350,7 @@ export class PermitOptionsComponent {
           if (response.succeeded) {
             this.hideDialog();
             var path = (permit.permitTypeModel?.requireApproval === true) ? 'application' : 'permits';
+            this.permitService.setLocalApplyPermit({});
             this.router.navigate(['/' + this.company.portalAlias + '/' + path + '/' + response.data]);
           }
         }

@@ -8,13 +8,15 @@ import { Application, DocumentViewModel } from 'src/app/models/application.model
 import { DomSanitizer } from '@angular/platform-browser';
 import { ReSubmitApplication } from 'src/app/models/resubmit-application.model';
 import { FileService } from 'src/app/services/file.service';
-import { from } from 'rxjs';
+import { Message, MessageService } from 'primeng/api';
+import { TranslateService } from 'src/app/services/translate.service';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
 
 @Component({
   selector: 'app-application-information',
   templateUrl: './application-information.component.html',
   styleUrls: ['./application-information.component.scss'],
-  providers: [DatePipe]
+  providers: [MessageService, DatePipe],
 })
 export class ApplicationInformationComponent implements OnInit {
   applicationId: string = "";
@@ -22,8 +24,9 @@ export class ApplicationInformationComponent implements OnInit {
   application!: Application;
   startDateUtc: string = "";
   expirationDateUtc: string = "";
-
   updateFiles: boolean = true;
+  msgs: Message[] = [];
+  applicationSubmitted: boolean = false;
 
   constructor(private activatedRoute: ActivatedRoute,
     private datePipe: DatePipe,
@@ -31,11 +34,20 @@ export class ApplicationInformationComponent implements OnInit {
     private applicationService: ApplicationService,
     private companyService: CompanyService,
     private sanitizer: DomSanitizer,
-    private fileService: FileService) { }
+    private messageService: MessageService,
+    private fileService: FileService,
+    private localStorageService: LocalStorageService,
+    private translateService: TranslateService) {
+    }
 
   async ngOnInit(): Promise<void> {
-    this.company = await this.companyService.getLocalCompany();
-    
+    await this.initForm();
+  }
+
+  async initForm(){
+    await this.displaySubmitMessage();
+
+    this.company = await this.companyService.getLocalCompany();   
     this.activatedRoute.params.subscribe(params => {
       this.applicationId = params['applicationId'];
       this.applicationService.getApplicationbyId(this.applicationId)
@@ -63,6 +75,21 @@ export class ApplicationInformationComponent implements OnInit {
     });
   }
 
+  async displaySubmitMessage(){
+    var submittedFlag = await this.localStorageService.getString('applicationSubmitted');
+    if (submittedFlag) {
+      this.localStorageService.removeItem('applicationSubmitted');
+      var message = (this.translateService.data.find(translation => translation.labelCode == 'ClientPermit.RequiredAccess')?.textValue || 'ClientPermit.RequiredAccess')
+      this.messageService.add({
+        key: 'msg',
+        severity: 'success',
+        summary: (this.translateService.data.find(translation => translation.labelCode == 'ClientPermit.SuccessfullySubmitted')?.textValue || 'ClientPermit.SuccessfullySubmitted'),
+        life: 3000,
+        detail: message
+      });
+    }
+  }
+
   onClickSubmit() {
     if (this.application.applicationStatusKey === 1) {
       this.submitApplication();
@@ -74,13 +101,12 @@ export class ApplicationInformationComponent implements OnInit {
   submitApplication() {
     this.applicationService.submitApplication(this.applicationId)
       .subscribe({
-        next: (response) => {
+        next: async (response) => {
           if (response.succeeded) {
-            window.location.reload();
+            this.localStorageService.setItem('applicationSubmitted', 'true');
+            await this.initForm();
           }
         },
-        error: (e) => {
-        }
       });
   }
 

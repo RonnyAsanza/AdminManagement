@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { LanguageTransService } from './language-trans.service';
 import { PermitsResponse } from './permits-response.model';
 import { TranslationsModel } from '../models/translations-models';
+import { C } from '@fullcalendar/core/internal-common';
 
 @Injectable({
   providedIn: 'root'
@@ -26,8 +27,10 @@ export class TranslateService {
     }
 
     return new Promise<TranslationsModel[]>(resolve => {
+
       if(languageCode === null || languageCode === undefined)
         languageCode = 'EN';
+
       var urlPath = environment.apiTranslationServiceURL + 'Translation/language/'+languageCode;
       this.http.get<PermitsResponse<TranslationsModel[]>>(urlPath)
       .subscribe({
@@ -49,7 +52,9 @@ export class TranslateService {
 
  async setInitialLanguage(languageCode: string): Promise<TranslationsModel[]> {
   let localLanguage = await this.languageTransService.getLocalLanguage();
-  languageCode = (localLanguage?.languageGuid)? languageCode: localLanguage?.twoLetterCode!;
+   if (localLanguage?.twoLetterCode !== null) {
+    languageCode = localLanguage.twoLetterCode;
+  }
 
   return this.getTranslationsByLanguage(languageCode);
 }

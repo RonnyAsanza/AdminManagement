@@ -81,7 +81,7 @@
 							    <input type="text" pInputText name="licensePlate" formControlName="licensePlate" appNoSpecialCharacters maxlength="10"/>
                             </label>
                         </div>    
-                        <div class="col-12">
+                        <!-- <div class="col-12">
                             <label>{{"ClientPermit.UnitPrice" | translate}}:
                                 <div class="p-inputgroup">
                                     <span class="p-inputgroup-addon">CAD</span>
@@ -89,13 +89,13 @@
                                     <span class="p-inputgroup-addon">.00</span>
                                 </div>
                             </label>
-                        </div>
+                        </div> -->
                         <div class="col-12">
                             <label>{{"ClientPermit.Quantity" | translate}}*:
                                 <p-inputNumber 
                                     formControlName="quantity" 
                                     [min]=1 
-                                    (onInput)="onChangeQuantity()"
+                                    (onInput)="onChangeQuantity($event.value)"
                                     [showButtons]="true" 
                                     inputId="quantity"> 
                                 </p-inputNumber>

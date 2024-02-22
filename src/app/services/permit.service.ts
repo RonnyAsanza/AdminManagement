@@ -30,7 +30,7 @@ export class PermitService {
     formData.append('expirationDateUtc', applyPermit.expirationDateUtc || '');
     formData.append('licensePlate', applyPermit.licensePlate || '');
     formData.append('quantity', applyPermit.quantity?.toString() || '');
-    formData.append('price', applyPermit.price?.toString() || '');
+    formData.append('price', applyPermit.total?.toString() || '');
     formData.append('total', applyPermit.total?.toString() || '');
     formData.append('additionalInput1', applyPermit.additionalInput1 || '');
     formData.append('additionalInput2', applyPermit.additionalInput2 || '');

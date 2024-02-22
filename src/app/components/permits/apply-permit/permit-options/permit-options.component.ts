@@ -194,6 +194,7 @@ export class PermitOptionsComponent {
   async onTariffChange(tariff: any) {
     this.permit = await this.permitService.getLocalApplyPermit();
     this.permit.tariffModel = tariff.value;
+    this.permit.tariffKey = tariff.value.tariffId;
     this.permitService.setLocalApplyPermit(this.permit);
     this.rateEngineRequest.TariffID = tariff.value.externalTariffId ?? 0;
     this.getPriceRangeEngine()
@@ -256,9 +257,11 @@ export class PermitOptionsComponent {
     });
   }
 
-  onChangeQuantity() {
-    this.rateEngineRequest.Quantity = this.form?.value.quantity;
-    this.getPriceRangeEngine();
+  onChangeQuantity(val: any) {
+    if(val){
+      this.rateEngineRequest.Quantity = val;
+      this.getPriceRangeEngine();
+    } 
   }
 
   getCompanyTariffs(){

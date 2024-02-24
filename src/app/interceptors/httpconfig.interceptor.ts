@@ -89,12 +89,17 @@ export class HttpConfigInterceptor implements HttpInterceptor {
         },
       });
   }
-
+  checkIfClientIsFromMobile(): boolean {
+    const userAgent = window.navigator.userAgent;
+    const mobileDeviceKeywords = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+    return mobileDeviceKeywords.test(userAgent);
+  }
   private handleUnauthorizedError(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const isFromDeviceMobile = this.checkIfClientIsFromMobile();
     return from(this.authService.getLocalUser()).pipe(
       mergeMap(user => {
         if (user !== null && user.token !== null) {
-          if (!this.refreshingToken) {
+          if (!this.refreshingToken && isFromDeviceMobile) {
               this.refreshingToken = true;
               return this.authService.refreshToken(user).pipe(
               mergeMap(async (response) => {
@@ -120,6 +125,12 @@ export class HttpConfigInterceptor implements HttpInterceptor {
         } else {
           return throwError(() => new Error('Access Denied – You don’t have permission to access'));
         }
+      }),
+      catchError((err) => {
+        if (err instanceof HttpErrorResponse && err.status === 401 && !isFromDeviceMobile) {
+          this.authService.logout();
+        }
+        return throwError(err);
       })
     );
   }

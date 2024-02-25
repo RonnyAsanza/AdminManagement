@@ -14,6 +14,8 @@ import { AuthService } from '../services/auth/auth.service';
 import { LocalStorageService } from '../services/local-storage.service';
 import { from, lastValueFrom } from "rxjs";
 import { CompanyService } from '../services/company.service';
+import { Capacitor } from '@capacitor/core';
+
 
 @Injectable(
     {
@@ -90,9 +92,11 @@ export class HttpConfigInterceptor implements HttpInterceptor {
       });
   }
   checkIfClientIsFromMobile(): boolean {
-    const userAgent = window.navigator.userAgent;
-    const mobileDeviceKeywords = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
-    return mobileDeviceKeywords.test(userAgent);
+    if (Capacitor.getPlatform() === 'ios' || Capacitor.getPlatform() === 'android') {
+      return true;
+    } else {
+      return false;
+    }
   }
   private handleUnauthorizedError(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const isFromDeviceMobile = this.checkIfClientIsFromMobile();

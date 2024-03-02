@@ -11,11 +11,9 @@ import {  Observable, throwError } from 'rxjs';
 import { map, catchError, finalize, switchMap, mergeMap } from 'rxjs/operators';
 import { LoaderService } from '../services/loader.service';
 import { AuthService } from '../services/auth/auth.service';
-import { LocalStorageService } from '../services/local-storage.service';
 import { from, lastValueFrom } from "rxjs";
 import { CompanyService } from '../services/company.service';
 import { Capacitor } from '@capacitor/core';
-
 
 @Injectable(
     {
@@ -27,11 +25,9 @@ export class HttpConfigInterceptor implements HttpInterceptor {
     private refreshingToken = false;
     private authService: AuthService;
     private companyService: CompanyService;
-    private localStorageService: LocalStorageService;
     constructor(private injector: Injector, private loaderService: LoaderService) {
          this.authService = this.injector.get(AuthService);
          this.companyService = this.injector.get(CompanyService);
-         this.localStorageService = this.injector.get(LocalStorageService);
       }
 
     intercept(req: HttpRequest<any>, next: HttpHandler) {
@@ -91,13 +87,11 @@ export class HttpConfigInterceptor implements HttpInterceptor {
         },
       });
   }
+  
   checkIfClientIsFromMobile(): boolean {
-    if (Capacitor.getPlatform() === 'ios' || Capacitor.getPlatform() === 'android') {
-      return true;
-    } else {
-      return false;
-    }
+    return Capacitor.isNativePlatform();
   }
+
   private handleUnauthorizedError(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const isFromDeviceMobile = this.checkIfClientIsFromMobile();
     return from(this.authService.getLocalUser()).pipe(

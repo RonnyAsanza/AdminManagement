@@ -4,7 +4,6 @@ import { environment } from 'src/environments/environment';
 import { LanguageTransService } from './language-trans.service';
 import { PermitsResponse } from './permits-response.model';
 import { TranslationsModel } from '../models/translations-models';
-import { C } from '@fullcalendar/core/internal-common';
 
 @Injectable({
   providedIn: 'root'

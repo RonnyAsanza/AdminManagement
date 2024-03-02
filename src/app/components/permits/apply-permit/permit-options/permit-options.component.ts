@@ -16,6 +16,7 @@ import { RequiredDocumentViewModel } from 'src/app/models/required-document.mode
 import { PermitTypeViewModel } from 'src/app/models/permit-type.model';
 import { PermitTypeService } from 'src/app/services/permitType.service';
 import { from } from 'rxjs';
+import { TranslateService } from 'src/app/services/translate.service';
 
 @Component({
   selector: 'app-permit-options',
@@ -55,7 +56,8 @@ export class PermitOptionsComponent {
     private tariffService: TariffService,
     private rateEngineService: RateEngineService,
     private permitTypeService: PermitTypeService,
-    private requiredDocumentService: RequiredDocumentService) {
+    private requiredDocumentService: RequiredDocumentService,
+    private translate: TranslateService) {
       this.initializeForm();
     }
   
@@ -355,6 +357,16 @@ export class PermitOptionsComponent {
             var path = (permit.permitTypeModel?.requireApproval === true) ? 'application' : 'permits';
             this.permitService.setLocalApplyPermit({});
             this.router.navigate(['/' + this.company.portalAlias + '/' + path + '/' + response.data]);
+          }
+          else{
+            var message = (this.translate.data.find(translation => translation.labelCode == 'PermitRules.RuleExceeded')?.textValue || 'PermitRules.RuleExceeded');
+            this.messageService.add({
+              key: 'msg',
+              severity: 'error',
+              summary: 'Error',
+              detail: message,
+              life: 10000
+            });
           }
         }
       });

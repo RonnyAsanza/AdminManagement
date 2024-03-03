@@ -251,14 +251,34 @@
                                 <span>{{permit?.quantity}}</span>
                             </div> 
                         </div> 
-                    </div> 
+                    </div>
                     <div class="col-12 py-0">
                         <div class="grid py-0">
                             <div class="col-4">
-                                <span>{{"ClientPermit.Total" | translate}}: </span>
+                                <span>{{"ClientPermit.SubTotal" | translate}}: </span>
                             </div> 
                             <div class="col-8">
-                                <span>CAD {{permit?.total}}</span>
+                                <span>CAD {{permit?.total | number:'1.2-2'}}</span>
+                            </div> 
+                        </div> 
+                    </div> 
+                    <div class="col-12 py-0" *ngFor="let item of appliedTariffTaxAndFee let i = index">
+                        <div class="grid py-0">
+                            <div class="col-4">
+                                <span class="small-text">{{item.taxAndFee?.name}}</span>
+                            </div> 
+                            <div class="col-8">
+                                <p class="small-text">CAD {{ permitTariffTaxAndFee[i].calculatedValue | number:'1.2-2' }}</p>
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="col-12 py-0">
+                        <div class="grid py-0">
+                            <div class="col-4">
+                                <span class="bold-text">{{"ClientPermit.Total" | translate}}: </span>
+                            </div> 
+                            <div class="col-8">
+                                <span class="bold-text">CAD {{totalWithTaxAndFee | number:'1.2-2'}}</span>
                             </div> 
                         </div> 
                     </div> 

@@ -2,6 +2,7 @@ import { PermitCategoryViewModel } from "./permit-category.model";
 import { PermitTypeViewModel } from "./permit-type.model";
 import { RequiredDocumentViewModel } from "./required-document.model";
 import { TariffViewModel } from "./tariff.models";
+import { PermitTariffTaxAndFee } from './permit-tariff-tax-and-fee.model';
 
 export class ApplyPermit {
   companyKey?: number;
@@ -26,5 +27,6 @@ export class ApplyPermit {
   additionalInput3?: string;
   additionalInput4?: string;
   additionalInput5?: string;
-  requiredDocuments?: RequiredDocumentViewModel[]
+  requiredDocuments?: RequiredDocumentViewModel[];
+  taxesAndFees?: PermitTariffTaxAndFee[];
 }

@@ -68,19 +68,6 @@
                                     <span>CAD {{permit?.price | number:'1.2-2'}}</span>                                
                                 </div>
                             </div>
-                            <div class="grid card-item" *ngIf="permit?.taxesAndFees && permit?.taxesAndFees?.length ?? 0 > 0">
-                                <div class="col-12 p-0">
-                                    <span><strong>{{"ClientPermit.TaxesAndFee" | translate}}:</strong></span>
-                                </div>
-                                <div class="col-12 p-0 flex" *ngFor="let taxAndFee of permit?.taxesAndFees">
-                                    <div class="col-6 p-0">
-                                        <span class="tax-fee-detail"><strong>{{taxAndFee?.tariffTaxAndFee?.taxAndFee?.name}}:</strong></span>
-                                    </div>
-                                    <div class="col-6 p-0">
-                                        <span class="tax-fee-detail">{{taxAndFee?.calculatedValue | number:'1.2-2'}}</span>                                
-                                    </div>
-                                </div>
-                            </div>
                             <div class="grid card-item" *ngIf="permit?.total">
                                 <div class="col-6 p-0">
                                     <span><strong>{{"ClientPermit.Total" | translate}}:</strong></span>

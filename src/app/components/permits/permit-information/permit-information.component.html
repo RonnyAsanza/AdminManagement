@@ -6,150 +6,182 @@
                     <h4>{{ "ClientPermit.PermitInformation" | translate }}</h4>
                 </div>
             </div>-->
-            <div class="col-12">
-                <p-fieldset class="line-height-3 m-0 bg-color py-0">
-                    <ng-template pTemplate="header">
-                        <div class="card p-0">
-                            <div class="flex flex-row flex-wrap card-container">
-                                <div class="flex align-items-center justify-content-center font-bold border-round m-2">
-                                    <span># {{ permit?.requestNumber }}</span>  
-                                </div>
-                                <div class="flex align-items-center justify-content-center font-bold border-round m-2">
-                                    <span [class]="'permits-badge ' + permit?.permitStatusCode?.toLowerCase()">
-                                        {{ "PermitStatus."+permit?.permitStatusCode | translate }}
-                                    </span>
+            <div class="grid">
+                <div class="col-12 md:col-12 lg:col-6">
+                    <p-fieldset class="line-height-3 m-0 bg-color py-0">
+                        <ng-template pTemplate="header">
+                            <div class="card p-0">
+                                <div class="flex flex-row flex-wrap card-container">
+                                    <div class="flex align-items-center justify-content-center font-bold border-round m-2">
+                                        <span># {{ permit?.requestNumber }}</span>  
+                                    </div>
+                                    <div class="flex align-items-center justify-content-center font-bold border-round m-2">
+                                        <span [class]="'permits-badge ' + permit?.permitStatusCode?.toLowerCase()">
+                                            {{ "PermitStatus."+permit?.permitStatusCode | translate }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </ng-template>
-                    <div class="p-fluid p-formgrid grid">
-                        <div class="col-12 md:col-6">
-                            <label
-                                >{{ "ClientPermit.StartDate" | translate }}:
-                                <div class="p-inputgroup">
+                        </ng-template>
+                        <div class="p-fluid p-formgrid grid">
+                            <div class="col-12 md:col-6">
+                                <label
+                                    >{{ "ClientPermit.StartDate" | translate }}:
+                                    <div class="p-inputgroup">
+                                        <input
+                                            type="text"
+                                            pInputText
+                                            readonly
+                                            name="startDateUtc"
+                                            value="{{ startDateUtc }}"
+                                        />
+                                        <span class="p-inputgroup-addon"
+                                            ><i
+                                                class="pi pi-calendar"
+                                                style="line-height: 1.25"
+                                            ></i
+                                        ></span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-12 md:col-6">
+                                <label
+                                    >{{ "ClientPermit.EndDate" | translate }}::
+                                    <div class="p-inputgroup">
+                                        <input
+                                            type="text"
+                                            pInputText
+                                            readonly
+                                            name="expirationDateUtc"
+                                            value="{{ expirationDateUtc }}"
+                                        />
+                                        <span class="p-inputgroup-addon"
+                                            ><i
+                                                class="pi pi-calendar"
+                                                style="line-height: 1.25"
+                                            ></i
+                                        ></span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-12 md:col-6">
+                                <label
+                                    >{{ "ClientPermit.LicensePlate" | translate }}:
                                     <input
                                         type="text"
                                         pInputText
+                                        name="licensePlate"
                                         readonly
-                                        name="startDateUtc"
-                                        value="{{ startDateUtc }}"
+                                        value="{{ permit?.licensePlate }}"
+                                        readonly
                                     />
-                                    <span class="p-inputgroup-addon"
-                                        ><i
-                                            class="pi pi-calendar"
-                                            style="line-height: 1.25"
-                                        ></i
-                                    ></span>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="col-12 md:col-6">
-                            <label
-                                >{{ "ClientPermit.EndDate" | translate }}::
-                                <div class="p-inputgroup">
+                                </label>
+                            </div>
+                            <div class="col-12 md:col-6">
+                                <label
+                                    >{{ "ClientPermit.PermitType" | translate }}:
                                     <input
                                         type="text"
                                         pInputText
+                                        name="permitType"
                                         readonly
-                                        name="expirationDateUtc"
-                                        value="{{ expirationDateUtc }}"
+                                        value="{{ permit?.permitType }}"
+                                        readonly
                                     />
-                                    <span class="p-inputgroup-addon"
-                                        ><i
-                                            class="pi pi-calendar"
-                                            style="line-height: 1.25"
-                                        ></i
-                                    ></span>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="col-12 md:col-6">
-                            <label
-                                >{{ "ClientPermit.LicensePlate" | translate }}:
-                                <input
-                                    type="text"
-                                    pInputText
-                                    name="licensePlate"
-                                    readonly
-                                    value="{{ permit?.licensePlate }}"
-                                    readonly
-                                />
-                            </label>
-                        </div>
-                        <div class="col-12 md:col-6">
-                            <label
-                                >{{ "ClientPermit.PermitType" | translate }}:
-                                <input
-                                    type="text"
-                                    pInputText
-                                    name="permitType"
-                                    readonly
-                                    value="{{ permit?.permitType }}"
-                                    readonly
-                                />
-                            </label>
-                        </div>
-                        <div class="col-12 md:col-6">
-                            <label
-                                >{{ "ClientPermit.TariffPackage" | translate }}:
-                                <input
-                                    type="text"
-                                    pInputText
-                                    name="tariff"
-                                    readonly
-                                    value="{{ permit?.tariff }}"
-                                    readonly
-                                />
-                            </label>
-                        </div>
-                        <div class="col-12 md:col-6">
-                            <label
-                                >{{ "ClientPermit.Zone" | translate }}:
-                                <input
-                                    type="text"
-                                    pInputText
-                                    name="zone"
-                                    readonly
-                                    value="{{ permit?.zone }}"
-                                    readonly
-                                />
-                            </label>
-                        </div>
-                        <div class="col-12 md:col-6">
-                            <label
-                                >{{ "ClientPermit.Price" | translate }}:
-                                <p-inputNumber
-                                    name="price"
-                                    mode="currency"
-                                    [(ngModel)]="permit.price"
-                                    currency="CAD"
-                                    [readonly]="true"
-                                >
-                                </p-inputNumber>
-                            </label>
-                        </div>
-                        <div class="col-12 md:col-6">
-                            <label
-                                >{{ "ClientPermit.Total" | translate }}:
-                                <p-inputNumber
-                                    name="total"
-                                    mode="currency"
-                                    [(ngModel)]="permit.total ? permit.total : permit.price"
-                                    currency="CAD"
-                                    [readonly]="true"
-                                >
-                                </p-inputNumber>
-                            </label>
-                        </div>
-                        <div class="col-0 md:col-6">       
-                        </div>
-                        <div class="col-12 md:col-3">       
+                                </label>
+                            </div>
+                            <div class="col-12 md:col-6">
+                                <label
+                                    >{{ "ClientPermit.TariffPackage" | translate }}:
+                                    <input
+                                        type="text"
+                                        pInputText
+                                        name="tariff"
+                                        readonly
+                                        value="{{ permit?.tariff }}"
+                                        readonly
+                                    />
+                                </label>
+                            </div>
+                            <div class="col-12 md:col-6">
+                                <label
+                                    >{{ "ClientPermit.Zone" | translate }}:
+                                    <input
+                                        type="text"
+                                        pInputText
+                                        name="zone"
+                                        readonly
+                                        value="{{ permit?.zone }}"
+                                        readonly
+                                    />
+                                </label>
+                            </div>
+                            <div class="col-0 md:col-6">       
+                            </div>
+                            <div class="col-12 md:col-6">       
                                 <button pButton pRipple [label]="'ClientPermit.ViewApplication' | translate" icon="pi pi-arrow-right"  class="p-button-primary" (click)="onViewApplication(permit.applicationGuid)"></button>
+                            </div>
                         </div>
-                    </div>
-                </p-fieldset>
+                    </p-fieldset>
+                </div>
+                <div class="col-12 md:col-12 lg:col-6">
+                    <p-fieldset class="line-height-3 m-0 bg-color py-0">
+                        <ng-template pTemplate="header">
+                            <div class="card p-0">
+                                <div class="flex flex-row flex-wrap card-container">
+                                    <div class="flex align-items-center justify-content-center font-bold border-round m-2">
+                                        <span>
+                                            {{ "ClientPermit.Details" | translate }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <div class="p-fluid p-formgrid grid">
+                            <div class="col-12 py-0">
+                                <div class="grid py-0">
+                                    <div class="col-6">
+                                        <span>{{"ClientPermit.Quantity" | translate}}:</span>
+                                    </div> 
+                                    <div class="col-6">
+                                        <span>{{permit?.quantity}}</span>
+                                    </div> 
+                                </div> 
+                            </div>
+                            <div class="col-12 py-0">
+                                <div class="grid py-0">
+                                    <div class="col-6">
+                                        <span>{{"ClientPermit.SubTotal" | translate}}: </span>
+                                    </div> 
+                                    <div class="col-6">
+                                        <span>CAD {{permit?.price | number:'1.2-2'}}</span>
+                                    </div> 
+                                </div> 
+                            </div> 
+                            <div class="col-12 py-0" *ngFor="let item of permit?.taxesAndFees let i = index">
+                                <div class="grid py-0">
+                                    <div class="col-6">
+                                        <span class="small-text">{{item.tariffTaxAndFee?.taxAndFee?.name}}</span>
+                                    </div> 
+                                    <div class="col-6">
+                                        <p class="small-text">CAD {{ item.calculatedValue | number:'1.2-2' }}</p>
+                                    </div> 
+                                </div>
+                            </div>
+                            <div class="col-12 py-0">
+                                <div class="grid py-0">
+                                    <div class="col-6">
+                                        <span class="bold-text">{{"ClientPermit.Total" | translate}}: </span>
+                                    </div> 
+                                    <div class="col-6">
+                                        <span class="bold-text">CAD {{permit?.total || permit?.price | number:'1.2-2'}}</span>
+                                    </div> 
+                                </div> 
+                            </div> 
+                        </div>
+                    </p-fieldset>
+                </div>
             </div>
-
             <div
                 class="col-12"
                 *ngIf="permit?.permitStatusCode === 'payment-pending' || permit?.permitStatusCode === 'payment-failed'"

@@ -25,6 +25,7 @@ export class Application {
     requestNumber?: number;
     total?: number;
     taxesAndFees?: PermitTariffTaxAndFeeViewModel[];
+    quantity?: number;
   }
 
   export interface DocumentViewModel {

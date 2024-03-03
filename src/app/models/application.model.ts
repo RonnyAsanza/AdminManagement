@@ -1,4 +1,5 @@
 import { SafeUrl } from "@angular/platform-browser";
+import { PermitTariffTaxAndFeeViewModel } from './permit-tariff-tax-and-fee.model';
 
 export class Application {
     applicationKey?: number;
@@ -22,6 +23,8 @@ export class Application {
     sostToClient? : number;
     documents?: DocumentViewModel[];
     requestNumber?: number;
+    total?: number;
+    taxesAndFees?: PermitTariffTaxAndFeeViewModel[];
   }
 
   export interface DocumentViewModel {

@@ -52,7 +52,6 @@ export class PermitOptionsComponent {
   permitTypes: PermitTypeViewModel[] = [];
   appliedTariffTaxAndFee: TariffTaxAndFeeViewModel[] = [];
   permitTariffTaxAndFee: PermitTariffTaxAndFee[] = [];
-  totalWithTaxAndFee: number = 0;
 
   constructor(private companyService: CompanyService,
     private datePipe: DatePipe,
@@ -310,8 +309,8 @@ export class PermitOptionsComponent {
     });
   }
 
-  manageCalculateTotalWithTaxAndFee(): void {
-    const total = this.form?.value.price * this.form?.value.quantity ?? 0;
+  manageCalculateTotalWithTaxAndFee(permit: ApplyPermit): void {
+    const total = permit.subTotal ?? 0;
     this.permitTariffTaxAndFee = [];
     this.appliedTariffTaxAndFee.forEach((tariffTaxAndFee) => {
       const calculatedValue = tariffTaxAndFee?.taxAndFee?.taxAndFeeValueType === TaxAndFeeValueTypeEnum.Fixed ? tariffTaxAndFee.value : (total * tariffTaxAndFee.value) / 100;
@@ -324,7 +323,7 @@ export class PermitOptionsComponent {
         tariffTaxAndFeeKey: tariffTaxAndFee.tariffTaxAndFeeKey,
       });
     });
-    this.totalWithTaxAndFee = this.permitTariffTaxAndFee.reduce((acc, curr) => acc + (curr.calculatedValue ?? 0), total);
+    permit.total = this.permitTariffTaxAndFee.reduce((acc, curr) => acc + (curr.calculatedValue ?? 0), total);
   }
 
   onUploadFiles(requiredDocument: RequiredDocumentViewModel, event: any) {
@@ -391,7 +390,7 @@ export class PermitOptionsComponent {
               this.showTariffErrorMessage();
             }
 
-            var quantity = this.form?.value.quantity ?? 1;
+            var quantity = this.rateEngineRequest.Quantity ?? this.form?.value.quantity ?? 1;
             let total = this.totalCharge;
 
             this.form?.patchValue({
@@ -405,7 +404,7 @@ export class PermitOptionsComponent {
             this.form?.patchValue({
               price: null,
               total: "",
-              quantity: quantity,
+              quantity: this.form?.value.quantity ?? 1,
               endDate: ""
             });
           }
@@ -482,20 +481,20 @@ export class PermitOptionsComponent {
       permit.expirationDateUtc = this.form?.getRawValue().endDate;
       permit.licensePlate = this.form?.value.licensePlate;
       permit.price = this.form?.value.price;
-      permit.total = this.form?.value.price * this.form?.value.quantity;
-      console.log("permit.total", permit.total) 
+      permit.subTotal = this.form?.value.price * this.form?.value.quantity;
       permit.quantity = this.form?.value.quantity;
       permit.additionalInput1 = this.form?.value.optional1;
       permit.additionalInput2 = this.form?.value.optional2;
       permit.additionalInput3 = this.form?.value.optional3;
       permit.additionalInput4 = this.form?.value.optional4;
       permit.additionalInput5 = this.form?.value.optional5;
-      this.manageCalculateTotalWithTaxAndFee();
+      this.manageCalculateTotalWithTaxAndFee(permit);
       permit.taxesAndFees = this.permitTariffTaxAndFee;
 
       this.confirmationDialog = true;
       this.permitService.setLocalApplyPermit(permit);
       this.permit = { ...permit };
+      console.log("this/permit", this.permit)
     }
   }
 
@@ -518,7 +517,6 @@ export class PermitOptionsComponent {
     permit.expirationDateUtc = this.datePipe.transform(this.form?.getRawValue().endDate, 'yyyy-MM-dd HH:mm') ?? '';
     permit.permitTypeKey = permit.permitTypeModel?.permitTypeKey;
     this.permitService.setLocalApplyPermit(permit);
-
     this.permitService.applyPermit(permit)
       .subscribe({
         next: (response) => {

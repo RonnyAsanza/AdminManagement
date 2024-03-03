@@ -58,6 +58,11 @@
                             </label>
                         </div>
                         <div class="col-12 md:col-6">
+                            <label>{{"ClientPermit.Total" | translate}}:
+                                <input type="text" pInputText name="tariff"  readonly [value]="application?.total ? application?.total : application?.price" readonly/>
+                            </label>
+                        </div>
+                        <div class="col-12 md:col-6">
                             <label>{{"ClientPermit.Zone" | translate}}
                                 <input type="text" pInputText name="zone" readonly value={{application?.zone}} readonly/>
                             </label>

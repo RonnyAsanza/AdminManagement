@@ -30,7 +30,7 @@ export class PermitService {
     formData.append('expirationDateUtc', applyPermit.expirationDateUtc || '');
     formData.append('licensePlate', applyPermit.licensePlate || '');
     formData.append('quantity', applyPermit.quantity?.toString() || '');
-    formData.append('price', applyPermit.total?.toString() || '');
+    formData.append('price', applyPermit.subTotal?.toString() || '');
     formData.append('total', applyPermit.total?.toString() || '');
     formData.append('additionalInput1', applyPermit.additionalInput1 || '');
     formData.append('additionalInput2', applyPermit.additionalInput2 || '');
@@ -47,6 +47,9 @@ export class PermitService {
         formData.append(`RequiredDocuments[${index}].DocumentFile`, document.documentFile, document.documentFile.name);
       }
     });
+
+    const taxesAndFeesStr = JSON.stringify(applyPermit.taxesAndFees);
+    formData.append('taxesAndFees', taxesAndFeesStr);
 
     var urlPath = environment.apiPermitsURL + 'Application/apply';
     return this.http.post<PermitsResponse<number>>(urlPath, formData);

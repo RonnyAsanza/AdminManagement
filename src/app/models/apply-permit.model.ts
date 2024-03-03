@@ -22,6 +22,7 @@ export class ApplyPermit {
   quantity?: number;
   price?: number;
   total?: number;
+  subTotal?: number;
   additionalInput1?: string;
   additionalInput2?: string;
   additionalInput3?: string;

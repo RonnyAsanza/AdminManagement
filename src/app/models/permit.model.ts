@@ -1,4 +1,5 @@
 import { ReceiptViewModel } from "./receipt.model";
+import { PermitTariffTaxAndFeeViewModel } from './permit-tariff-tax-and-fee.model';
 
 export class Permit {
     permitKey?: number;
@@ -22,5 +23,8 @@ export class Permit {
     description?: string;
     monerisReceipt?: ReceiptViewModel;
     requestNumber?: number;
+    total?: number;
+    taxesAndFees?: PermitTariffTaxAndFeeViewModel[];
+    
   }
   

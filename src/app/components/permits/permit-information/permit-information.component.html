@@ -128,6 +128,19 @@
                                 </p-inputNumber>
                             </label>
                         </div>
+                        <div class="col-12 md:col-6">
+                            <label
+                                >{{ "ClientPermit.Total" | translate }}:
+                                <p-inputNumber
+                                    name="total"
+                                    mode="currency"
+                                    [(ngModel)]="permit.total ? permit.total : permit.price"
+                                    currency="CAD"
+                                    [readonly]="true"
+                                >
+                                </p-inputNumber>
+                            </label>
+                        </div>
                         <div class="col-0 md:col-6">       
                         </div>
                         <div class="col-12 md:col-3">       

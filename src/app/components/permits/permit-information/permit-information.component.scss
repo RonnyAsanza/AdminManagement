@@ -19,6 +19,11 @@
   .bold-text {
       font-weight: bold;
   }
+
+  .div-all-space {
+      display: flex !important;
+      height: 100%;
+  }
   
   /* Adjust the frame width at different screen widths */
   @media (max-width: 576px) {

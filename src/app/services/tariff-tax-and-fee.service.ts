@@ -13,7 +13,7 @@ export class TariffTaxAndFeeService {
   constructor(private http: HttpClient) { }
 
   getTaxAndFeeByTariff(tariffKey: number): Observable<PermitsResponse<TariffTaxAndFeeViewModel[]>>{
-    var urlPath = environment.apiPermitsURL + 'TariffTaxAndFee/tariff/'+tariffKey;
+    var urlPath = environment.apiPermitsURL + 'TaxAndFee/tariff/'+tariffKey;
     return this.http.get<PermitsResponse<TariffTaxAndFeeViewModel[]>>(urlPath);
   }
 }

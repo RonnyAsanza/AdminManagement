@@ -20,7 +20,7 @@ import { TranslateService } from 'src/app/services/translate.service';
 import { TariffTaxAndFeeViewModel } from '../../../../models/tariff-tax-and-fee.model';
 import { TariffTaxAndFeeService } from '../../../../services/tariff-tax-and-fee.service';
 import { PermitTariffTaxAndFee } from '../../../../models/permit-tariff-tax-and-fee.model';
-import { TaxAndFeeTypeEnum, TaxAndFeeValueTypeEnum } from '../../../../models/tax-and-fee.model';
+import {  TaxAndFeeValueTypeEnum } from '../../../../models/tax-and-fee.model';
 
 @Component({
   selector: 'app-permit-options',
@@ -171,132 +171,6 @@ export class PermitOptionsComponent {
       control.updateValueAndValidity();
     }
   }
-  
-
-  createDummyDataForTariffTaxAndFee(): void {
-    this.appliedTariffTaxAndFee = [
-      {
-        tariffTaxAndFeeKey: 1,
-        tariffTaxAndFeeGuid: 'guid',
-        startDate: new Date(),
-        endDate: new Date(),
-        value: 10,
-        enabled: true,
-        tariffKey: 1,
-        taxAndFeeKey: 1,
-        taxAndFee: {
-          taxAndFeeKey: 1,
-          TaxAndFeeGuid: 'guid',
-          name: 'Tax Fixed Test 1',
-          description: 'tax and fee description',
-          taxAndFeeType: TaxAndFeeTypeEnum.Tax,
-          taxAndFeeValueType: TaxAndFeeValueTypeEnum.Fixed,
-          enabled: true,
-          companyKey: 1
-        }
-      },
-      {
-        tariffTaxAndFeeKey: 2,
-        tariffTaxAndFeeGuid: 'guid',
-        startDate: new Date(),
-        endDate: new Date(),
-        value: 5,
-        enabled: true,
-        tariffKey: 1,
-        taxAndFeeKey: 2,
-        taxAndFee: {
-          taxAndFeeKey: 2,
-          TaxAndFeeGuid: 'guid',
-          name: 'Fee Percentage Test 1',
-          description: 'tax and fee description',
-          taxAndFeeType: TaxAndFeeTypeEnum.Fee,
-          taxAndFeeValueType: TaxAndFeeValueTypeEnum.Percentage,
-          enabled: true,
-          companyKey: 1
-        }
-      },
-      {
-        tariffTaxAndFeeKey: 3,
-        tariffTaxAndFeeGuid: 'guid',
-        startDate: new Date(),
-        endDate: new Date(),
-        value: 5,
-        enabled: true,
-        tariffKey: 1,
-        taxAndFeeKey: 3,
-        taxAndFee: {
-          taxAndFeeKey: 3,
-          TaxAndFeeGuid: 'guid',
-          name: 'Fee Percentage Test 2',
-          description: 'tax and fee description',
-          taxAndFeeType: TaxAndFeeTypeEnum.Fee,
-          taxAndFeeValueType: TaxAndFeeValueTypeEnum.Percentage,
-          enabled: true,
-          companyKey: 1
-        }
-      },
-      {
-        tariffTaxAndFeeKey: 4,
-        tariffTaxAndFeeGuid: 'guid',
-        startDate: new Date(),
-        endDate: new Date(),
-        value: 5,
-        enabled: true,
-        tariffKey: 1,
-        taxAndFeeKey: 4,
-        taxAndFee: {
-          taxAndFeeKey: 4,
-          TaxAndFeeGuid: 'guid',
-          name: 'Fee Percentage Test 3',
-          description: 'tax and fee description',
-          taxAndFeeType: TaxAndFeeTypeEnum.Fee,
-          taxAndFeeValueType: TaxAndFeeValueTypeEnum.Percentage,
-          enabled: true,
-          companyKey: 1
-        }
-      },
-      {
-        tariffTaxAndFeeKey: 5,
-        tariffTaxAndFeeGuid: 'guid',
-        startDate: new Date(),
-        endDate: new Date(),
-        value: 5,
-        enabled: true,
-        tariffKey: 1,
-        taxAndFeeKey: 5,
-        taxAndFee: {
-          taxAndFeeKey: 5,
-          TaxAndFeeGuid: 'guid',
-          name: 'Fee Percentage Test 4',
-          description: 'tax and fee description',
-          taxAndFeeType: TaxAndFeeTypeEnum.Fee,
-          taxAndFeeValueType: TaxAndFeeValueTypeEnum.Percentage,
-          enabled: true,
-          companyKey: 1
-        }
-      },
-      {
-        tariffTaxAndFeeKey: 6,
-        tariffTaxAndFeeGuid: 'guid',
-        startDate: new Date(),
-        endDate: new Date(),
-        value: 5,
-        enabled: true,
-        tariffKey: 1,
-        taxAndFeeKey: 6,
-        taxAndFee: {
-          taxAndFeeKey: 6,
-          TaxAndFeeGuid: 'guid',
-          name: 'Fee Percentage Test 5',
-          description: 'tax and fee description',
-          taxAndFeeType: TaxAndFeeTypeEnum.Fee,
-          taxAndFeeValueType: TaxAndFeeValueTypeEnum.Percentage,
-          enabled: true,
-          companyKey: 1
-        }
-      }
-    ];
-  }
 
   getTaxAndFeeByTariff(tariffKey: number): void {
     this.tariffTaxAndFeeService.getTaxAndFeeByTariff(tariffKey)
@@ -313,13 +187,13 @@ export class PermitOptionsComponent {
     const total = permit.subTotal ?? 0;
     this.permitTariffTaxAndFee = [];
     this.appliedTariffTaxAndFee.forEach((tariffTaxAndFee) => {
-      const calculatedValue = tariffTaxAndFee?.taxAndFee?.taxAndFeeValueType === TaxAndFeeValueTypeEnum.Fixed ? tariffTaxAndFee.value : (total * tariffTaxAndFee.value) / 100;
+      const calculatedValue = tariffTaxAndFee?.taxAndFeeValueType === TaxAndFeeValueTypeEnum.Fixed ? tariffTaxAndFee.value : (total * tariffTaxAndFee.value) / 100;
       this.permitTariffTaxAndFee.push({
         baseValue: total,
         appliedValue: tariffTaxAndFee.value,
         calculatedValue: calculatedValue ?? 0,
         permitTariffTaxAndFeeKey: tariffTaxAndFee.taxAndFeeKey,
-        taxAndFeeValueType: tariffTaxAndFee?.taxAndFee?.taxAndFeeValueType,
+        taxAndFeeValueType: tariffTaxAndFee?.taxAndFeeValueType,
         tariffTaxAndFeeKey: tariffTaxAndFee.tariffTaxAndFeeKey,
       });
     });
@@ -365,7 +239,6 @@ export class PermitOptionsComponent {
     if(this.permit.tariffKey){
       this.getTaxAndFeeByTariff(this.permit.tariffKey);
     }
-    this.createDummyDataForTariffTaxAndFee();
   }
 
   async onPermitTypeChange(value: any){

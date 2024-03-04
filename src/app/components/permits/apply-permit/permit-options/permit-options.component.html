@@ -265,7 +265,7 @@
                     <div class="col-12 py-0" *ngFor="let item of appliedTariffTaxAndFee let i = index">
                         <div class="grid py-0">
                             <div class="col-4">
-                                <span class="small-text">{{item.taxAndFee?.name}}</span>
+                                <span class="small-text">{{item.taxAndFeeName}}</span>
                             </div> 
                             <div class="col-8">
                                 <p class="small-text">CAD {{ permitTariffTaxAndFee[i].calculatedValue | number:'1.2-2' }}</p>

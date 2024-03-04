@@ -20,5 +20,5 @@ export interface PermitTariffTaxAndFeeViewModel {
     calculatedValue: number;
     taxAndFeeValueType: TaxAndFeeValueTypeEnum;
     permitKey: number;
-    tariffTaxAndFee?: TariffTaxAndFeeViewModel;
+    taxAndFeeName: string;
 }

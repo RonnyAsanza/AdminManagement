@@ -17,7 +17,6 @@ import { PdfService } from 'src/app/services/pdf.service';
 import { MenuItem } from 'primeng/api';
 import { from } from 'rxjs';
 import { PortalUserViewModel } from 'src/app/models/auth/portal-user.model';
-import { TaxAndFeeValueTypeEnum, TaxAndFeeTypeEnum } from '../../../models/tax-and-fee.model';
 
 declare var monerisCheckout: any;
 
@@ -86,71 +85,6 @@ export class PermitInformationComponent implements OnInit {
         this.permit = response.data!;
         this.startDateUtc = this.datePipe.transform(this.permit.startDateUtc, 'yyyy-MM-dd HH:mm')!;
         this.expirationDateUtc = this.datePipe.transform(this.permit.expirationDateUtc, 'yyyy-MM-dd HH:mm')!;
-        this.permit.total = 1930;
-          this.permit.taxesAndFees = [
-            {
-              permitTariffTaxAndFeeKey: 1,
-              permitTariffTaxAndFeeGuid: 'guid-1',
-              tariffTaxAndFeeKey: 101,
-              baseValue: 100.00,
-              appliedValue: 10.00,
-              calculatedValue: 110.00,
-              taxAndFeeValueType: TaxAndFeeValueTypeEnum.Fixed,
-              permitKey: 1001,
-              tariffTaxAndFee: {
-                tariffTaxAndFeeKey: 101,
-                tariffTaxAndFeeGuid: 'guid-101',
-                tariffKey: 1,
-                value: 10.00,
-                startDate: new Date(),
-                endDate: new Date(),
-                enabled: true,
-                taxAndFeeKey: 1,
-                taxAndFee: {
-                  name: 'Impuesto 1',
-                  description: 'Impuesto 1',
-                  taxAndFeeValueType: TaxAndFeeValueTypeEnum.Fixed,
-                  companyKey: 1,
-                  taxAndFeeKey: 1,
-                  enabled: true,
-                  TaxAndFeeGuid:'',
-                  taxAndFeeType: TaxAndFeeTypeEnum.Tax
-                  
-                }
-              }
-            },
-            {
-              permitTariffTaxAndFeeKey: 2,
-              permitTariffTaxAndFeeGuid: 'guid-2',
-              tariffTaxAndFeeKey: 102,
-              baseValue: 200.00,
-              appliedValue: 20.00,
-              calculatedValue: 220.00,
-              taxAndFeeValueType: TaxAndFeeValueTypeEnum.Percentage,
-              permitKey: 1002,
-              tariffTaxAndFee: {
-                tariffTaxAndFeeKey: 101,
-                tariffTaxAndFeeGuid: 'guid-101',
-                tariffKey: 1,
-                value: 10.00,
-                startDate: new Date(),
-                endDate: new Date(),
-                enabled: true,
-                taxAndFeeKey: 1,
-                taxAndFee: {
-                  name: 'Impuesto 2',
-                  description: 'Impuesto 2',
-                  taxAndFeeValueType: TaxAndFeeValueTypeEnum.Fixed,
-                  companyKey: 1,
-                  taxAndFeeKey: 1,
-                  enabled: true,
-                  TaxAndFeeGuid:'',
-                  taxAndFeeType: TaxAndFeeTypeEnum.Tax
-                  
-                }
-              }
-            }
-          ];
       }
       else {
         this.router.navigate(['/' + this.company.portalAlias + '/']);
@@ -209,7 +143,7 @@ export class PermitInformationComponent implements OnInit {
       } as ContactDetails;
 
       var monerisRequest = {
-        txn_total: (Math.round(this.permit.price! * 100) / 100).toFixed(2),
+        txn_total: (Math.round(this.permit.total! * 100) / 100).toFixed(2),
         permitKey: this.permit.permitKey,
         contact_details: contactDetails
       } as MonerisPreloadRequest;

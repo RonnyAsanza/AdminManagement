@@ -48,8 +48,13 @@ export class PermitService {
       }
     });
 
-    const taxesAndFeesStr = JSON.stringify(applyPermit.taxesAndFees);
-    formData.append('taxesAndFees', taxesAndFeesStr);
+    applyPermit?.taxesAndFees?.forEach((taxAndFee, index) => {
+      formData.append(`TaxesAndFees[${index}].tariffTaxAndFeeKey`, taxAndFee.tariffTaxAndFeeKey?.toString()??"");
+      formData.append(`TaxesAndFees[${index}].baseValue`, taxAndFee.baseValue?.toString()??"");
+      formData.append(`TaxesAndFees[${index}].appliedValue`, taxAndFee.appliedValue?.toString()??"");
+      formData.append(`TaxesAndFees[${index}].calculatedValue`, taxAndFee.calculatedValue?.toString()??"");
+      formData.append(`TaxesAndFees[${index}].taxAndFeeValueType`, taxAndFee.taxAndFeeValueType?.toString() ??"");
+    });
 
     var urlPath = environment.apiPermitsURL + 'Application/apply';
     return this.http.post<PermitsResponse<number>>(urlPath, formData);

@@ -1,0 +1,14 @@
+:host-context {
+    .small-text {
+        font-size: 0.75rem;
+    }
+  
+    .bold-text {
+        font-weight: bold;
+    }
+
+    .div-all-space {
+        display: flex !important;
+        height: 100%;
+    }
+}

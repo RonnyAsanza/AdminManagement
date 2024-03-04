@@ -1,5 +1,4 @@
-import { TariffViewModel } from './tariff.models';
-import { TaxAndFee } from './tax-and-fee.model';
+import { TaxAndFeeValueTypeEnum, TaxAndFeeTypeEnum } from './tax-and-fee.model';
 
 export interface TariffTaxAndFee {
     tariffTaxAndFeeKey: number;
@@ -20,7 +19,9 @@ export interface TariffTaxAndFeeViewModel {
     value: number;
     enabled: boolean;
     tariffKey: number;
-    tariff?: TariffViewModel;
+    tariffName?: string;
+    taxAndFeeName?: string;
     taxAndFeeKey: number;
-    taxAndFee?: TaxAndFee;
+    taxAndFeeValueType: TaxAndFeeValueTypeEnum;
+    taxAndFeeType: TaxAndFeeTypeEnum;
 }

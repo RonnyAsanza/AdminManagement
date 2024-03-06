@@ -255,20 +255,29 @@
                     <div class="col-12 py-0">
                         <div class="grid py-0">
                             <div class="col-4">
-                                <span>{{"ClientPermit.SubTotal" | translate}}: </span>
+                                <span>{{"SubTotal" | translate}}: </span>
                             </div> 
                             <div class="col-8">
                                 <span>CAD {{permit?.subTotal | number:'1.2-2'}}</span>
+                            </div> 
+                        </div> 
+                    </div>
+                    <div class="col-12 py-0">
+                        <div class="grid py-0">
+                            <div class="col-4">
+                                <span>{{"Summary" | translate}}: </span>
+                            </div> 
+                            <div class="col-8">
                             </div> 
                         </div> 
                     </div> 
                     <div class="col-12 py-0" *ngFor="let item of appliedTariffTaxAndFee let i = index">
                         <div class="grid py-0">
                             <div class="col-4">
-                                <span class="small-text">{{item.taxAndFeeName}}</span>
+                                <span class="ml-3">{{item.taxAndFeeName}}</span>
                             </div> 
                             <div class="col-8">
-                                <p class="small-text">CAD {{ permitTariffTaxAndFee[i].calculatedValue | number:'1.2-2' }}</p>
+                                <p>CAD {{ permitTariffTaxAndFee[i].calculatedValue | number:'1.2-2' }}</p>
                             </div> 
                         </div>
                     </div>

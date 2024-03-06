@@ -47,7 +47,7 @@ export class PermitService {
         formData.append(`RequiredDocuments[${index}].DocumentFile`, document.documentFile, document.documentFile.name);
       }
     });
-
+/*
     applyPermit?.taxesAndFees?.forEach((taxAndFee, index) => {
       formData.append(`TaxesAndFees[${index}].tariffTaxAndFeeKey`, taxAndFee.tariffTaxAndFeeKey?.toString()??"");
       formData.append(`TaxesAndFees[${index}].baseValue`, taxAndFee.baseValue?.toString()??"");
@@ -55,7 +55,7 @@ export class PermitService {
       formData.append(`TaxesAndFees[${index}].calculatedValue`, taxAndFee.calculatedValue?.toString()??"");
       formData.append(`TaxesAndFees[${index}].taxAndFeeValueType`, taxAndFee.taxAndFeeValueType?.toString() ??"");
     });
-
+*/
     var urlPath = environment.apiPermitsURL + 'Application/apply';
     return this.http.post<PermitsResponse<number>>(urlPath, formData);
   }

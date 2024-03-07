@@ -7,188 +7,81 @@
                 </div>
             </div>-->
             <div class="grid">
-                <div class="col-12 md:col-12 lg:col-6" *ngIf="application?.requestNumber">
+                <div class="col-12">
                     <p-fieldset class="line-height-3 m-0 bg-color py-0">
-                        <ng-template pTemplate="header">
-                            <div [class]="'card p-0 border-round applications-badge ' + application?.applicationStatusCode?.toLowerCase()">
-                                <div class="flex flex-row flex-wrap card-container">
-                                    <div class="flex align-items-center justify-content-center m-2">
-                                        <span># {{ application?.requestNumber }}</span>  
-                                    </div>
-                                    <div class="flex align-items-center justify-content-center m-2">
-                                        <span>{{ "ApplicationStatus."+application?.applicationStatusCode | translate }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </ng-template>
-                        <div class="p-fluid p-formgrid grid" >
-                            <div class="col-12 md:col-6">
-                                <label>{{"ClientPermit.StartDate" | translate}}:
-                                    <div class="p-inputgroup">
-                                        <input type="text" pInputText readonly name="startDateUtc" value={{startDateUtc}}>
-                                        <span class="p-inputgroup-addon"><i class="pi pi-calendar" style="line-height: 1.25;"></i></span>
-                                    </div>
-                                </label>
-                            </div>    
-                            <div class="col-12 md:col-6">
-                                <label>{{"ClientPermit.EndDate" | translate}}::
-                                    <div class="p-inputgroup">
-                                        <input type="text" pInputText readonly name="expirationDateUtc" value={{expirationDateUtc}}>
-                                        <span class="p-inputgroup-addon"><i class="pi pi-calendar" style="line-height: 1.25;"></i></span>
-                                    </div>
-                                </label>
-                            </div> 
-                            <div class="col-12 md:col-6">
-                                <label>{{"ClientPermit.LicensePlate" | translate}}:
-                                    <input type="text" pInputText name="licensePlate" readonly value={{application?.licensePlate}} readonly/>
-                                </label>
-                            </div>
-                            <div class="col-12 md:col-6">
-                                <label>{{"ClientPermit.PermitType" | translate}}:
-                                    <input type="text" pInputText name="permitType" readonly value={{application?.permitType}} readonly/>
-                                </label>
-                            </div>
-                            <div class="col-12 md:col-6">
-                                <label>{{"ClientPermit.TariffPackage" | translate}}:
-                                    <input type="text" pInputText name="tariff" readonly value={{application?.tariff}} readonly/>
-                                </label>
-                            </div>
-                            <div class="col-12 md:col-6">
-                                <label>{{"ClientPermit.Zone" | translate}}
-                                    <input type="text" pInputText name="zone" readonly value={{application?.zone}} readonly/>
-                                </label>
-                            </div>
-                            <div class="col-12 md:col-6">
-                                <label>{{"ClientPermit.Status" | translate}}: 
-                                    <input type="text" pInputText name="zone" readonly value={{application?.applicationStatus}} readonly/>
-                                </label>
-                            </div>
-                            
-                            <ng-container *ngIf="hasRequiredDocuments()">
-                                <p-panel header="Uploaded documentation" class="line-height-3 w-full m-3">
-                                    <div class="p-fluid p-formgrid grid">
-                                        <div class="col-12"
-                                            *ngFor="let requiredDocument of application?.documents"
-                                        >
-                                        <p-card
-                                            [header]="requiredDocument.documentType"
-                                            [subheader]="requiredDocument.description"> 
-                                                <div class="grid">
-                                                    <div class="col-12 md:col-6">
-                                                        <p *ngIf="!requiredDocument.imageUrl || requiredDocument.imageUrl === ''">{{"ClientPermit.NotUploadedFiles" | translate}}</p>
-                                                        <ng-container *ngIf="requiredDocument.imageUrl && requiredDocument.imageUrl !== ''">
-                                                            <embed *ngIf="isPdf(requiredDocument.documentFile!)" [src]="requiredDocument.imageUrl" type="application/pdf" width="250" height="200"/>
-                                                            <p-image *ngIf="!isPdf(requiredDocument.documentFile!)" name="document" [src]="requiredDocument.imageUrl" [alt]="requiredDocument.documentType" width="250" [preview]="true"></p-image>
-                                                        </ng-container>
-                                                    </div>
-                                                    <div class="col-12 md:col-6" *ngIf="(application?.applicationStatusKey === 3 || application?.applicationStatusKey === 6)">
-                                                        <p-fileUpload 
-                                                            #fileUpload 
-                                                            [name]="requiredDocument.documentType"
-                                                            skinSimple="true"
-                                                            [multiple]="false"
-                                                            [customUpload]="true"
-                                                            (uploadHandler)="onUploadFiles(requiredDocument, $event)"
-                                                            (onRemove)="onRemoveFiles(requiredDocument)"
-                                                            [auto]="true"
-                                                            accept="image/*,.pdf"
-                                                            invalidFileTypeMessageSummary="Invalid file type: "
-                                                            invalidFileTypeMessageDetail="Only image and PDF document files are allowed."
-                                                        >
-                                                        </p-fileUpload>        
-                                                    </div>
-                                                </div>
-                                            </p-card>
-                                        </div>
-                                    </div>
-                                </p-panel>    
-                            </ng-container>
-                                                  
-                            <div class="col-12">
-                                <div class="grid">
-                                    <div class="col-12 md:col-6" *ngIf="application?.applicationStatusKey == 1 || 
-                                                                        application?.applicationStatusKey == 6  ||
-                                                                        application?.applicationStatusKey == 3 ">
-                                        <button pButton pRipple icon="pi pi-times-circle" [label]="'ClientPermit.Cancel' | translate" class="p-button-danger w-full" (click)="onClickCancelApplication()">
-                                        </button>
-                                    </div>
-                                    <div class="col-12 md:col-6" *ngIf="application?.applicationStatusKey === 1">
-                                        <button pButton pRipple icon="pi pi-save" class="p-button-primary w-full" 
-                                            [label]="'ClientPermit.Submit' | translate" 
-                                            (click)="onClickSubmit()">
-                                        </button>
-                                    </div>
-                                    <div class="col-12 md:col-6" *ngIf="application?.applicationStatusKey === 3 || application?.applicationStatusKey === 6">
-                                        <button pButton pRipple icon="pi pi-save" class="p-button-primary w-full" 
-                                            [label]="'ClientPermit.Resubmit' | translate" 
-                                            (click)="onClickSubmit()">
-                                        </button>
-                                    </div>                                                              
-                                </div>  
-                            </div> 
-                        </div>
-                    </p-fieldset>
-                </div>
-                <div class="col-12 md:col-12 lg:col-6">
-                    <p-fieldset class="line-height-3 m-0 bg-color py-0 div-all-space">
                         <ng-template pTemplate="header">
                             <div class="card p-0">
                                 <div class="flex flex-row flex-wrap card-container">
                                     <div class="flex align-items-center justify-content-center font-bold border-round m-2">
-                                        <span>
-                                            {{ "ClientPermit.Details" | translate }}
+                                        <span># {{ application?.requestNumber }}</span>  
+                                    </div>
+                                    <div class="flex align-items-center justify-content-center font-bold border-round m-2">
+                                        <span [class]="'applications-badge ' + application?.applicationStatusCode?.toLowerCase()">
+                                            {{ "ApplicationStatus."+application?.applicationStatusCode | translate }}
                                         </span>
                                     </div>
                                 </div>
                             </div>
                         </ng-template>
                         <div class="p-fluid p-formgrid grid">
-                            <div class="col-12 py-0">
-                                <div class="grid py-0">
-                                    <div class="col-6">
-                                        <span>{{"ClientPermit.Quantity" | translate}}:</span>
-                                    </div> 
-                                    <div class="col-6">
-                                        <span>{{application?.quantity}}</span>
-                                    </div> 
-                                </div> 
+                            <div class="col-12 md:col-6 flex align-items-end mt-5">
+                                <ul class="list-none p-0 m-0 w-full">
+                                    <li class="mb-3"><span class="font-medium text-900">Information</span></li>
+                                    <div style="height:5px;background:linear-gradient(90deg, var(--primary-color) 0%, rgba(33, 150, 243, 0) 50%);"></div>
+                                    <li class="flex justify-content-between mb-3 mt-2">
+                                        <span class="text-900">{{"ClientPermit.StartDate" | translate }}:</span>
+                                        <span class="text-900">{{ startDateUtc }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between mb-3">
+                                        <span class="text-900">{{"ClientPermit.EndDate" | translate }}:</span>
+                                        <span class="text-900">{{ expirationDateUtc }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between mb-3">
+                                        <span class="text-900">{{"ClientPermit.LicensePlate" | translate }}:</span>
+                                        <span class="text-900">{{ application?.licensePlate }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between mb-3">
+                                        <span class="text-900">{{"ClientPermit.PermitType" | translate }}:</span>
+                                        <span class="text-900">{{ application?.permitType }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between mb-3">
+                                        <span class="text-900">{{"ClientPermit.TariffPackage" | translate }}:</span>
+                                        <span class="text-900">{{ application?.tariff }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between mb-3">
+                                        <span class="text-900">{{"ClientPermit.Zone" | translate }}:</span>
+                                        <span class="text-900">{{ application?.zone }}</span>
+                                    </li>
+                                </ul>
                             </div>
-                            <div class="col-12 py-0">
-                                <div class="grid py-0">
-                                    <div class="col-6">
-                                        <span>{{"ClientPermit.SubTotal" | translate}}: </span>
-                                    </div> 
-                                    <div class="col-6">
-                                        <span>CAD {{application?.price | number:'1.2-2'}}</span>
-                                    </div> 
-                                </div> 
-                            </div> 
-                            <div class="col-12 py-0" *ngFor="let item of application?.taxesAndFees let i = index">
-                                <div class="grid py-0">
-                                    <div class="col-6">
-                                        <span class="small-text">{{item.taxAndFeeName}}</span>
-                                    </div> 
-                                    <div class="col-6">
-                                        <p class="small-text">CAD {{ item.calculatedValue | number:'1.2-2' }}</p>
-                                    </div> 
-                                </div>
+
+                            <div class="col-12 md:col-6 flex align-items-end mt-5">
+                                <ul class="list-none p-0 m-0 w-full">
+                                    <li class="mb-3"><span class="font-medium text-900">Summary</span></li>
+                                    <div style="height:5px;background:linear-gradient(90deg, var(--primary-color) 0%, rgba(33, 150, 243, 0) 50%);"></div>
+
+                                    <li class="flex justify-content-between mb-3 mt-2">
+                                        <span class="text-900">{{"ClientPermit.Quantity" | translate }}:</span>
+                                        <span class="text-900">{{ application?.quantity }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between mb-3">
+                                        <span class="text-900">{{"ClientPermit.Price" | translate }}:</span>
+                                        <span class="text-900">{{ application?.price }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between mb-3" *ngFor="let item of application?.taxesAndFees let i = index">
+                                        <span class="text-900">{{item.taxAndFeeName}}</span>
+                                        <span class="text-900">CAD {{ item.calculatedValue | number:'1.2-2' }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between border-top-1 surface-border py-3">
+                                        <span class="text-900 font-medium">Total</span>
+                                        <span class="text-900 font-bold text-lg">CAD {{application?.total || application?.price | number:'1.2-2'}}</span>
+                                    </li>
+                                </ul>
                             </div>
-                            <div class="col-12 py-0">
-                                <div class="grid py-0">
-                                    <div class="col-6">
-                                        <span class="bold-text">{{"ClientPermit.Total" | translate}}: </span>
-                                    </div> 
-                                    <div class="col-6">
-                                        <span class="bold-text">CAD {{application?.total || application?.price | number:'1.2-2'}}</span>
-                                    </div> 
-                                </div> 
-                            </div> 
                         </div>
                     </p-fieldset>
-                </div>
-
+                </div> 
             </div>
-            
         </ng-container>
     </div>
 </div>

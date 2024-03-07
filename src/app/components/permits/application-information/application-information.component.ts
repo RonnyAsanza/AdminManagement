@@ -61,8 +61,8 @@ export class ApplicationInformationComponent implements OnInit {
             this.router.navigate(['/' + this.company.portalAlias + '/']);
           }
 
-          if (this.application.documents && this.application.documents.length > 0) {
-            this.application.documents.forEach(document =>{
+          if (this.application?.documents && this.application?.documents?.length > 0) {
+            this.application?.documents.forEach(document =>{
               if(document.fileData)
               {
                 let imageUrlString = `data:${document.contentType};base64,${document.fileData}`;

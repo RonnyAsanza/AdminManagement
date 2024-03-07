@@ -66,7 +66,7 @@
                                     </li>
                                     <li class="flex justify-content-between mb-3">
                                         <span class="text-900">{{"ClientPermit.Price" | translate }}:</span>
-                                        <span class="text-900">{{ permit?.price }}</span>
+                                        <span class="text-900">CAD {{ permit?.price }}</span>
                                     </li>
                                     <li class="flex justify-content-between mb-3" *ngFor="let item of permit?.taxesAndFees let i = index">
                                         <span class="text-900">{{item.taxAndFeeName}}</span>

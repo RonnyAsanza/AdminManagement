@@ -20,7 +20,7 @@ import { TranslateService } from 'src/app/services/translate.service';
 import { TariffTaxAndFeeViewModel } from '../../../../models/tariff-tax-and-fee.model';
 import { TariffTaxAndFeeService } from '../../../../services/tariff-tax-and-fee.service';
 import { PermitTariffTaxAndFee } from '../../../../models/permit-tariff-tax-and-fee.model';
-import {  TaxAndFeeValueTypeEnum } from '../../../../models/tax-and-fee.model';
+import {  TaxAndFeeTypeEnum, TaxAndFeeValueTypeEnum } from '../../../../models/tax-and-fee.model';
 
 @Component({
   selector: 'app-permit-options',
@@ -178,6 +178,10 @@ export class PermitOptionsComponent {
       next: (response) => {
         if (response.succeeded) {
           this.appliedTariffTaxAndFee = response.data!;
+          this.appliedTariffTaxAndFee.forEach((fee) => {
+            fee.taxAndFeeType = TaxAndFeeTypeEnum[fee.taxAndFeeType! as unknown as keyof typeof TaxAndFeeTypeEnum];
+            fee.taxAndFeeValueType = TaxAndFeeValueTypeEnum[fee.taxAndFeeValueType! as unknown as keyof typeof TaxAndFeeValueTypeEnum];
+        });
         }
       }
     });
@@ -187,7 +191,20 @@ export class PermitOptionsComponent {
     const total = permit.subTotal ?? 0;
     this.permitTariffTaxAndFee = [];
     this.appliedTariffTaxAndFee.forEach((tariffTaxAndFee) => {
-      const calculatedValue = tariffTaxAndFee?.taxAndFeeValueType === TaxAndFeeValueTypeEnum.Fixed ? tariffTaxAndFee.value : (total * tariffTaxAndFee.value) / 100;
+      let calculatedValue: number;
+      console.log(tariffTaxAndFee?.taxAndFeeValueType);
+      switch (tariffTaxAndFee?.taxAndFeeValueType) {
+          case TaxAndFeeValueTypeEnum.Fixed:
+              calculatedValue = tariffTaxAndFee.value;
+              break;
+          case TaxAndFeeValueTypeEnum.Percentage:
+              calculatedValue = (total * (tariffTaxAndFee.value / 100));
+              break;
+          default:
+              calculatedValue = 0;
+              break;
+      }
+      
       this.permitTariffTaxAndFee.push({
         baseValue: total,
         appliedValue: tariffTaxAndFee.value,
@@ -367,7 +384,6 @@ export class PermitOptionsComponent {
       this.confirmationDialog = true;
       this.permitService.setLocalApplyPermit(permit);
       this.permit = { ...permit };
-      console.log("this/permit", this.permit)
     }
   }
 

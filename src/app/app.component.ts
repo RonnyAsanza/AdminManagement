@@ -5,6 +5,7 @@ import { CompanyService } from './services/company.service';
 import { NavigationStart, Router } from '@angular/router';
 import { filter } from 'rxjs';
 
+
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html'
@@ -25,8 +26,9 @@ export class AppComponent implements OnInit {
             this.themeService.changeTheme(storedTheme);
         }
         this.subscribeToRouterStartNavigationEvent();
-        
     }
+
+
     subscribeToRouterStartNavigationEvent(): void {
         this.router.events.pipe(
             filter(event => event instanceof NavigationStart)

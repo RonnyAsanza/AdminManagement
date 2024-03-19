@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, Input, ViewChild, ElementRef, NgZone, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Company } from 'src/app/models/company.model';
@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
 import { TranslateService } from 'src/app/services/translate.service';
 import { ApiErrorViewModel } from 'src/app/models/api-error.model';
 import { from } from 'rxjs';
+declare var google: any;
+
 
 @Component({
   selector: 'app-select-zone',
@@ -17,7 +19,9 @@ import { from } from 'rxjs';
   styleUrls: ['./select-zone.component.scss'],
   providers: [MessageService]
 })
-export class SelectZoneComponent implements OnInit{
+export class SelectZoneComponent implements OnInit, AfterViewInit{
+  @ViewChild('autocomplete')
+  public searchElementRef!: ElementRef;
   @Output() goNext = new EventEmitter();
   @Output() setZone = new EventEmitter();
   
@@ -27,13 +31,20 @@ export class SelectZoneComponent implements OnInit{
 	form!: FormGroup;
   permitTypeFlag: Boolean = false;
 
+  map: any;
+  marker: any;
+
   constructor(private zone: ZoneService,
     private companyService: CompanyService,
     private permitService: PermitService,
     private fb: FormBuilder,
     private messageService: MessageService,
     private router: Router,
-    private translate: TranslateService) {}
+    private translate: TranslateService,
+    private ngZone: NgZone) {}
+    ngAfterViewInit(): void {
+      this.initMaps();
+    }
 
     ngOnInit(): void {
       this.form = this.fb.group({
@@ -79,7 +90,34 @@ export class SelectZoneComponent implements OnInit{
           }
         });
       });
-      
+    }
+
+    initMaps(){
+      this.map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: -33.8688, lng: 151.2195 },
+        zoom: 13
+      });
+  
+      this.marker = new google.maps.Marker({
+        map: this.map
+      });
+  
+      let autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement);
+  
+      autocomplete.addListener('place_changed', () => {
+        this.ngZone.run(() => {
+          let place: any = autocomplete.getPlace();
+  
+          if (!place.geometry) {
+            window.alert("No details available for input: '" + place.name + "'");
+            return;
+          }
+  
+          // Centra el mapa en la dirección seleccionada por el usuario y pinta un marcador.
+          this.map.setCenter(place.geometry.location);
+          this.marker.setPosition(place.geometry.location);
+        });
+      });
     }
 
     async onClickNext(form: FormGroup){

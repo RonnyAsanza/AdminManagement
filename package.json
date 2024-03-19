@@ -46,6 +46,7 @@
     "@angular/compiler-cli": "^15.2.0",
     "@capacitor/assets": "^3.0.1",
     "@capacitor/cli": "^5.0.0",
+    "@types/googlemaps": "^3.43.3",
     "@types/jasmine": "~4.3.0",
     "jasmine-core": "~4.5.0",
     "karma": "~6.4.0",

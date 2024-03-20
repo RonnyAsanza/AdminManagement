@@ -18,8 +18,8 @@ import { from } from 'rxjs';
 })
 export class NewPermitComponent {
   @ViewChild(SelectZoneComponent) selectZoneComponent: SelectZoneComponent | undefined;
-  @ViewChild(SelectPermittypeComponent) permitCategory: SelectPermittypeComponent | undefined; 
-  @ViewChild(PermitOptionsComponent) permitOptions: PermitOptionsComponent | undefined; 
+  @ViewChild(SelectPermittypeComponent) permitCategory: SelectPermittypeComponent | undefined;
+  @ViewChild(PermitOptionsComponent) permitOptions: PermitOptionsComponent | undefined;
 
   selectedIndex: number = 0;
   disablePagination: boolean = true;
@@ -34,6 +34,7 @@ export class NewPermitComponent {
 
   onGoBack() : void{
     var categoryFlag = this.selectZoneComponent?.permitTypeFlag
+
     if(this.selectedIndex === 0 || categoryFlag && this.zoneFlag){
       from(this.companyService.getLocalCompany())
       .subscribe(value => {

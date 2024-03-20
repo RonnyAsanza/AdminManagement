@@ -8,13 +8,13 @@
             </div>
             <form [formGroup]="form" (submit)="onClickNext(form)">
                 <div class="p-fluid p-formgrid grid center-content">
-                    <div class="col-12 md:col-6">
+                    <div *ngIf="currentLookupType === zoneLookupType.zoneSelectionNoAddress" class="col-12 md:col-6">
                         <label>{{"ClientPermit.SelectZone" | translate}}*:
-                            <p-dropdown 
-                                formControlName="zone" 
-                                name="zone" 
-                                optionLabel="name" 
-                                [options]="zones" 
+                            <p-dropdown
+                                formControlName="zone"
+                                name="zone"
+                                optionLabel="name"
+                                [options]="zones"
                                 [placeholder]="'ClientPermit.SelectZone' | translate"
                                 class="w-full"
                                 [ngClass]="{'ng-invalid': !form.controls['zone'].valid && !form.controls['zone'].dirty}">
@@ -23,12 +23,12 @@
                                     {{option.name}}
                                 </ng-template>
                             </p-dropdown>
-                        </label>             
+                        </label>
                     </div>
-                    <div class="col-12 md:col-6">
-                        <input pInputText type="text" #autocomplete id="autocomplete"  class="w-full sm:w-auto"/>
-                        <div id="map" style="height: 400px; width: 100%;"></div>
-                    </div>      
+                    <div *ngIf="currentLookupType === zoneLookupType.geofencing || currentLookupType === zoneLookupType.zoneSelection" class="col-12 md:col-6">
+                        <input pInputText type="text" #autocomplete id="autocomplete"  class="w-full"/>
+                        <div *ngIf="currentLookupType === zoneLookupType.geofencing" id="map" style="height: 400px; width: 100%;"></div>
+                    </div>
                 </div>
                 <div class="p-fluid p-formgrid grid center-content">
                     <div class="col-12 md:col-6">

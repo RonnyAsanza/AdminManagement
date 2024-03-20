@@ -93,7 +93,7 @@ export class PermitService {
   async getLocalApplyPermit(): Promise<ApplyPermit> {
     return await this.localStorageService.getObject('applyPermit');
   }
-  
+
   updatePermitLicensePlate(permitKey: number, licensePlate: string): Observable<PermitsResponse<number>>{
     var urlPath = environment.apiPermitsURL + 'Permit/'+permitKey+'/license-plate/'+licensePlate;
     return this.http.put<PermitsResponse<number>>(urlPath, null);

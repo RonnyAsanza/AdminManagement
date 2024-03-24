@@ -11,4 +11,12 @@ export interface ZoneViewModel {
     zoneLookupTypeKey?: number;
     zoneLookupType?: string;
     requireAccessControl?: boolean;
+    address?: string;
+    coordinates?: string;
   }
+
+  export enum ZoneLookUpTypeEnum {
+    ZONE_SELECTION = 1,
+    ZONE_SELECTION_NO_ADDRESS = 2,
+    ZONE_SELECTION_GEOFENCING = 3,
+}

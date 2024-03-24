@@ -16,7 +16,7 @@
             
             <form [formGroup]="form" (submit)="onClickNext(form)">
                 <div class="p-fluid p-formgrid grid center-content">
-                    <div *ngIf="currentLookupType === zoneLookupType.zoneSelectionNoAddress" class="col-12 md:col-6">
+                    <div class="col-12 md:col-6">
                         <label>{{"ClientPermit.SelectZone" | translate}}*:
                             <p-dropdown
                                 (onChange)="onZoneChange($event.value)"
@@ -33,12 +33,8 @@
                                     {{option.name}}
                                 </ng-template>
                             </p-dropdown>
-                        </label>
-                    </div>
-                    <div *ngIf="currentLookupType === zoneLookupType.geofencing || currentLookupType === zoneLookupType.zoneSelection" class="col-12 md:col-6">
-                        <input pInputText type="text" #autocomplete id="autocomplete"  class="w-full"/>
-                        <div *ngIf="currentLookupType === zoneLookupType.geofencing" id="map" style="height: 400px; width: 100%;"></div>
-                    </div>
+                        </label>             
+                    </div>         
                 </div>
                 <div class="p-fluid p-formgrid grid center-content">
                     <div class="col-12 md:col-6">

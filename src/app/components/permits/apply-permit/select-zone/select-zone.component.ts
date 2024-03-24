@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output, OnInit, Input, ElementRef, QueryList, 
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Company } from 'src/app/models/company.model';
-import { ZoneLookupTypeEnum, ZoneViewModel } from 'src/app/models/zone.model';
+import { ZoneViewModel } from 'src/app/models/zone.model';
 import { CompanyService } from 'src/app/services/company.service';
 import { PermitService } from 'src/app/services/permit.service';
 import { ZoneService } from 'src/app/services/zone.service';

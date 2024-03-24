@@ -21,7 +21,7 @@
                         </p-tabPanel>
                         <p-tabPanel>
                             <app-select-zone
-                                (goNext)="onGoNext()" (setZone) = "setZone()"
+                                (goNext)="onGoNext()" (setZone) = "setZone()" *ngIf="selectedIndex === 1"
                             >
                             </app-select-zone>
                         </p-tabPanel>

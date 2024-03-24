@@ -6,15 +6,25 @@
                     <h4>{{"ClientPermit.ZoneSelection" | translate}}</h4>
                 </div>
             </div>
+            <div class="p-fluid p-formgrid grid center-content" *ngIf="canShowAddressContainer">
+                <div class="col-12 md:col-6">
+                    <label htmlFor="address">{{"ParkingZone.Address" | translate}}: </label><br>
+                    <input pInputText type="text" #autocomplete id="autocomplete" placeholder="" class="w-full mb-4"/>
+                    <div id="map" [ngStyle]="{'height': googleMapsService.getAddress() && canShowMap? '400px' : '0', 'width': '100%'}"></div>
+                </div>
+            </div>
+            
             <form [formGroup]="form" (submit)="onClickNext(form)">
                 <div class="p-fluid p-formgrid grid center-content">
                     <div *ngIf="currentLookupType === zoneLookupType.zoneSelectionNoAddress" class="col-12 md:col-6">
                         <label>{{"ClientPermit.SelectZone" | translate}}*:
                             <p-dropdown
-                                formControlName="zone"
-                                name="zone"
+                                (onChange)="onZoneChange($event.value)"
+                                formControlName="zone" 
+                                name="zone" 
                                 optionLabel="name"
-                                [options]="zones"
+                                [disabled]="canShowAddressContainer && !googleMapsService.getAddress()"
+                                [options]="zones" 
                                 [placeholder]="'ClientPermit.SelectZone' | translate"
                                 class="w-full"
                                 [ngClass]="{'ng-invalid': !form.controls['zone'].valid && !form.controls['zone'].dirty}">

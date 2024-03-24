@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit, Input, ViewChild, ElementRef, NgZone, AfterViewInit } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, Input, ElementRef, QueryList, ViewChildren, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Company } from 'src/app/models/company.model';
@@ -9,10 +9,9 @@ import { ZoneService } from 'src/app/services/zone.service';
 import { Router } from '@angular/router';
 import { TranslateService } from 'src/app/services/translate.service';
 import { ApiErrorViewModel } from 'src/app/models/api-error.model';
-import { LocalStorageService } from 'src/app/services/local-storage.service';
-import { from } from 'rxjs';
-declare var google: any;
-
+import { Subscription, from } from 'rxjs';
+import { GoogleMapsService } from '../../../../services/google-maps.service';
+import { ZoneLookUpTypeEnum } from '../../../../models/zone.model';
 
 @Component({
   selector: 'app-select-zone',
@@ -20,21 +19,22 @@ declare var google: any;
   styleUrls: ['./select-zone.component.scss'],
   providers: [MessageService]
 })
-export class SelectZoneComponent implements OnInit, AfterViewInit{
-  @ViewChild('autocomplete')
-  public searchElementRef!: ElementRef;
+export class SelectZoneComponent implements OnInit,  AfterViewInit {
   @Output() goNext = new EventEmitter();
   @Output() setZone = new EventEmitter();
 
   zones: ZoneViewModel[] = [];
+  allZones: ZoneViewModel[] = [];
   localCompany: Company = {};
   zoneControl = new FormControl('');
 	form!: FormGroup;
   permitTypeFlag: Boolean = false;
-  zoneLookupType = ZoneLookupTypeEnum;
-  currentLookupType: ZoneLookupTypeEnum | undefined;
+  @ViewChildren('autocomplete') searchElementRefs!: QueryList<ElementRef>;
+  zoneLookUpTypeEnum = ZoneLookUpTypeEnum;
+  subscriptionAddressChange!: Subscription;
+  canShowMap = false;
+  canShowAddressContainer = false;
 
-  map: any;
 
   constructor(private zone: ZoneService,
     private companyService: CompanyService,
@@ -43,21 +43,10 @@ export class SelectZoneComponent implements OnInit, AfterViewInit{
     private messageService: MessageService,
     private router: Router,
     private translate: TranslateService,
-    private ngZone: NgZone,
-    private localStorageService: LocalStorageService
-    ) {}
-    ngAfterViewInit(): void {
-      this.initMaps();
-    }
+    public googleMapsService: GoogleMapsService
+  ) {}
 
-    async ngOnInit(): Promise<void> {
-        const applyPermit = await this.localStorageService.getObject('applyPermit');
-        this.currentLookupType = applyPermit?.permitCategory?.zoneLookupTypeKey;
-
-      this.form = this.fb.group({
-        zone: [null, [Validators.required]]
-      });
-
+    loadInitialData(): void {
       from(this.companyService.getLocalCompany())
       .subscribe(value => {
         this.localCompany = value;
@@ -79,6 +68,7 @@ export class SelectZoneComponent implements OnInit, AfterViewInit{
               } else {
                 var data = response.data as ZoneViewModel[];
                 this.zones = response.data as ZoneViewModel[];
+                this.allZones = response.data as ZoneViewModel[];
                 if(data.length == 1 && this.permitTypeFlag){
                   this.goNext.emit();
                   this.setLocalZone(this.zones[0]);
@@ -98,97 +88,53 @@ export class SelectZoneComponent implements OnInit, AfterViewInit{
         });
       });
     }
-    drawMap(){
-        const domObj = document.getElementById('map');
-        if (domObj)
-        {
-            this.map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: -33.8688, lng: 151.2195 },
-                zoom: 13
-            });
-        }
-    }
 
-    getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon2: number) {
-        const R = 6371; // Radius of the earth in km
-        const dLat = this.deg2rad(lat2 - lat1);  // deg2rad below
-        const dLon = this.deg2rad(lon2 - lon1);
-        const a =
-            Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
-            Math.sin(dLon/2) * Math.sin(dLon/2)
-        ;
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        const distance = R * c; // Distance in km
-        return distance;
-    }
-
-    deg2rad(deg: number) {
-        return deg * (Math.PI/180)
-    }
-
-    initAutocomplete() {
-        let autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement);
-
-        autocomplete.addListener('place_changed', () => {
-            this.ngZone.run(() => {
-            let place: any = autocomplete.getPlace();
-
-            if (!place.geometry) {
-                window.alert("No details available for input: '" + place.name + "'");
-                return;
-            }
-
-            // Centra el mapa en la dirección seleccionada por el usuario y pinta un marcador.
-            if (this.map)
-            {
-                this.map.setCenter(place.geometry.location);
-            }
-            let closestZone: ZoneViewModel | undefined;
-                let closestDistance = 20;
-                const closestZones: ZoneViewModel[] = [];
-                this.zones.forEach(zone => {
-                let distance = this.getDistanceFromLatLonInKm(place.geometry.location.lat(), place.geometry.location.lng(), zone.latitude!, zone.longitude!);
-                if (distance < closestDistance)
-                {
-                    if (this.currentLookupType === ZoneLookupTypeEnum.zoneSelection)
-                    {
-                        closestDistance = distance;
-                        closestZone = zone;
-                    }
-                    else
-                    {
-                        closestZones.push(zone);
-                    }
-                }
-                });
-                if (closestZone)
-                {
-                this.form.controls['zone'].setValue(closestZone);
-                this.setLocalZone(closestZone);
-                }
-                else {
-                    //Put closest zones as markers in map
-                    closestZones.forEach(zone => {
-                        let marker = new google.maps.Marker({
-                            position: { lat: zone.latitude!, lng: zone.longitude! },
-                            map: this.map,
-                            title: zone.name,
-                            label: zone.name
-                        });
-                        marker.addListener('click', () => {
-                            this.form.controls['zone'].setValue(zone);
-                            this.setLocalZone(zone);
-                        });
-                    });
-                }
-            });
+    ngOnInit(): void {
+      this.form = this.fb.group({
+        zone: [null, [Validators.required]]
+      });
+      this.loadInitialData();
+      this.validateShowMap();
+      this.validateAddressContainer();
+  
+      this.subscriptionAddressChange = this.googleMapsService.address$.subscribe(async address => {
+        const permit = await this.permitService.getLocalApplyPermit();
+        this.filterZonesByZoneLookUpType(permit.permitCategory?.zoneLookupTypeKey!);
+        this.filterByContainingLocation({
+          lat: address?.lat || 0,
+          lng: address?.long || 0
         });
+      });
+      
     }
 
-    initMaps(){
-        this.drawMap();
-        this.initAutocomplete();
+    filterZonesByZoneLookUpType(zoneLookUpType :ZoneLookUpTypeEnum): void{
+      this.zones = this.allZones.filter(zone => zone.zoneLookupTypeKey === zoneLookUpType);
+    }
+
+    filterByContainingLocation(location: {lat: number, lng: number}): void{
+      this.zones = this.googleMapsService.getZonesContainingLocation(this.allZones, location);
+    }
+
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+          if(this.canShowAddressContainer) {
+            this.subscribeToSearchElementChanges();
+          }
+        }, 1500);
+    }
+
+    subscribeToSearchElementChanges() {
+      this.initializeAutocompleteForLastSearchElement();
+      this.googleMapsService.initMap(document.getElementById('map')!, 8);
+    }
+    getLastSearchElement() {
+      return this.searchElementRefs.last;
+    }
+    
+    initializeAutocompleteForLastSearchElement() {
+      const searchElementRef = this.getLastSearchElement();
+      this.googleMapsService.initAutocomplete(searchElementRef);
     }
 
     async onClickNext(form: FormGroup){
@@ -223,5 +169,30 @@ export class SelectZoneComponent implements OnInit, AfterViewInit{
         detail: errorMessage,
         life: 10000
       });
+    }
+
+    async onZoneChange(zone: ZoneViewModel){
+      const permit = await this.permitService.getLocalApplyPermit();
+      if (zone.coordinates && permit.permitCategory?.zoneLookupTypeKey === ZoneLookUpTypeEnum.ZONE_SELECTION_GEOFENCING) {
+        this.googleMapsService.setPolygonCoordinates(zone.coordinates);
+      }
+      
+    }
+
+    async validateShowMap(): Promise<void> {
+      const permit = await this.permitService.getLocalApplyPermit();
+      const condition = permit.permitCategory?.zoneLookupTypeKey === ZoneLookUpTypeEnum.ZONE_SELECTION_GEOFENCING;
+      this.canShowMap = condition;
+    }
+
+    async validateAddressContainer(): Promise<void> {
+      const permit = await this.permitService.getLocalApplyPermit();
+      const condition = permit.permitCategory?.zoneLookupTypeKey !== ZoneLookUpTypeEnum.ZONE_SELECTION_NO_ADDRESS;
+      this.canShowAddressContainer = condition;
+    }
+
+    ngOnDestroy(): void {
+      this.subscriptionAddressChange?.unsubscribe();
+      this.googleMapsService.cleanAddressAndPolygon();
     }
 }

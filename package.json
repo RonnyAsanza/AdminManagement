@@ -29,6 +29,7 @@
     "@fullcalendar/daygrid": "^6.0.3",
     "@fullcalendar/interaction": "^6.0.3",
     "@fullcalendar/timegrid": "^6.0.3",
+    "@types/googlemaps": "^3.43.3",
     "chart.js": "^3.3.2",
     "pdfmake": "^0.2.5",
     "primeflex": "^3.2.1",

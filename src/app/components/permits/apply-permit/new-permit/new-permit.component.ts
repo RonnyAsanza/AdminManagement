@@ -9,6 +9,7 @@ import { SelectZoneComponent } from '../select-zone/select-zone.component';
 import { SelectPermittypeComponent } from '../select-permittype/select-permittype.component';
 import { PermitOptionsComponent } from '../permit-options/permit-options.component';
 import { from } from 'rxjs';
+import { GoogleMapsService } from '../../../../services/google-maps.service';
 
 @Component({
   selector: 'app-new-permit',
@@ -26,10 +27,13 @@ export class NewPermitComponent {
   company!: Company;
   permit!: ApplyPermit;
   zoneFlag: Boolean = false;
+  isZoneView: Boolean = false;
 
   constructor(
-  private router: Router,
-  private companyService: CompanyService) {
+    private router: Router,
+    private companyService: CompanyService,
+    private googleMapsService: GoogleMapsService
+  ) {
   }
 
   onGoBack() : void{
@@ -59,6 +63,7 @@ export class NewPermitComponent {
     }
 
     this.selectedIndex--;
+    this.googleMapsService.cleanAddressAndPolygon();
   }
 
   onGoNext(){

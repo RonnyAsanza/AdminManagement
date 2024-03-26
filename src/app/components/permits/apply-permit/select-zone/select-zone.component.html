@@ -7,7 +7,7 @@
                 </div>
             </div>
             <div class="p-fluid p-formgrid grid center-content" *ngIf="canShowAddressContainer">
-                <div class="col-12 md:col-6">
+                <div class="col-12 md:col-8">
                     <label htmlFor="address">{{"ParkingZone.Address" | translate}}: </label><br>
                     <input pInputText type="text" #autocomplete id="autocomplete" placeholder="" class="w-full mb-4"/>
                     <div id="map" [ngStyle]="{'height': googleMapsService.getAddress() && canShowMap? '400px' : '0', 'width': '100%'}"></div>
@@ -16,7 +16,7 @@
             
             <form [formGroup]="form" (submit)="onClickNext(form)">
                 <div class="p-fluid p-formgrid grid center-content">
-                    <div class="col-12 md:col-6">
+                    <div class="col-12 md:col-8">
                         <label>{{"ClientPermit.SelectZone" | translate}}*:
                             <p-dropdown
                                 (onChange)="onZoneChange($event.value)"
@@ -37,7 +37,7 @@
                     </div>         
                 </div>
                 <div class="p-fluid p-formgrid grid center-content">
-                    <div class="col-12 md:col-6">
+                    <div class="col-12 md:col-8">
                         <button pButton pRipple icon="pi pi-arrow-right" [label]="'ClientPermit.NextStep' | translate" class="p-button-primary w-full" [disabled]="!form?.valid">
                         </button>
                     </div>

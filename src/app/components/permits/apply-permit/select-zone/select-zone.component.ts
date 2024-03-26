@@ -108,12 +108,18 @@ export class SelectZoneComponent implements OnInit,  AfterViewInit {
       
     }
 
+    getFilterZonesByAddress(address: string): ZoneViewModel[] {
+      return this.allZones.filter(zone => zone.address?.toLowerCase().includes(address?.toLowerCase()));
+    }
+
     filterZonesByZoneLookUpType(zoneLookUpType :ZoneLookUpTypeEnum): void{
       this.zones = this.allZones.filter(zone => zone.zoneLookupTypeKey === zoneLookUpType);
     }
 
     filterByContainingLocation(location: {lat: number, lng: number}): void{
-      this.zones = this.googleMapsService.getZonesContainingLocation(this.allZones, location);
+      this.zones = this.googleMapsService.getZonesContainingLocation(this.zones, location);
+      const zonesWithSameAddress = this.getFilterZonesByAddress(this.googleMapsService.address);
+      this.zones = [...new Set([...this.zones, ...zonesWithSameAddress])];
     }
 
     ngAfterViewInit(): void {

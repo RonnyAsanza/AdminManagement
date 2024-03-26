@@ -161,6 +161,11 @@ export class GoogleMapsService {
           fillOpacity: 0.35
         });
         this.polygon.setMap(this.map);
+        const bounds = new google.maps.LatLngBounds();
+        this.polygon.getPath().forEach((point) => {
+          bounds.extend(point);
+        });
+        this.map.setCenter(bounds.getCenter());
     }
 
     getZonesContainingLocation(zones: ZoneViewModel[], location: {lat: number, lng: number}): ZoneViewModel[] {

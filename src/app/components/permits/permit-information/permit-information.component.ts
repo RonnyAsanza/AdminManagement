@@ -90,7 +90,6 @@ export class PermitInformationComponent implements OnInit {
           this.msgs = [];
           this.msgs.push({ severity: 'warn', summary: 'Queued', detail: "We've reached our capacity for processing permits. Your permit is in queue. We'll notify you once a spot becomes available. Thank you for your patience."});
         }
-
       }
       else {
         this.router.navigate(['/' + this.company.portalAlias + '/']);

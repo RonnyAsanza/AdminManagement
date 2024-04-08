@@ -10,8 +10,14 @@ import { Router } from '@angular/router';
 import { TranslateService } from 'src/app/services/translate.service';
 import { ApiErrorViewModel } from 'src/app/models/api-error.model';
 import { Subscription, from } from 'rxjs';
-import { GoogleMapsService } from '../../../../services/google-maps.service';
+//import { GoogleMapsService } from '../../../../services/google-maps.service';
 import { ZoneLookUpTypeEnum } from '../../../../models/zone.model';
+import {
+  GoogleMap,
+  MapDirectionsService,
+} from '@angular/google-maps';
+import { PlaceSearchResult } from '../address-autocomplete/address-autocomplete.component';
+import { GoogleMapsService, MapInformation } from 'src/app/services/google-maps.service';
 
 @Component({
   selector: 'app-select-zone',
@@ -19,7 +25,7 @@ import { ZoneLookUpTypeEnum } from '../../../../models/zone.model';
   styleUrls: ['./select-zone.component.scss'],
   providers: [MessageService]
 })
-export class SelectZoneComponent implements OnInit,  AfterViewInit {
+export class SelectZoneComponent implements OnInit {
   @Output() goNext = new EventEmitter();
   @Output() setZone = new EventEmitter();
 
@@ -34,7 +40,10 @@ export class SelectZoneComponent implements OnInit,  AfterViewInit {
   subscriptionAddressChange!: Subscription;
   canShowMap = false;
   canShowAddressContainer = false;
-
+  markers: any[] = [];
+  searchGoogleMapsSubscription!: Subscription;
+  mapInformation!: MapInformation;
+  polygons: any[] = [];
 
   constructor(private zone: ZoneService,
     private companyService: CompanyService,
@@ -43,7 +52,7 @@ export class SelectZoneComponent implements OnInit,  AfterViewInit {
     private messageService: MessageService,
     private router: Router,
     private translate: TranslateService,
-    public googleMapsService: GoogleMapsService
+    private googleMapsService: GoogleMapsService,
   ) {}
 
     loadInitialData(): void {
@@ -52,7 +61,7 @@ export class SelectZoneComponent implements OnInit,  AfterViewInit {
         this.localCompany = value;
         this.zone.getZonesByCompany(this.localCompany.companyKey!)
         .subscribe({
-          next: (response) => {
+          next: async (response) => {
             if(response.succeeded )
             {
               if(response.data == null || response.data == undefined){
@@ -67,8 +76,9 @@ export class SelectZoneComponent implements OnInit,  AfterViewInit {
                 this.router.navigate(['/'+this.localCompany.portalAlias+'/permit-home']);
               } else {
                 var data = response.data as ZoneViewModel[];
-                this.zones = response.data as ZoneViewModel[];
                 this.allZones = response.data as ZoneViewModel[];
+                var permit = await this.permitService.getLocalApplyPermit();
+                this.filterZonesByZoneLookUpType(permit?.permitCategory?.zoneLookupTypeKey!);
                 if(data.length == 1 && this.permitTypeFlag){
                   this.goNext.emit();
                   this.setLocalZone(this.zones[0]);
@@ -93,56 +103,104 @@ export class SelectZoneComponent implements OnInit,  AfterViewInit {
       this.form = this.fb.group({
         zone: [null, [Validators.required]]
       });
-      this.loadInitialData();
-      this.validateShowMap();
-      this.validateAddressContainer();
-  
-      this.subscriptionAddressChange = this.googleMapsService.address$.subscribe(async address => {
-        const permit = await this.permitService.getLocalApplyPermit();
+      this.loadInitialData(); 
+    }
+    
+    onPlaceChanged(event: PlaceSearchResult) {
+      from(this.permitService.getLocalApplyPermit())
+      .subscribe(permit => {
         this.filterZonesByZoneLookUpType(permit.permitCategory?.zoneLookupTypeKey!);
-        this.filterByContainingLocation({
-          lat: address?.lat || 0,
-          lng: address?.long || 0
+        this.mapInformation = {
+          placeSearchResult : event,
+          markers : this.markers,
+          polygons: this.polygons
+        }
+        
+/*       this.subscriptionAddressChange = this.googleMapsService.address$.subscribe(async address => {
+          this.filterByContainingLocation({
+            lat: address?.lat || 0,
+            lng: address?.long || 0
+          },
+          permit.permitCategory?.zoneLookupTypeKey!
+          );
         });
+*/
       });
-      
+
+
     }
 
     getFilterZonesByAddress(address: string): ZoneViewModel[] {
       return this.allZones.filter(zone => zone.address?.toLowerCase().includes(address?.toLowerCase()));
     }
 
-    filterZonesByZoneLookUpType(zoneLookUpType :ZoneLookUpTypeEnum): void{
-      this.zones = this.allZones.filter(zone => zone.zoneLookupTypeKey === zoneLookUpType);
-    }
-
-    filterByContainingLocation(location: {lat: number, lng: number}): void{
-      this.zones = this.googleMapsService.getZonesContainingLocation(this.zones, location);
-      const zonesWithSameAddress = this.getFilterZonesByAddress(this.googleMapsService.address);
-      this.zones = [...new Set([...this.zones, ...zonesWithSameAddress])];
-    }
-
-    ngAfterViewInit(): void {
-        setTimeout(() => {
-          if(this.canShowAddressContainer) {
-            this.subscribeToSearchElementChanges();
+    getMarkersFromZones(zones: ZoneViewModel[]){
+      this.clearMarkers();
+      zones.forEach(zone => {
+        if (this.isValidLocation(zone.latitude, zone.longitude)) {
+          const marker = this.googleMapsService.addMarker(zone.name!, zone.latitude!, zone.longitude!, zone.address!, "Monthly Permit", 200.00);
+          if (marker) {
+            this.markers.push(marker);
           }
-        }, 1500);
+        }
+      });
     }
 
-    subscribeToSearchElementChanges() {
-      this.initializeAutocompleteForLastSearchElement();
-      this.googleMapsService.initMap(document.getElementById('map')!, 8);
+    getPolygonsFromZones(zones: ZoneViewModel[]){
+      this.clearPolygons();
+      zones.forEach(zone => {
+        console.log(zone);
+        if (zone.coordinates != null && zone.coordinates.trim() !== '') {
+          const polygon = this.googleMapsService.addPolygon(zone.name!, zone.latitude!, zone.longitude!, zone.address!, "Monthly Permit", 200.00, zone.coordinates!);
+          if (polygon) {
+            this.polygons.push(polygon);
+          }
+        }
+      });
     }
+
+    isValidLocation(latitude: number | null | undefined, longitude: number | null | undefined): boolean {
+      return latitude != null && longitude != null && !isNaN(latitude) && !isNaN(longitude) && latitude !== 0 && longitude !== 0;
+    }
+    
+
+    clearMarkers() {
+      this.markers = [];
+    }
+
+    clearPolygons() {
+      this.polygons = [];
+    }
+
+    filterZonesByZoneLookUpType(zoneLookUpType :ZoneLookUpTypeEnum): void{
+      //this.zones = this.allZones;
+      this.zones = this.allZones.filter(zone => zone.zoneLookupTypeKey === zoneLookUpType);
+
+      if(zoneLookUpType === ZoneLookUpTypeEnum.ZONE_SELECTION)
+      {
+        this.getPolygonsFromZones(this.zones);
+      }
+      else
+      {
+        this.getMarkersFromZones(this.zones);
+      }
+    }
+
+    filterByContainingLocation(location: {lat: number, lng: number}, zoneLookupTypeKey: number): void{
+      if(zoneLookupTypeKey === ZoneLookUpTypeEnum.ZONE_SELECTION_NO_ADDRESS)
+      {
+        return;
+      }
+
+     /* this.zones = this.googleMapsService.getZonesContainingLocation(this.zones, location);
+      const zonesWithSameAddress = this.getFilterZonesByAddress(this.googleMapsService.address);
+      this.zones = [...new Set([...this.zones, ...zonesWithSameAddress])];*/
+    }
+
     getLastSearchElement() {
       return this.searchElementRefs.last;
     }
     
-    initializeAutocompleteForLastSearchElement() {
-      const searchElementRef = this.getLastSearchElement();
-      this.googleMapsService.initAutocomplete(searchElementRef);
-    }
-
     async onClickNext(form: FormGroup){
       var zone: any = form.value.zone;
       if(zone && zone.name)
@@ -178,27 +236,15 @@ export class SelectZoneComponent implements OnInit,  AfterViewInit {
     }
 
     async onZoneChange(zone: ZoneViewModel){
-      const permit = await this.permitService.getLocalApplyPermit();
+    /*  const permit = await this.permitService.getLocalApplyPermit();
       if (zone.coordinates && permit.permitCategory?.zoneLookupTypeKey === ZoneLookUpTypeEnum.ZONE_SELECTION_GEOFENCING) {
         this.googleMapsService.setPolygonCoordinates(zone.coordinates);
       }
-      
-    }
-
-    async validateShowMap(): Promise<void> {
-      const permit = await this.permitService.getLocalApplyPermit();
-      const condition = permit.permitCategory?.zoneLookupTypeKey === ZoneLookUpTypeEnum.ZONE_SELECTION_GEOFENCING;
-      this.canShowMap = condition;
-    }
-
-    async validateAddressContainer(): Promise<void> {
-      const permit = await this.permitService.getLocalApplyPermit();
-      const condition = permit.permitCategory?.zoneLookupTypeKey !== ZoneLookUpTypeEnum.ZONE_SELECTION_NO_ADDRESS;
-      this.canShowAddressContainer = condition;
+      */
     }
 
     ngOnDestroy(): void {
-      this.subscriptionAddressChange?.unsubscribe();
-      this.googleMapsService.cleanAddressAndPolygon();
+     /* this.subscriptionAddressChange?.unsubscribe();
+      this.googleMapsService.cleanAddressAndPolygon();*/
     }
 }

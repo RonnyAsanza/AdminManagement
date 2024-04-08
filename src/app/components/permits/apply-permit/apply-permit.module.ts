@@ -23,6 +23,11 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { DialogModule } from 'primeng/dialog';
 import { TranslationsModule } from '../../shared/translations.module';
 import { NoSpecialCharactersDirective } from '../../directives/no-special-characters.directive';
+import { GoogleMapsModule } from '@angular/google-maps';
+import { MapDisplayComponent } from './map-display/map-display.component';
+import { AddressAutocompleteComponent } from './address-autocomplete/address-autocomplete.component';
+import { ListboxModule } from 'primeng/listbox';
+
 
 @NgModule({
   imports: [
@@ -45,7 +50,9 @@ import { NoSpecialCharactersDirective } from '../../directives/no-special-charac
     FileUploadModule,
     DialogModule,
     ApplyPermitRoutingModule,
-    TranslationsModule
+    TranslationsModule,
+    GoogleMapsModule,
+    ListboxModule
     
   ],
   declarations: [
@@ -53,7 +60,9 @@ import { NoSpecialCharactersDirective } from '../../directives/no-special-charac
     SelectPermittypeComponent,
     PermitOptionsComponent,
     NewPermitComponent,
-    NoSpecialCharactersDirective
+    NoSpecialCharactersDirective,
+    MapDisplayComponent,
+    AddressAutocompleteComponent
   ]
 })
 export class ApplyPermitModule { }

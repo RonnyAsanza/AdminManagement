@@ -6,34 +6,30 @@
                     <h4>{{"ClientPermit.ZoneSelection" | translate}}</h4>
                 </div>
             </div>
-            <div class="p-fluid p-formgrid grid center-content" *ngIf="canShowAddressContainer">
+            <div class="p-fluid p-formgrid grid center-content">
                 <div class="col-12 md:col-8">
-                    <label htmlFor="address">{{"ParkingZone.Address" | translate}}: </label><br>
-                    <input pInputText type="text" #autocomplete id="autocomplete" placeholder="" class="w-full mb-4"/>
-                    <div id="map" [ngStyle]="{'height': googleMapsService.getAddress() && canShowMap? '400px' : '0', 'width': '100%'}"></div>
+                    <app-address-autocomplete
+                        (placeChanged)="onPlaceChanged($event)"
+                        placeholder="Enter address..."
+                    ></app-address-autocomplete>
+                    <app-map-display [mapInformation]="mapInformation"></app-map-display>
                 </div>
             </div>
             
             <form [formGroup]="form" (submit)="onClickNext(form)">
                 <div class="p-fluid p-formgrid grid center-content">
                     <div class="col-12 md:col-8">
-                        <label>{{"ClientPermit.SelectZone" | translate}}*:
-                            <p-dropdown
-                                (onChange)="onZoneChange($event.value)"
-                                formControlName="zone" 
-                                name="zone" 
-                                optionLabel="name"
-                                [disabled]="canShowAddressContainer && !googleMapsService.getAddress()"
-                                [options]="zones" 
-                                [placeholder]="'ClientPermit.SelectZone' | translate"
-                                class="w-full"
-                                [ngClass]="{'ng-invalid': !form.controls['zone'].valid && !form.controls['zone'].dirty}">
-                            >
-                                <ng-template let-option pTemplate="item">
-                                    {{option.name}}
-                                </ng-template>
-                            </p-dropdown>
-                        </label>             
+                        <p-listbox [options]="zones" formControlName="zone" optionLabel="name" filterBy="label" [listStyle]="{'max-height':'300px'}">
+                            <ng-template pTemplate="header">
+                                {{"ClientPermit.SelectZone" | translate}}
+                            </ng-template>
+                            <ng-template let-zone pTemplate="item">
+                                <div class="flex">
+                                    <img src="assets/images/logo/small-logo.png" />
+                                    <div class="ml-4">{{zone.name}}</div>
+                                </div>
+                            </ng-template>
+                        </p-listbox>
                     </div>         
                 </div>
                 <div class="p-fluid p-formgrid grid center-content">

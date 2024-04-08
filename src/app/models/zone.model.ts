@@ -13,6 +13,8 @@ export interface ZoneViewModel {
     requireAccessControl?: boolean;
     address?: string;
     coordinates?: string;
+    latitude?: number, 
+    longitude?: number
   }
 
   export enum ZoneLookUpTypeEnum {

@@ -14,7 +14,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { MonerisReceiptRequest } from 'src/app/models/moneris/moneris-receipt-request.model';
 import { ContactDetails, MonerisPreloadRequest } from 'src/app/models/moneris/moneris-preload-request.model';
 import { PdfService } from 'src/app/services/pdf.service';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, Message } from 'primeng/api';
 import { from } from 'rxjs';
 import { PortalUserViewModel } from 'src/app/models/auth/portal-user.model';
 
@@ -35,7 +35,7 @@ export class PermitInformationComponent implements OnInit {
   expirationDateUtc: string = "";
   paymentTC: boolean = false;
   imp: number = 15;
-
+  msgs: Message[] = [];
   creditCards: CreditCard[] =
     [
       new CreditCard(1, 'Mario Asanza', 'American Express', '3730****2324', '01/29'),
@@ -85,6 +85,12 @@ export class PermitInformationComponent implements OnInit {
         this.permit = response.data!;
         this.startDateUtc = this.datePipe.transform(this.permit.startDateUtc, 'yyyy-MM-dd HH:mm')!;
         this.expirationDateUtc = this.datePipe.transform(this.permit.expirationDateUtc, 'yyyy-MM-dd HH:mm')!;
+
+        if(this.permit?.permitStatusCode?.toLowerCase() ==='in-queue'){
+          this.msgs = [];
+          this.msgs.push({ severity: 'warn', summary: 'Queued', detail: "We've reached our capacity for processing permits. Your permit is in queue. We'll notify you once a spot becomes available. Thank you for your patience."});
+        }
+
       }
       else {
         this.router.navigate(['/' + this.company.portalAlias + '/']);

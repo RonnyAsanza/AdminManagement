@@ -1,0 +1,19 @@
+<google-map #map [zoom]="zoom" width="35rem" height="25rem">
+    <map-marker
+      #markerElem
+      *ngFor="let marker of markers"
+      [position]="marker.position"
+      [title]="marker.title"
+      [options]="marker.options"
+      (mapClick)="openInfo(marker)"
+    >
+    </map-marker>
+    <map-info-window [innerHTML]="infoContent">
+    </map-info-window>
+    <map-polygon
+      *ngFor="let polygon of polygons"
+      [paths]="polygon.vertices" 
+      [options]="polygon.options"
+      (polygonClick)="openInfo(polygon)"
+    />
+</google-map>

@@ -61,6 +61,11 @@ export class ApplicationInformationComponent implements OnInit {
             this.router.navigate(['/' + this.company.portalAlias + '/']);
           }
 
+          if(this.application?.applicationStatusCode?.toLowerCase() ==='in-queue'){
+            this.msgs = [];
+            this.msgs.push({ severity: 'warn', summary: 'Queued', detail: "We've reached our capacity for processing applications. Your application is in queue. We'll notify you once a spot becomes available. Thank you for your patience."});
+          }
+
           if (this.application?.documents && this.application?.documents?.length > 0) {
             this.application?.documents.forEach(document =>{
               if(document.fileData)

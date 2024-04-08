@@ -9,7 +9,7 @@ import { SelectZoneComponent } from '../select-zone/select-zone.component';
 import { SelectPermittypeComponent } from '../select-permittype/select-permittype.component';
 import { PermitOptionsComponent } from '../permit-options/permit-options.component';
 import { from } from 'rxjs';
-import { GoogleMapsService } from '../../../../services/google-maps.service';
+//import { GoogleMapsService } from '../../../../services/google-maps.service';
 
 @Component({
   selector: 'app-new-permit',
@@ -32,7 +32,7 @@ export class NewPermitComponent {
   constructor(
     private router: Router,
     private companyService: CompanyService,
-    private googleMapsService: GoogleMapsService
+   // private googleMapsService: GoogleMapsService
   ) {
   }
 
@@ -63,7 +63,7 @@ export class NewPermitComponent {
     }
 
     this.selectedIndex--;
-    this.googleMapsService.cleanAddressAndPolygon();
+ //   this.googleMapsService.cleanAddressAndPolygon();
   }
 
   onGoNext(){

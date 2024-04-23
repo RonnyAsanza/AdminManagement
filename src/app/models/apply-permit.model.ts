@@ -30,4 +30,5 @@ export class ApplyPermit {
   additionalInput5?: string;
   requiredDocuments?: RequiredDocumentViewModel[];
   taxesAndFees?: PermitTariffTaxAndFee[];
+  typeEnum?: number;
 }

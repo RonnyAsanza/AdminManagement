@@ -30,6 +30,7 @@ export class PermitService {
     formData.append('expirationDateUtc', applyPermit.expirationDateUtc || '');
     formData.append('licensePlate', applyPermit.licensePlate || '');
     formData.append('quantity', applyPermit.quantity?.toString() || '');
+    formData.append('unitPrice', applyPermit.price?.toString() || '');
     formData.append('price', applyPermit.subTotal?.toString() || '');
     formData.append('total', applyPermit.total?.toString() || '');
     formData.append('additionalInput1', applyPermit.additionalInput1 || '');
@@ -37,7 +38,8 @@ export class PermitService {
     formData.append('additionalInput3', applyPermit.additionalInput3 || '');
     formData.append('additionalInput4', applyPermit.additionalInput4 || '');
     formData.append('additionalInput5', applyPermit.additionalInput5 || '');
-
+    formData.append('typeEnum', applyPermit.typeEnum?.toString() || '');
+    
     applyPermit.requiredDocuments?.forEach((document, index) => {
       formData.append(`RequiredDocuments[${index}].RequiredDocumentKey`, document.requiredDocumentKey?.toString()??"");
       formData.append(`RequiredDocuments[${index}].DocumentTypeKey`, document.documentTypeKey?.toString()??"");

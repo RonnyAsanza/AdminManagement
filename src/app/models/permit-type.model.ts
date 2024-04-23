@@ -22,5 +22,18 @@ export interface PermitTypeViewModel {
     requireAdditionalInput5?: boolean;
     permitTypeEnum?: number;
     permitTypeEnumValue?: string;
+    minAllowed?: number;
+    maxCount?: number;
   }
   
+  export enum TypeEnum {
+    Standard = 0,
+    Container = 1,
+    BankedSession = 2
+  }
+
+  export enum PermitTypesEnum {
+      Standard = 0,
+      Bulk = 1,
+      Banked = 2
+  }

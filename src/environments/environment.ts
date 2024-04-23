@@ -3,8 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-    apiPermitsURL: 'https://permitapi.preciserd.com/Permits/PermitApi/api/v1/',
-    apiTranslationServiceURL: 'https://permitapi.preciserd.com/Permits/TranslationService/api/v1/',
+    //apiPermitsURL: 'https://permitapi.preciserd.com/Permits/PermitApi/api/v1/',
+    //apiTranslationServiceURL: 'https://permitapi.preciserd.com/Permits/TranslationService/api/v1/',
+    apiPermitsURL: 'https://permit-service.preciseparklink.com/PermitApi/api/v1/',
+    apiTranslationServiceURL: 'https://permit-service.preciseparklink.com/TranslationsAPI/api/v1/',
     //apiPermitsURL: 'https://localhost:7198/api/v1/',
     //apiTranslationServiceURL: 'https://localhost:7068/api/v1/',
     appName: 'client',

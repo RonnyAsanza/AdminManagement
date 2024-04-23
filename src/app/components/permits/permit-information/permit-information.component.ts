@@ -237,4 +237,11 @@ export class PermitInformationComponent implements OnInit {
     this.router.navigate(['/' + this.company.portalAlias+'/application/' + applicationId]);
   }
 
+  onGoToPermit(permitKey: string) {
+    from(this.companyService.getLocalCompany())
+      .subscribe(value => {
+          this.company = value;
+          this.router.navigate(['/' + this.company.portalAlias + '/permits/' + permitKey]);
+      });
+  }
 }

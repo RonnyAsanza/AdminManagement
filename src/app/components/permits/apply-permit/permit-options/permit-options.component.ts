@@ -13,7 +13,7 @@ import { RateEngineByEndDateBasedRequest, RateEngineByEndDateBasedRResponse } fr
 import { TariffService } from 'src/app/services/tariff.service';
 import { RequiredDocumentService } from 'src/app/services/required-document.service';
 import { RequiredDocumentViewModel } from 'src/app/models/required-document.model';
-import { PermitTypeViewModel } from 'src/app/models/permit-type.model';
+import { PermitTypeViewModel, PermitTypesEnum, TypeEnum } from 'src/app/models/permit-type.model';
 import { PermitTypeService } from 'src/app/services/permitType.service';
 import { from } from 'rxjs';
 import { TranslateService } from 'src/app/services/translate.service';
@@ -52,6 +52,8 @@ export class PermitOptionsComponent {
   permitTypes: PermitTypeViewModel[] = [];
   appliedTariffTaxAndFee: TariffTaxAndFeeViewModel[] = [];
   permitTariffTaxAndFee: PermitTariffTaxAndFee[] = [];
+  bankedLegend: string= "";
+  PermitTypesEnum!: PermitTypesEnum;
 
   constructor(private companyService: CompanyService,
     private datePipe: DatePipe,
@@ -192,7 +194,6 @@ export class PermitOptionsComponent {
     this.permitTariffTaxAndFee = [];
     this.appliedTariffTaxAndFee.forEach((tariffTaxAndFee) => {
       let calculatedValue: number;
-      console.log(tariffTaxAndFee?.taxAndFeeValueType);
       switch (tariffTaxAndFee?.taxAndFeeValueType) {
           case TaxAndFeeValueTypeEnum.Fixed:
               calculatedValue = tariffTaxAndFee.value;
@@ -261,12 +262,20 @@ export class PermitOptionsComponent {
   async onPermitTypeChange(value: any){
     this.permit = await this.permitService.getLocalApplyPermit();
     this.permit.permitTypeModel = value.value;
+    if(this.permit.permitTypeModel?.permitTypeEnum === PermitTypesEnum.Banked){
+      this.bankedLegend = `Container information: Max Count ${this.permit.permitTypeModel?.maxCount ?? 'N/A'} and Min allowed: ${this.permit.permitTypeModel?.minAllowed ?? 'N/A'}.`;
+      this.form?.patchValue({
+        quantity: this.permit.permitTypeModel?.minAllowed,
+      });
+    }
     this.permitService.setLocalApplyPermit(this.permit);
     this.form?.controls['permitType'].markAsPristine();
     this.getCompanyTariffs()
   }
 
   getPriceRangeEngine() {
+    this.rateEngineRequest.Quantity = this.form?.value.quantity? this.form?.value.quantity : 1;
+
     this.rateEngineService.getRateEngineByQuantityBased(this.rateEngineRequest)
       .subscribe({
         next: (response) => {
@@ -280,13 +289,11 @@ export class PermitOptionsComponent {
               this.showTariffErrorMessage();
             }
 
-            var quantity = this.rateEngineRequest.Quantity ?? this.form?.value.quantity ?? 1;
             let total = this.totalCharge;
-
             this.form?.patchValue({
-              price: total/quantity,
+              price: total / this.rateEngineRequest.Quantity,
               total: total,
-              quantity: quantity,
+              //quantity: quantity,
               endDate: new Date(this.rateEngineResponse.endTime ?? "")
             });
           }
@@ -294,7 +301,7 @@ export class PermitOptionsComponent {
             this.form?.patchValue({
               price: null,
               total: "",
-              quantity: this.form?.value.quantity ?? 1,
+              //quantity: this.form?.value.quantity ?? 1,
               endDate: ""
             });
           }
@@ -329,7 +336,12 @@ export class PermitOptionsComponent {
         if (response.succeeded && response.data !== undefined && response.data.length > 0) {
           this.tariffs = response.data;
           this.rateEngineRequest.TariffID = this.tariffs![0].externalTariffId ?? 0;
-          this.getPriceRangeEngine()
+
+          this.permit = await this.permitService.getLocalApplyPermit();
+          this.permit.tariffModel = this.tariffs![0];
+          this.permit.tariffKey = this.tariffs![0].tariffId;
+          this.permitService.setLocalApplyPermit(this.permit);
+          this.getPriceRangeEngine();
         }
         else {
           this.messageService.add({
@@ -405,6 +417,8 @@ export class PermitOptionsComponent {
     permit.startDateUtc = this.datePipe.transform(this.form?.value.startDate, 'yyyy-MM-dd HH:mm') ?? '';
     permit.expirationDateUtc = this.datePipe.transform(this.form?.getRawValue().endDate, 'yyyy-MM-dd HH:mm') ?? '';
     permit.permitTypeKey = permit.permitTypeModel?.permitTypeKey;
+    permit.typeEnum = permit.permitTypeModel?.permitTypeEnum === PermitTypesEnum.Banked ? TypeEnum.Container : TypeEnum.Standard;
+
     this.permitService.setLocalApplyPermit(permit);
     this.permitService.applyPermit(permit)
       .subscribe({

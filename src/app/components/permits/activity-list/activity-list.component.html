@@ -33,7 +33,7 @@
                                     <span><strong>{{"ClientPermit.Type" | translate}}:</strong></span>
                                 </div>
                                 <div class="col-6 p-0">
-                                    <span>{{permit.permitType}}</span>                                
+                                    <span>{{permit.typeEnumValue}}</span>                                
                                 </div>
                             </div>
                             <div class="grid card-item">
@@ -44,7 +44,7 @@
                                     <span>{{permit.zone}}</span>                                
                                 </div>
                             </div>
-                            <div class="grid card-item">
+                            <div class="grid card-item" *ngIf="permit.typeEnum && permit.typeEnum !== 1">
                                 <div class="col-6 p-0">
                                     <span><strong>{{"ClientPermit.StartDate" | translate}}:</strong></span>
                                 </div>
@@ -52,12 +52,28 @@
                                     <span>{{permit.startDateUtc | date: 'yyyy-MM-dd HH:mm'}} </span>                                
                                 </div>
                             </div>
-                            <div class="grid card-item">
+                            <div class="grid card-item" *ngIf="permit.typeEnum && permit.typeEnum !== 1">
                                 <div class="col-6 p-0">
                                     <span><strong>{{"ClientPermit.EndDate" | translate}}:</strong></span>
                                 </div>
                                 <div class="col-6 p-0">
                                     <span>{{permit.expirationDateUtc | date: 'yyyy-MM-dd HH:mm'}}</span>                                
+                                </div>
+                            </div>
+                            <div class="grid card-item" *ngIf="permit.typeEnum && permit.typeEnum === 1">
+                                <div class="col-6 p-0">
+                                    <span><strong>Valid Until:</strong></span>
+                                </div>
+                                <div class="col-6 p-0">
+                                    <span>{{permit.validUntilUtc | date: 'yyyy-MM-dd HH:mm'}}</span>                                
+                                </div>
+                            </div>
+                            <div class="grid card-item" *ngIf="permit.typeEnum && permit.typeEnum === 1">
+                                <div class="col-6 p-0">
+                                    <span><strong>Uses:</strong></span>
+                                </div>
+                                <div class="col-6 p-0">
+                                    <span>{{"ClientPermit.AvaliableUses" | translate}} {{permit.availableUnits}} of {{permit.totalUnits}}</span>                                
                                 </div>
                             </div>
                             <div class="grid card-item">
@@ -138,7 +154,7 @@
                                     <span><strong>{{"ClientPermit.Type" | translate}}:</strong></span>
                                 </div>
                                 <div class="col-6 p-0">
-                                    <span>{{application.permitType}}</span>                                
+                                    <span>{{application.typeEnumValue}}</span>                                
                                 </div>
                             </div>
                             <div class="grid card-item">

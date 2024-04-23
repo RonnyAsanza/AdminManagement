@@ -26,6 +26,8 @@ export class Application {
     total?: number;
     taxesAndFees?: PermitTariffTaxAndFeeViewModel[];
     quantity?: number;
+    typeEnum?: number;
+    typeEnumValue?: string;
   }
 
   export interface DocumentViewModel {

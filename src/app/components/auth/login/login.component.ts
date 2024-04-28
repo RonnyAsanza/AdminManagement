@@ -73,7 +73,7 @@ export class LoginComponent implements OnInit {
 		this.companyService.getCompanyConfigurations(companyAlias)
 		.subscribe({
 			next: (response) => {
-				if(response.succeeded ){            
+				if(response.succeeded ){
 					this.company = response.data!;
 					this.companyService.setLocalCompany(this.company);
 				}

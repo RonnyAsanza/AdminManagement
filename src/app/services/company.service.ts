@@ -24,6 +24,7 @@ export class CompanyService {
   }
 
   setLocalCompany(company: Company) {
+    company.companyLogo = environment.permitsURL + company.companyLogo;
     let companyJsonString = JSON.stringify(company);
     this.localStorageService.setItem('company',companyJsonString);
   }

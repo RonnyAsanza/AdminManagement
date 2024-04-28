@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { LayoutService } from './service/app.layout.service';
 import { CompanyService } from '../services/company.service';
 import { Company } from '../models/company.model';
@@ -7,11 +7,16 @@ import { Company } from '../models/company.model';
     selector: 'app-sidebar',
     templateUrl: './app.sidebar.component.html'
 })
-export class AppSidebarComponent {
+export class AppSidebarComponent implements OnInit {
     timeout: any = null;
     company!: Company;
     @ViewChild('menuContainer') menuContainer!: ElementRef;
-    constructor(public layoutService: LayoutService, public el: ElementRef) { }
+    constructor(public layoutService: LayoutService, public el: ElementRef, private companyService: CompanyService) { }
+
+    async ngOnInit(): Promise<void> {
+        this.company = await this.companyService.getLocalCompany();
+        console.log(this.company.companyLogo);
+    }
 
     onMouseEnter() {
         if (!this.layoutService.state.anchored) {

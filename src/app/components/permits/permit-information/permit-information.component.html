@@ -1,0 +1,298 @@
+<div class="grid">
+    <div class="col-12" *ngIf="permit?.requestNumber">
+        <ng-container>
+            <!--<div class="grid">
+                <div class="col-12">
+                    <h4>{{ "ClientPermit.PermitInformation" | translate }}</h4>
+                </div>
+            </div>-->
+            <div class="grid">
+                <div class="col-12">
+                    <p-fieldset class="line-height-3 m-0 bg-color py-0">
+                        <ng-template pTemplate="header">
+                            <div class="card p-0">
+                                <div class="flex flex-row flex-wrap card-container">
+                                    <div class="flex align-items-center justify-content-center font-bold border-round m-2">
+                                        <span># {{ permit?.requestNumber }}</span>  
+                                    </div>
+                                    <div class="flex align-items-center justify-content-center font-bold border-round m-2">
+                                        <span [class]="'permits-badge ' + permit?.permitStatusCode?.toLowerCase()">
+                                            {{ "PermitStatus."+permit?.permitStatusCode | translate }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <div class="p-fluid p-formgrid grid">
+                            <p-messages [value]="msgs"></p-messages>
+                            <div class="col-12 md:col-6 flex align-items-end mt-5">
+                                <ul class="list-none p-0 m-0 w-full">
+                                    <li class="mb-3"><span class="font-medium text-900">Information</span></li>
+                                    <div style="height:5px;background:linear-gradient(90deg, var(--primary-color) 0%, rgba(33, 150, 243, 0) 50%);"></div>
+                                    <li class="flex justify-content-between mb-3 mt-2">
+                                        <span class="text-900">{{"ClientPermit.StartDate" | translate }}:</span>
+                                        <span class="text-900">{{ startDateUtc }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between mb-3">
+                                        <span class="text-900">{{"ClientPermit.EndDate" | translate }}:</span>
+                                        <span class="text-900">{{ expirationDateUtc }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between mb-3">
+                                        <span class="text-900">{{"ClientPermit.LicensePlate" | translate }}:</span>
+                                        <span class="text-900">{{ permit?.licensePlate }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between mb-3">
+                                        <span class="text-900">{{"ClientPermit.PermitType" | translate }}:</span>
+                                        <span class="text-900">{{ permit?.permitType }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between mb-3">
+                                        <span class="text-900">{{"ClientPermit.TariffPackage" | translate }}:</span>
+                                        <span class="text-900">{{ permit?.tariff }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between mb-3">
+                                        <span class="text-900">{{"ClientPermit.Zone" | translate }}:</span>
+                                        <span class="text-900">{{ permit?.zone }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="col-12 md:col-6 flex align-items-end mt-5">
+                                <ul class="list-none p-0 m-0 w-full">
+                                    <li class="mb-3"><span class="font-medium text-900">Summary</span></li>
+                                    <div style="height:5px;background:linear-gradient(90deg, var(--primary-color) 0%, rgba(33, 150, 243, 0) 50%);"></div>
+                                    <li class="flex justify-content-between mb-3 mt-2">
+                                        <span class="text-900">{{"ClientPermit.UnitPrice" | translate }}:</span>
+                                        <span class="text-900">CAD {{ permit?.unitPrice }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between mb-3 mt-2">
+                                        <span class="text-900">{{"ClientPermit.Quantity" | translate }}:</span>
+                                        <span class="text-900">{{ permit?.quantity }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between mb-3">
+                                        <span class="text-900">{{"ClientPermit.Price" | translate }}:</span>
+                                        <span class="text-900">CAD {{ permit?.price }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between mb-3" *ngFor="let item of permit?.taxesAndFees let i = index">
+                                        <span class="text-900">{{item.taxAndFeeName}}</span>
+                                        <span class="text-900">CAD {{ item.calculatedValue | number:'1.2-2' }}</span>
+                                    </li>
+                                    <li class="flex justify-content-between border-top-1 surface-border py-3">
+                                        <span class="text-900 font-medium">Total</span>
+                                        <span class="text-900 font-bold text-lg">CAD {{permit?.total || permit?.price | number:'1.2-2'}}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-12 md:col-6" *ngIf="permit?.typeEnum !== 2">       
+                                <button pButton pRipple [label]="'ClientPermit.ViewApplication' | translate" icon="pi pi-arrow-right"  class="p-button-primary" (click)="onViewApplication(permit.applicationGuid)"></button>
+                            </div>
+                        </div>
+                    </p-fieldset>
+                </div> 
+            </div>
+            <div
+                class="col-12"
+                *ngIf="permit?.permitStatusCode === 'payment-pending' || permit?.permitStatusCode === 'payment-failed'"
+            >
+                <p-table
+                    *ngIf="paymentTC === false"
+                    #dt
+                    [value]="paymentTypes"
+                    responsiveLayout="scroll"
+                    [rows]="10"
+                    [rows]="10"
+                    [paginator]="true"
+                    [rowsPerPageOptions]="[10, 20, 30]"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [rowHover]="true"
+                    dataKey="id"
+                >
+                    <ng-template pTemplate="caption">
+                        <div
+                            class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+                        >
+                            <h5 class="m-0">
+                                {{ "ClientPermit.SelectPaymentMethods" | translate }}
+                            </h5>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>{{ "ClientPermit.Code" | translate }}</th>
+                            <th>{{ "ClientPermit.Name" | translate }}</th>
+                            <th></th>
+                            <th>{{ "ClientPermit.Action" | translate }}</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-paymentType>
+                        <tr>
+                            <td style="width: 10%; min-width: 10rem">
+                                <span class="p-column-title">{{
+                                    "ClientPermit.Code" | translate
+                                }}</span>
+                                {{ paymentType.paymentTypeKey }}
+                            </td>
+                            <td style="width: 14%; min-width: 10rem">
+                                <span class="p-column-title">{{
+                                    "ClientPermit.Name" | translate
+                                }}</span>
+                                {{ paymentType.name }}
+                            </td>
+                            <td style="width: 20%; min-width: 10rem">
+                                {{ paymentType.description }}
+                            </td>
+                            <td>
+                                <div class="flex">
+                                    <button
+                                        pButton
+                                        pRipple
+                                        icon="pi pi-arrow-right"
+                                        class="p-button-rounded p-button-primary"
+                                        (click)="
+                                            OnSelectPaymentType(paymentType)
+                                        "
+                                    ></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+
+                <p-panel
+                    [header]="'ClientPermit.CreditCardPayment' | translate"
+                    class="line-height-3 m-0"
+                    *ngIf="paymentTC === true"
+                >
+                    <div class="grid">
+                        <div class="col-12">
+                            <div id="outerDiv">
+                                <div id="monerisCheckout"></div>
+                            </div>
+                        </div>
+                    </div>
+                </p-panel>
+            </div>
+            <div class="col-12"
+                *ngIf="permit?.typeEnum === 1"
+            >
+                <p-panel
+                    [header]="'ClientPermit.BankedSession' | translate" class="line-height-3 m-0"
+                >
+                    <div class="card" >
+                        <span>{{"ClientPermit.AvaliableUses" | translate}} {{permit.availableUnits}} of {{permit.totalUnits}}</span>
+
+                        <p-table *ngIf="permit?.permitsBankedSession?.length! > 0" [value]="permit?.permitsBankedSession!" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['name','zoneName','permitTypeName','minAllowed','maxCount','expirationValue','minPayment','addUnitsStep','paymentStep','timeIntervalName']" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="{{ 'BankPermitConfiguration.Showing' | translate }} {first} {{ 'BankPermitConfiguration.To' | translate }} {last} {{ 'BankPermitConfiguration.Of' | translate }} {totalRecords} {{ 'BankPermitConfiguration.Entries' | translate | lowercase }}" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="permitKey">{{"Permits.ID" | translate}} <p-sortIcon field="permitKey"></p-sortIcon></th>
+                                    <th pSortableColumn="requestNumber">{{"ClientPermit.Permit" | translate}}<p-sortIcon field="requestNumber"></p-sortIcon></th>
+                                    <th pSortableColumn="permitStatus">{{"Permits.Status" | translate}} <p-sortIcon field="permitStatus"></p-sortIcon></th>
+                                    <th pSortableColumn="licensePlate">{{"Permits.LicensePlate" | translate}}<p-sortIcon field="licensePlate"></p-sortIcon></th>
+                                    <th pSortableColumn="startDateUtc">{{"Permits.DateStart" | translate}} <p-sortIcon field="startDateUtc"></p-sortIcon></th>
+                                    <th pSortableColumn="expirationDateUtc">{{"Permits.DateStop" | translate}}<p-sortIcon field="expirationDateUtc"></p-sortIcon></th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-permits>
+                                <tr>
+                                    <td>
+                                        {{permits.permitKey}}
+                                    </td>
+                                    <td>
+                                        <span
+                                        (click)="onGoToPermit(permits.permitGuid)"
+                                        class="cursor-pointer link-style"
+                                        >
+                                            #{{ permits.requestNumber }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span [class]="'permits-badge ' + permits?.permitStatusCode?.toLowerCase()">
+                                            {{ "PermitStatus."+permits?.permitStatusCode | translate }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {{permits.licensePlate}}
+                                    </td>
+                                    <td>
+                                        {{permits.startDateUtc | date: 'yyyy-MM-dd HH:mm'}}
+                                    </td>
+                                    <td>
+                                        {{permits.expirationDateUtc | date: 'yyyy-MM-dd HH:mm'}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </p-panel>
+            </div>
+
+            <div
+                class="col-12"
+                *ngIf="permit?.permitStatusCode === 'payment-accepted' && permit?.typeEnum !== 2"
+            >
+                <p-panel
+                    [header]="'ClientPermit.Invoice' | translate"
+                    class="line-height-3 m-0"
+                >
+                <div class="card">
+                    <div class="grid">
+                        <div class="col-6 md:col-3 sm:col-6"> 
+                            <span class="card-item">Order No.:</span>
+                        </div>
+                        <div class="col-6 md:col-9 sm:col-6"> 
+                            <span class="card-item">{{permit?.monerisReceipt?.orderNo}}</span>
+                        </div>
+                        <div class="col-6 md:col-3 sm:col-6"> 
+                            <span class="card-item">Payment Amount:</span>
+                        </div>
+                        <div class="col-6 md:col-9 sm:col-6"> 
+                            <span class="card-item">CAD {{permit?.monerisReceipt?.transAmount}}</span>
+                        </div>
+                        <div class="col-6 md:col-3 sm:col-6"> 
+                            <span class="card-item">Payment Date:</span>
+                        </div>
+                        <div class="col-6 md:col-9 sm:col-6"> 
+                            <span class="card-item">{{permit?.monerisReceipt?.transDate}}</span>
+                        </div>
+                        <div class="col-6 md:col-3 sm:col-6"> 
+                            <span class="card-item">Authorization Code:</span>
+                        </div>
+                        <div class="col-6 md:col-9 sm:col-6"> 
+                            <span class="card-item">{{permit?.monerisReceipt?.approvalCode}}</span>
+                        </div>
+                        <div class="col-6 md:col-3 sm:col-6"> 
+                            <span class="card-item">CC Number:</span>
+                        </div>
+                        <div class="col-6 md:col-9 sm:col-6"> 
+                            <span class="card-item">{{permit?.monerisReceipt?.first6last4}}</span>
+                        </div>
+                        <div class="col-6 md:col-3 sm:col-6"> 
+                            <span class="card-item">CC Name:</span>
+                        </div>
+                        <div class="col-6 md:col-9 sm:col-6"> 
+                            <span class="card-item">{{permit?.monerisReceipt?.cardHolder}}</span>
+                        </div>
+                        <div class="col-6 md:col-3 sm:col-6"> 
+                            <span class="card-item">CC Exp:</span>
+                        </div>
+                        <div class="col-6 md:col-9 sm:col-6"> 
+                            <span class="card-item">{{permit?.monerisReceipt?.cardExpiry}}</span>
+                        </div>
+                        <div class="col-12 xl:col-6">
+                            <div class="grid p-0">
+                                <div class="col-12 md:col-6">
+                                    <button pButton pRipple icon="pi pi-file-export" label="Open"  class="p-button-primary w-full" (click)="generatePDF('P')">
+                                    </button>
+                                </div>
+                                <div class="col-12 md:col-6">
+                                    <button pButton pRipple icon="pi pi-file-pdf" class="p-button-primary w-full" label="Export to PDF" (click)="generatePDF('D')">
+                                    </button>
+                                </div>
+                            </div>  
+                        </div>
+                    </div>
+                </div>
+                </p-panel>
+            </div>
+        </ng-container>
+    </div>
+</div>

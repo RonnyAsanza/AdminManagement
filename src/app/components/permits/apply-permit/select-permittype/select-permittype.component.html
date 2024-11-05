@@ -1,0 +1,25 @@
+<p-toast key="msg"></p-toast>
+<div class="grid">
+    <div class="col-12 px-6">
+        <ng-container>
+            <div class="grid" >
+                <div class="col-12">
+                    <h4>{{"PermitCategory.PermitCategory" | translate}}</h4>
+                </div>
+            </div>
+            <div class="grid center-content" >
+                <div class="col-12 md:col-6 xl:col-3"
+                *ngFor="let permitCategory of permitCategories"
+                >
+                    <p-card
+                        class="card-content"
+                        (click)="onSelectPermitCategory(permitCategory)"
+                    >
+                        <p>{{permitCategory.name}}</p>
+                        <img *ngIf="permitCategory.image" [src]="permitCategory.imageUrl!" alt="{{permitCategory.name}}" class="permittype-image">
+                    </p-card>
+                </div>                          
+            </div>
+        </ng-container>
+    </div>
+</div>

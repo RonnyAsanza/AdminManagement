@@ -1,0 +1,50 @@
+<div *ngIf="mail">
+    <div class="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-5 pt-5 md:pt-0 gap-4 md:border-top-none border-top-1 surface-border">
+        <div class="flex align-items-center md:justify-content-start">
+            <button pButton pRipple type="button" icon="pi pi-chevron-left" class="p-button-text p-button-plain md:mr-3" (click)="goBack()"></button>
+            <div class="flex flex-column mx-3">
+                <span class="block text-900 font-bold text-lg">{{mail.senderType}}</span>
+                <span class="block text-900 font-semibold">To: current user</span>
+            </div>
+        </div>
+        <div class="flex align-items-center justify-content-end column-gap-3 px-4 md:px-0">
+            <span class="text-900 font-semibold white-space-nowrap mr-auto">{{ mail.dateCreatedUtc | date: 'dd/MMMM/yyyy HH:mm' }}</span>
+            <button pButton pRipple type="button" icon="pi pi-reply" class="p-button-text p-button-plain flex-shrink-0"></button>
+            <button pButton pRipple type="button" icon="pi pi-ellipsis-v" class="p-button-text p-button-plain flex-shrink-0"></button>
+        </div>
+    </div>
+    <div class="surface-border border-1 border-round p-4">
+            <div class="text-900 font-semibold text-lg mb-3">Application # {{mail.requestNumber}}</div>
+
+            <div class="chat-messages">
+                <div *ngFor="let message of messages" class="message-container"
+                     [ngClass]="{'system-message': message.senderType === 'System', 'user-message': message.senderType === 'PortalUser'}">
+                  <div class="message-header">
+                    <span class="message-date">{{ message.dateCreatedUtc | date:'short' }}</span>
+                  </div>
+                  <span class="message-detail" [innerHTML]="message.message"></span>
+                </div>
+            </div>
+
+            <p-editor [(ngModel)]="newMessage.message" [style]="{'height':'7rem'}">
+                <ng-template pTemplate="header">
+                    <span class="ql-formats">
+                        <button type="button" class="ql-bold" aria-label="Bold"></button>
+                        <button type="button" class="ql-italic" aria-label="Italic"></button>
+                        <button type="button" class="ql-underline" aria-label="Underline"></button>
+                        <button type="button" class="ql-strike" aria-label="strike"></button> 
+                    </span>
+                    <span class="ql-formats">
+                        <button type="button" class="ql-link" aria-label="Insert Link"></button>
+                        <button type="button" class="ql-image" aria-label="Insert Image"></button>
+                    </span>
+                </ng-template>
+            </p-editor>
+
+            <div class="flex column-gap-3 justify-content-end mt-3">
+                <button pButton pRipple type="button" class="p-button-outlined" icon="pi pi-image"></button>
+                <button pButton pRipple type="button" class="p-button-outlined" icon="pi pi-paperclip"></button>
+                <button pButton pRipple type="button" class="p-button-primary" icon="pi pi-send" label="Send" (click)="sendMail()"></button>
+            </div>
+    </div>
+</div>
